@@ -81,7 +81,7 @@ int main(int argc, char* argv[])
         "LeftSL", "LeftSR", "RightSL", "RightSR",
     };
 
-    u32 kDownOld = 0, kHeldOld = 0, kUpOld = 0; //In these variables there will be information about keys detected in the previous frame
+    //u32 kDownOld = 0, kHeldOld = 0, kUpOld = 0; //In these variables there will be information about keys detected in the previous frame
 
     int button_pressed = 0;
 
@@ -316,6 +316,9 @@ int main(int argc, char* argv[])
                     snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10] + x);
                     printf("%s", sliced_grid_line);
                 }
+
+                // Update the console, sending a new frame to the display
+                consoleUpdate(NULL);
             }
             // Vertical scroll
             for (y = 1; y < grid_y_offset+1; y++) {
@@ -326,6 +329,9 @@ int main(int argc, char* argv[])
                     snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10 - y] + grid_x_offset);
                     printf("%s", sliced_grid_line);
                 }
+
+                // Update the console, sending a new frame to the display
+                consoleUpdate(NULL);
             }
         }
         else {
@@ -344,11 +350,12 @@ int main(int argc, char* argv[])
         printf("\x1b[%d;%dH%s", CLAW_ROW+1, CLAW_COL-1, CLAW_BOT);
 
         // Print prize if within grid
-        diff_x = curr_x - px;
-        diff_y = curr_y - py;
+        diff_x = px - curr_x;
+        diff_y = py - curr_y;
         if ((abs(diff_x) < ((GRID_LINES_ROWS-1)/2)) &&
             (abs(diff_y) < ((GRID_LINES_COLS-1)/2))) {
-            printf("\x1b[%d;%dH%s", CLAW_ROW+diff_x, CLAW_COL+diff_y-1, PRIZE_MID);
+            // -1 since PRIZE_MID is 3 characters wide
+            printf("\x1b[%d;%dH%s", CLAW_ROW-diff_x, CLAW_COL+diff_y-1, PRIZE_MID);
         }
 
         // Print horizontal borders
@@ -380,7 +387,7 @@ int main(int argc, char* argv[])
         }
 
         // Set keys old values for the next frame
-        kDownOld = kDown;
+        //kDownOld = kDown;
         //kHeldOld = kHeld;
         //kUpOld = kUp;
 
