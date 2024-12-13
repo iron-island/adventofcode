@@ -30,7 +30,7 @@
 
 #define PRIZE_MID "{*}"
 
-#define DELAY_MS 100
+#define DELAY_MS 50
 
 void wait_delay(){
     // Tick variables, based on:
@@ -66,10 +66,10 @@ void print_prize(int curr_x, int curr_y, int px, int py){
 
     diff_x = px - curr_x;
     diff_y = py - curr_y;
-    if ((abs(diff_x) < ((GRID_LINES_ROWS-1)/2)) &&
-        (abs(diff_y) < ((GRID_LINES_COLS-1)/2))) {
+    if ((abs(diff_x) < ((GRID_LINES_COLS-1)/2)) &&
+        (abs(diff_y) < ((GRID_LINES_ROWS-1)/2))) {
         // -1 since PRIZE_MID is 3 characters wide
-        printf("\x1b[%d;%dH%s", CLAW_ROW-diff_x, CLAW_COL+diff_y-1, PRIZE_MID);
+        printf("\x1b[%d;%dH%s", CLAW_ROW-diff_y, CLAW_COL+diff_x-1, PRIZE_MID);
     }
 }
 
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
     int px, py;
     int a_press, b_press;
     int curr_x, curr_y;
-    int old_x, old_y;
+    int old_i, old_x, old_y;
     int tokens, prizes, prize_caught;
     int scrolling_x, scrolling_y;
     int grid_x_offset, grid_y_offset;
@@ -201,9 +201,9 @@ int main(int argc, char* argv[])
     by = 67;
     px = 8400;
     py = 5400;
-    // Modified: 11 A presses, 8 B presses
-    a_press = 11;
-    b_press = 8;
+    // Modified for easier demo
+    a_press = 7;
+    b_press = 6;
     ax = 17;
     ay = 9;
     bx = 12;
@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
 
     curr_x = 0;
     curr_y = 0;
-    //old_i = -1;
+    old_i = -1;
     old_x = 0;
     old_y = 0;
     tokens = 0;
@@ -281,8 +281,11 @@ int main(int argc, char* argv[])
         printf("\x1b[8;1H     Prize: X=%d, Y=%d", px, py);
 
         printf("\x1b[10;1H   Current (X, Y) = (%d, %d)          ", curr_x, curr_y);
-        printf("\x1b[11;1H   Tokens spent = %d", tokens);
+        printf("\x1b[11;1H   Tokens spent = %d          ", tokens);
         printf("\x1b[12;1H   Prizes caught = %d", prizes);
+        if (old_i > -1){
+            printf("\x1b[13;1H   Button %s pressed, position update: (%d, %d) -> (%d, %d)          ", keysNames[old_i], old_x, old_y, curr_x, curr_y);
+        }
         
         // Check if some of the keys are down, held or up
         // Max index of 3 for A, B, X, Y
@@ -292,7 +295,7 @@ int main(int argc, char* argv[])
             if (kDown & BIT(i)){
                 //printf("%s down\n", keysNames[i]);
 
-                //old_i = i;
+                old_i = i;
                 old_x = curr_x;
                 old_y = curr_y;
                 if (i == 0) { // Button A pressed
@@ -317,6 +320,7 @@ int main(int argc, char* argv[])
                 // Only 1 button can be pressed at a time, so exit loop
                 // This means button priorities are A, B, X, Y
                 button_pressed = i+1;
+                printf("\x1b[11;1H   Tokens spent = %d          ", tokens);
                 printf("\x1b[13;1H   Button %s pressed, position update: (%d, %d) -> (%d, %d)          ", keysNames[i], old_x, old_y, curr_x, curr_y);
                 break;
             }
@@ -379,7 +383,7 @@ int main(int argc, char* argv[])
                 print_claw();
 
                 // Print prize if within grid
-                print_prize(curr_x, curr_y, px, py);
+                print_prize(scrolling_x, old_y, px, py);
 
                 // Print borders
                 print_borders();
@@ -417,7 +421,7 @@ int main(int argc, char* argv[])
                 print_claw();
 
                 // Print prize if within grid
-                print_prize(curr_x, curr_y, px, py);
+                print_prize(curr_x, scrolling_y, px, py);
 
                 // Print borders
                 print_borders();
