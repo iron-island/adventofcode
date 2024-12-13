@@ -65,34 +65,47 @@ int main(int argc, char* argv[])
     int curr_x, curr_y;
     int old_i, old_x, old_y;
     int tokens, prizes;
+    int grid_x_offset, grid_y_offset;
 
     // Screen grid variables
-    char grid_lines[GRID_LINES_ROWS][70] = {
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
-     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
-     "    .         .         .         .         .         .         .    ",
-     "    .         .         .         .         .         .         .    ",
+    // +10 for offsets, +1 on cols for null terminator
+    char sliced_grid_line[GRID_LINES_COLS+1] = "";
+    char grid_lines[GRID_LINES_ROWS+10][GRID_LINES_COLS+10+1] = {
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ", 
+     "    .         .         .         .         .         .         .         .    ", 
+     "    .         .         .         .         .         .         .         .    ", 
     };
 
     // TODO:
@@ -111,6 +124,8 @@ int main(int argc, char* argv[])
     old_y = 0;
     tokens = 0;
     prizes = 0;
+    grid_x_offset = 0;
+    grid_y_offset = 0;
 
     printf("\x1b[1;1H Advent of Code 2024 Day 13: Claw Contraption");
     printf("\x1b[2;1H Instructions: Press A/B to move right/forward");
@@ -221,9 +236,13 @@ int main(int argc, char* argv[])
         }
 
         // Print grid lines
-        for (i = 0; i < GRID_LINES_ROWS; i++) {
+        // TODO: handle negative coordinates
+        grid_x_offset = curr_x % 10;
+        grid_y_offset = curr_y % 10;
+        for (i = 0 ; i < GRID_LINES_ROWS; i++) {
             printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES);
-            printf("%s", grid_lines[i]);
+            snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[i+grid_x_offset]+grid_y_offset);
+            printf("%s", sliced_grid_line);
         }
 
         // Print claw
