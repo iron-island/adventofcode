@@ -53,6 +53,59 @@ void wait_delay(){
 
 }
 
+// Print claw
+void print_claw(){
+    printf("\x1b[%d;%dH%s", CLAW_ROW-1, CLAW_COL-1, CLAW_TOP);
+    printf("\x1b[%d;%dH%s", CLAW_ROW, CLAW_COL, CLAW_MID);
+    printf("\x1b[%d;%dH%s", CLAW_ROW+1, CLAW_COL-1, CLAW_BOT);
+}
+
+// Print prize if within grid
+void print_prize(int curr_x, int curr_y, int px, int py){
+    int diff_x, diff_y;
+
+    diff_x = px - curr_x;
+    diff_y = py - curr_y;
+    if ((abs(diff_x) < ((GRID_LINES_ROWS-1)/2)) &&
+        (abs(diff_y) < ((GRID_LINES_COLS-1)/2))) {
+        // -1 since PRIZE_MID is 3 characters wide
+        printf("\x1b[%d;%dH%s", CLAW_ROW-diff_x, CLAW_COL+diff_y-1, PRIZE_MID);
+    }
+}
+
+// Print borders
+void print_borders(){
+    int i;
+
+    // Print horizontal borders
+    // Upper left corner
+    printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES-1, INIT_COL_GRID_LINES-1);
+    printf(UPPERLEFT_CORNER);
+    // Top border
+    for (i = 0; i < GRID_LINES_COLS; i++){
+        printf(HORIZONTAL_EDGE);
+    }
+    // Upper right corner
+    printf(UPPERRIGHT_CORNER);
+    // Lower left corner
+    printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+GRID_LINES_ROWS, INIT_COL_GRID_LINES-1);
+    printf(LOWERLEFT_CORNER);
+    // Bottom border
+    for (i = 0; i < GRID_LINES_COLS; i++){
+        printf(HORIZONTAL_EDGE);
+    }
+    // Lower right corner
+    printf(LOWERRIGHT_CORNER);
+    
+    // Print vertical borders
+    for (i = 0; i < GRID_LINES_ROWS; i++){
+        // Left border
+        printf("\x1b[%d;%dH%s", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES-1, VERTICAL_EDGE);
+        // Right border
+        printf("\x1b[%d;%dH%s", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES+GRID_LINES_COLS, VERTICAL_EDGE);
+    }
+}
+
 // Main program entrypoint
 int main(int argc, char* argv[])
 {
@@ -95,7 +148,6 @@ int main(int argc, char* argv[])
     int old_i, old_x, old_y;
     int tokens, prizes, prize_caught;
     int grid_x_offset, grid_y_offset;
-    int diff_x, diff_y;
 
     // Screen grid variables
     // +10 for offsets, +1 on cols for null terminator
@@ -151,10 +203,14 @@ int main(int argc, char* argv[])
     // Modified: 11 A presses, 8 B presses
     a_press = 11;
     b_press = 8;
-    ax = 5;//17;
-    ay = 3;//9;
-    bx = 4;//12;
-    by = 2;//8;
+    ax = 17;
+    ay = 9;
+    bx = 12;
+    by = 8;
+    //ax = 5;//17;
+    //ay = 3;//9;
+    //bx = 4;//12;
+    //by = 2;//8;
     px = a_press*ax + b_press*bx;//8400;
     py = a_press*ay + b_press*by;//5400;
 
@@ -295,18 +351,6 @@ int main(int argc, char* argv[])
 
             // Print grid lines
             // TODO: Implement Bresenham's algorithm for straight line animation?
-            //for (x = 1; x < grid_x_offset+1; x++) {
-            //    for (y = 1; y < grid_y_offset+1; y++) {
-            //        // Add delay
-            //        wait_delay();
-            //
-            //        for (i = 0 ; i < GRID_LINES_ROWS; i++) {
-            //            printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES);
-            //            snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[i+x]+y);
-            //            printf("%s", sliced_grid_line);
-            //        }
-            //    }
-            //}
             // Horizontal scroll
             for (x = 1; x < grid_x_offset+1; x++) {
                 wait_delay();
@@ -316,6 +360,16 @@ int main(int argc, char* argv[])
                     snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10] + x);
                     printf("%s", sliced_grid_line);
                 }
+
+                // Need to reprint claw, prize, and borders
+                // Print claw
+                print_claw();
+
+                // Print prize if within grid
+                print_prize(curr_x, curr_y, px, py);
+
+                // Print borders
+                print_borders();
 
                 // Update the console, sending a new frame to the display
                 consoleUpdate(NULL);
@@ -330,6 +384,16 @@ int main(int argc, char* argv[])
                     printf("%s", sliced_grid_line);
                 }
 
+                // Need to reprint claw, prize, and borders
+                // Print claw
+                print_claw();
+
+                // Print prize if within grid
+                print_prize(curr_x, curr_y, px, py);
+
+                // Print borders
+                print_borders();
+
                 // Update the console, sending a new frame to the display
                 consoleUpdate(NULL);
             }
@@ -342,48 +406,15 @@ int main(int argc, char* argv[])
                 snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10 - grid_y_offset] + grid_x_offset);
                 printf("%s", sliced_grid_line);
             }
-        }
 
-        // Print claw
-        printf("\x1b[%d;%dH%s", CLAW_ROW-1, CLAW_COL-1, CLAW_TOP);
-        printf("\x1b[%d;%dH%s", CLAW_ROW, CLAW_COL, CLAW_MID);
-        printf("\x1b[%d;%dH%s", CLAW_ROW+1, CLAW_COL-1, CLAW_BOT);
+            // Print claw
+            print_claw();
 
-        // Print prize if within grid
-        diff_x = px - curr_x;
-        diff_y = py - curr_y;
-        if ((abs(diff_x) < ((GRID_LINES_ROWS-1)/2)) &&
-            (abs(diff_y) < ((GRID_LINES_COLS-1)/2))) {
-            // -1 since PRIZE_MID is 3 characters wide
-            printf("\x1b[%d;%dH%s", CLAW_ROW-diff_x, CLAW_COL+diff_y-1, PRIZE_MID);
-        }
+            // Print prize if within grid
+            print_prize(curr_x, curr_y, px, py);
 
-        // Print horizontal borders
-        // Upper left corner
-        printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES-1, INIT_COL_GRID_LINES-1);
-        printf(UPPERLEFT_CORNER);
-        // Top border
-        for (i = 0; i < GRID_LINES_COLS; i++){
-            printf(HORIZONTAL_EDGE);
-        }
-        // Upper right corner
-        printf(UPPERRIGHT_CORNER);
-        // Lower left corner
-        printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+GRID_LINES_ROWS, INIT_COL_GRID_LINES-1);
-        printf(LOWERLEFT_CORNER);
-        // Bottom border
-        for (i = 0; i < GRID_LINES_COLS; i++){
-            printf(HORIZONTAL_EDGE);
-        }
-        // Lower right corner
-        printf(LOWERRIGHT_CORNER);
-
-        // Print vertical borders
-        for (i = 0; i < GRID_LINES_ROWS; i++){
-            // Left border
-            printf("\x1b[%d;%dH%s", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES-1, VERTICAL_EDGE);
-            // Right border
-            printf("\x1b[%d;%dH%s", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES+GRID_LINES_COLS, VERTICAL_EDGE);
+            // Print borders
+            print_borders();
         }
 
         // Set keys old values for the next frame
