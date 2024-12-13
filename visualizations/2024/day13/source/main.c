@@ -8,6 +8,25 @@
 
 // See also libnx pad.h / hid.h.
 
+// Screen grid macros
+#define HORIZONTAL_EDGE   "="
+#define VERTICAL_EDGE     "|"
+#define UPPERLEFT_CORNER  "+"
+#define UPPERRIGHT_CORNER "+"
+#define LOWERLEFT_CORNER  "+"
+#define LOWERRIGHT_CORNER "+"
+
+#define INIT_ROW_GRID_LINES 17
+#define INIT_COL_GRID_LINES 5
+#define GRID_LINES_ROWS 25
+#define GRID_LINES_COLS 69
+
+#define CLAW_TOP "\\ /"
+#define CLAW_MID   "X"
+#define CLAW_BOT  "/ \\"
+#define CLAW_ROW 29
+#define CLAW_COL 39
+
 // Main program entrypoint
 int main(int argc, char* argv[])
 {
@@ -38,10 +57,7 @@ int main(int argc, char* argv[])
 
     u32 kDownOld = 0, kHeldOld = 0, kUpOld = 0; //In these variables there will be information about keys detected in the previous frame
 
-    printf("\x1b[1;1H Advent of Code 2024 Day 13: Claw Contraption");
-    printf("\x1b[2;1H Instructions: Press A/B to move right/forward");
-    printf("\x1b[3;1H               Press X/Y to cancel A/B movements (no token refunds!)");
-
+    int i;
     int machine_num, total_machines;
     int ax, ay;
     int bx, by;
@@ -49,6 +65,35 @@ int main(int argc, char* argv[])
     int curr_x, curr_y;
     int old_i, old_x, old_y;
     int tokens, prizes;
+
+    // Screen grid variables
+    char grid_lines[GRID_LINES_ROWS][70] = {
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+     " . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ",
+     "    .         .         .         .         .         .         .    ",
+     "    .         .         .         .         .         .         .    ",
+    };
 
     // TODO:
     machine_num = 1;
@@ -66,6 +111,20 @@ int main(int argc, char* argv[])
     old_y = 0;
     tokens = 0;
     prizes = 0;
+
+    printf("\x1b[1;1H Advent of Code 2024 Day 13: Claw Contraption");
+    printf("\x1b[2;1H Instructions: Press A/B to move right/forward");
+    printf("\x1b[3;1H               Press X/Y to cancel A/B movements (no token refunds!)");
+
+    printf("\x1b[4;1H   Machine %d of %d", machine_num, total_machines);
+    printf("\x1b[5;1H     Button A: X+%d, Y+%d", ax, ay);
+    printf("\x1b[6;1H     Button B: X+%d, Y+%d", bx, by);
+    printf("\x1b[7;1H     Prize: X=%d, Y=%d", px, py);
+
+    printf("\x1b[9;1H   Current (X, Y) = (%d, %d)", curr_x, curr_y);
+    printf("\x1b[10;1H   Tokens spent = %d", tokens);
+    printf("\x1b[11;1H   Prizes caught = %d", prizes);
+    printf("\x1b[12;1H   No button pressed yet");
 
     // Main loop
     while(appletMainLoop())
@@ -112,7 +171,6 @@ int main(int argc, char* argv[])
             
             // Check if some of the keys are down, held or up
             // Max index of 3 for A, B, X, Y
-            int i;
             for (i = 0; i < 4; i++)
             {
                 if (kDown & BIT(i)){
@@ -152,28 +210,59 @@ int main(int argc, char* argv[])
         // Check current position vs prize position
         if ((curr_x > px) || (curr_y > py)) {
             // Overshot and did not get the prize
-            printf("\x1b[13;1H   Went beyond the prize! Go back!");
+            printf("\x1b[13;1H   Went beyond the prize! Go back with X/Y!");
         }
         else if ((curr_x == px) && (curr_y == py)) {
             // Got the prize
-            printf("\x1b[13;1H   Prize caught!");
+            printf("\x1b[13;1H   Congratulations! You caught a prize!");
             prizes = prizes + 1;
 
             // TODO: Print option to go to next machine
+        }
+
+        // Print grid lines
+        for (i = 0; i < GRID_LINES_ROWS; i++) {
+            printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES);
+            printf("%s", grid_lines[i]);
+        }
+
+        // Print claw
+        printf("\x1b[%d;%dH%s", CLAW_ROW-1, CLAW_COL-1, CLAW_TOP);
+        printf("\x1b[%d;%dH%s", CLAW_ROW, CLAW_COL, CLAW_MID);
+        printf("\x1b[%d;%dH%s", CLAW_ROW+1, CLAW_COL-1, CLAW_BOT);
+
+        // Print horizontal borders
+        // Upper left corner
+        printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES-1, INIT_COL_GRID_LINES-1);
+        printf(UPPERLEFT_CORNER);
+        // Top border
+        for (i = 0; i < GRID_LINES_COLS; i++){
+            printf(HORIZONTAL_EDGE);
+        }
+        // Upper right corner
+        printf(UPPERRIGHT_CORNER);
+        // Lower left corner
+        printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+GRID_LINES_ROWS, INIT_COL_GRID_LINES-1);
+        printf(LOWERLEFT_CORNER);
+        // Bottom border
+        for (i = 0; i < GRID_LINES_COLS; i++){
+            printf(HORIZONTAL_EDGE);
+        }
+        // Lower right corner
+        printf(LOWERRIGHT_CORNER);
+
+        // Print vertical borders
+        for (i = 0; i < GRID_LINES_ROWS; i++){
+            // Left border
+            printf("\x1b[%d;%dH%s", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES-1, VERTICAL_EDGE);
+            // Right border
+            printf("\x1b[%d;%dH%s", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES+GRID_LINES_COLS, VERTICAL_EDGE);
         }
 
         // Set keys old values for the next frame
         kDownOld = kDown;
         kHeldOld = kHeld;
         kUpOld = kUp;
-
-        // Read the sticks' position
-        //HidAnalogStickState analog_stick_l = padGetStickPos(&pad, 0);
-        //HidAnalogStickState analog_stick_r = padGetStickPos(&pad, 1);
-
-        // Print the sticks' position
-        //printf("\x1b[3;1H%04d; %04d", analog_stick_l.x, analog_stick_l.y);
-        //printf("\x1b[5;1H%04d; %04d", analog_stick_r.x, analog_stick_r.y);
 
         // Update the console, sending a new frame to the display
         consoleUpdate(NULL);
