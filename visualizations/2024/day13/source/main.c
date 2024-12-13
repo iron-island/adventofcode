@@ -30,7 +30,7 @@
 
 #define PRIZE_MID "{*}"
 
-#define DELAY_MS 10
+#define DELAY_MS 100
 
 void wait_delay(){
     // Tick variables, based on:
@@ -147,6 +147,7 @@ int main(int argc, char* argv[])
     int curr_x, curr_y;
     int old_i, old_x, old_y;
     int tokens, prizes, prize_caught;
+    int scrolling_x, scrolling_y;
     int grid_x_offset, grid_y_offset;
 
     // Screen grid variables
@@ -222,6 +223,8 @@ int main(int argc, char* argv[])
     tokens = 0;
     prizes = 0;
     prize_caught = 0;
+    scrolling_x = 0;
+    scrolling_y = 0;
     grid_x_offset = 0;
     grid_y_offset = 0;
 
@@ -235,7 +238,7 @@ int main(int argc, char* argv[])
     printf("\x1b[7;1H     Button B: X+%d, Y+%d", bx, by);
     printf("\x1b[8;1H     Prize: X=%d, Y=%d", px, py);
 
-    printf("\x1b[10;1H   Current (X, Y) = (%d, %d)", curr_x, curr_y);
+    printf("\x1b[10;1H   Current (X, Y) = (%d, %d)          ", curr_x, curr_y);
     printf("\x1b[11;1H   Tokens spent = %d", tokens);
     printf("\x1b[12;1H   Prizes caught = %d", prizes);
     printf("\x1b[13;1H   No button pressed yet");
@@ -277,7 +280,7 @@ int main(int argc, char* argv[])
         printf("\x1b[7;1H     Button B: X+%d, Y+%d", bx, by);
         printf("\x1b[8;1H     Prize: X=%d, Y=%d", px, py);
 
-        printf("\x1b[10;1H   Current (X, Y) = (%d, %d)", curr_x, curr_y);
+        printf("\x1b[10;1H   Current (X, Y) = (%d, %d)          ", curr_x, curr_y);
         printf("\x1b[11;1H   Tokens spent = %d", tokens);
         printf("\x1b[12;1H   Prizes caught = %d", prizes);
         if (old_i > -1) {
@@ -316,7 +319,7 @@ int main(int argc, char* argv[])
 
                 // Only 1 button can be pressed at a time, so exit loop
                 // This means button priorities are A, B, X, Y
-                button_pressed = 1;
+                button_pressed = i+1;
                 break;
             }
             //if (kHeld & BIT(i)) printf("%s held\n", keysNames[i]);
@@ -352,12 +355,25 @@ int main(int argc, char* argv[])
             // Print grid lines
             // TODO: Implement Bresenham's algorithm for straight line animation?
             // Horizontal scroll
-            for (x = 1; x < grid_x_offset+1; x++) {
+            for (x = 1; x < abs(curr_x - old_x)+1; x++){
                 wait_delay();
+
+                // y offset will not be used yet
+                if (curr_x > old_x) {
+                    // A/B button pressed and x will increase during scroll
+                    scrolling_x = old_x + x;
+                } else if (curr_x < old_x) {
+                    // X/Y button pressed and x will decrease during scroll
+                    scrolling_x = old_x - x;
+                }
+
+                // Print real time coordinates - still old_y here since vertical scroll hasn't started
+                printf("\x1b[10;1H   Current (X, Y) = (%d, %d)          ", scrolling_x, old_y);
+                grid_x_offset = scrolling_x % 10;
 
                 for (i = 0 ; i < GRID_LINES_ROWS; i++) {
                     printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES);
-                    snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10] + x);
+                    snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10] + grid_x_offset);
                     printf("%s", sliced_grid_line);
                 }
 
@@ -375,12 +391,25 @@ int main(int argc, char* argv[])
                 consoleUpdate(NULL);
             }
             // Vertical scroll
-            for (y = 1; y < grid_y_offset+1; y++) {
+            for (y = 1; y < abs(curr_y - old_y)+1; y++) {
                 wait_delay();
+
+                // x offset is constant, and already increased to the final value during horizontal scroll
+                if (curr_y > old_y) {
+                    // A/B button pressed and y will increase during scroll
+                    scrolling_y = old_y + y;
+                } else if (curr_y < old_y) {
+                    // X/Y button pressed and y will decrease during scroll
+                    scrolling_y = old_y - y;
+                }
+
+                // Print real time coordinates - already curr_x here since horizontal scroll is done
+                printf("\x1b[10;1H   Current (X, Y) = (%d, %d)          ", curr_x, scrolling_y);
+                grid_y_offset = scrolling_y % 10;
 
                 for (i = 0 ; i < GRID_LINES_ROWS; i++) {
                     printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES);
-                    snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10 - y] + grid_x_offset);
+                    snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10 - grid_y_offset] + grid_x_offset);
                     printf("%s", sliced_grid_line);
                 }
 
