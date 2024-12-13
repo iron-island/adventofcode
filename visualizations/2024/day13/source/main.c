@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
     int px, py;
     int a_press, b_press;
     int curr_x, curr_y;
-    int old_i, old_x, old_y;
+    int old_x, old_y;
     int tokens, prizes, prize_caught;
     int scrolling_x, scrolling_y;
     int grid_x_offset, grid_y_offset;
@@ -217,7 +217,7 @@ int main(int argc, char* argv[])
 
     curr_x = 0;
     curr_y = 0;
-    old_i = -1;
+    //old_i = -1;
     old_x = 0;
     old_y = 0;
     tokens = 0;
@@ -283,9 +283,6 @@ int main(int argc, char* argv[])
         printf("\x1b[10;1H   Current (X, Y) = (%d, %d)          ", curr_x, curr_y);
         printf("\x1b[11;1H   Tokens spent = %d", tokens);
         printf("\x1b[12;1H   Prizes caught = %d", prizes);
-        if (old_i > -1) {
-            printf("\x1b[13;1H   Button %s pressed, position updated: (%d, %d) -> (%d, %d)", keysNames[old_i], old_x, old_y, curr_x, curr_y);
-        }
         
         // Check if some of the keys are down, held or up
         // Max index of 3 for A, B, X, Y
@@ -295,7 +292,7 @@ int main(int argc, char* argv[])
             if (kDown & BIT(i)){
                 //printf("%s down\n", keysNames[i]);
 
-                old_i = i;
+                //old_i = i;
                 old_x = curr_x;
                 old_y = curr_y;
                 if (i == 0) { // Button A pressed
@@ -320,6 +317,7 @@ int main(int argc, char* argv[])
                 // Only 1 button can be pressed at a time, so exit loop
                 // This means button priorities are A, B, X, Y
                 button_pressed = i+1;
+                printf("\x1b[13;1H   Button %s pressed, position update: (%d, %d) -> (%d, %d)          ", keysNames[i], old_x, old_y, curr_x, curr_y);
                 break;
             }
             //if (kHeld & BIT(i)) printf("%s held\n", keysNames[i]);
@@ -348,17 +346,16 @@ int main(int argc, char* argv[])
         }
 
         // TODO: handle negative coordinates
-        grid_x_offset = curr_x % 10;
-        grid_y_offset = curr_y % 10;
         if (button_pressed) {
 
             // Print grid lines
             // TODO: Implement Bresenham's algorithm for straight line animation?
             // Horizontal scroll
+            // Compute y offset only once since this is constant during horizontal scroll
+            grid_y_offset = old_y % 10;
             for (x = 1; x < abs(curr_x - old_x)+1; x++){
                 wait_delay();
 
-                // y offset will not be used yet
                 if (curr_x > old_x) {
                     // A/B button pressed and x will increase during scroll
                     scrolling_x = old_x + x;
@@ -373,7 +370,7 @@ int main(int argc, char* argv[])
 
                 for (i = 0 ; i < GRID_LINES_ROWS; i++) {
                     printf("\x1b[%d;%dH", INIT_ROW_GRID_LINES+i, INIT_COL_GRID_LINES);
-                    snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10] + grid_x_offset);
+                    snprintf(sliced_grid_line, GRID_LINES_COLS+1, "%s", grid_lines[ i + 10 - grid_y_offset] + grid_x_offset);
                     printf("%s", sliced_grid_line);
                 }
 
@@ -391,6 +388,8 @@ int main(int argc, char* argv[])
                 consoleUpdate(NULL);
             }
             // Vertical scroll
+            // Compute x offset only once since this is constant during horizontal scroll
+            grid_x_offset = curr_x % 10;
             for (y = 1; y < abs(curr_y - old_y)+1; y++) {
                 wait_delay();
 
@@ -428,6 +427,9 @@ int main(int argc, char* argv[])
             }
         }
         else {
+            grid_x_offset = curr_x % 10;
+            grid_y_offset = curr_y % 10;
+
             // Still print grid lines when no button is pressed since the screen was cleared,
             // but print with no delay
             for (i = 0 ; i < GRID_LINES_ROWS; i++) {
