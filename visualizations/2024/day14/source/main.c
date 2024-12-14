@@ -27,8 +27,31 @@
 #define GRID_LINES_ROWS 35
 #define GRID_LINES_COLS 69
 
-#define WINDOW_ROW_OFFSET 28
-#define WINDOW_COL_OFFSET 0
+//#define window_row_offset 28
+//#define window_col_offset 0
+
+#define DELAY_MS 50
+
+void wait_delay(){
+    // Tick variables, based on:
+    //   https://github.com/switchbrew/switch-examples/tree/master/graphics/opengl/es2gears/source/main.c
+    double t;
+    static u64 origTicks = UINT64_MAX;
+
+    while (1) {
+        if (origTicks == UINT64_MAX)
+           origTicks = armGetSystemTick();
+        u64 ticksElapsed = armGetSystemTick() - origTicks;
+        //t = (ticksElapsed * 625 / 12) / 1000000000.0; // t in seconds?
+        t = (ticksElapsed * 625 / 12) / 1000000.0; // t in milliseconds?
+
+        if (t > DELAY_MS) {
+            origTicks = UINT64_MAX;
+            break;
+        }
+    }
+
+}
 
 // Print borders
 void print_borders(){
@@ -98,6 +121,10 @@ int main(int argc, char* argv[])
     int i;
     int n_x, n_y;
     int row, col;
+    // Default window offsets are to immediately show the tree
+    int window_row_offset = 28;
+    int window_col_offset = 0;
+    int add_delay = 0;
 
     //int final_pos[500][2];
 
@@ -141,24 +168,71 @@ int main(int argc, char* argv[])
         consoleClear();
 
         // Read the sticks' position
+        if (add_delay) wait_delay();
         HidAnalogStickState analog_stick_l = padGetStickPos(&pad, 0);
         HidAnalogStickState analog_stick_r = padGetStickPos(&pad, 1);
 
         // Print the sticks' position
-        printf("\x1b[4;1H%04d; %04d         %04d; %04d", analog_stick_l.x, analog_stick_l.y, analog_stick_r.x, analog_stick_r.y);
+        //printf("\x1b[4;1H%04d; %04d         %04d; %04d", analog_stick_l.x, analog_stick_l.y, analog_stick_r.x, analog_stick_r.y);
+
+        // Stick positions are 0 at neutral, maxes out at +/-32k
+        // Off-center positions seem to start at ~4k, so use threshold of 6k
+        add_delay = 0;
+        if (analog_stick_r.x > 6000) {
+            if (curr_num < num){
+                curr_num += 1;
+                add_delay = 1;
+            }
+        }
+        else if (analog_stick_r.x < -6000) {
+            if (curr_num > (num - VISUALIZATION_LENGTH)){
+                curr_num -= 1;
+                add_delay = 1;
+            }
+        }
+
+        if (analog_stick_l.x > 6000) {
+            if (window_col_offset < (MAX_COL-GRID_LINES_COLS+1)){
+                window_col_offset += 1;
+                add_delay = 1;
+            }
+        }
+        else if (analog_stick_l.x < -6000) {
+            if (window_col_offset > 0){
+                window_col_offset -= 1;
+                add_delay = 1;
+            }
+        }
+
+        if (analog_stick_l.y < -6000) {
+            if (window_row_offset < (MAX_ROW-GRID_LINES_ROWS+1)){
+                window_row_offset += 1;
+                add_delay = 1;
+            }
+        }
+        else if (analog_stick_l.y > 6000) {
+            if (window_row_offset > 0){
+                window_row_offset -= 1;
+                add_delay = 1;
+            }
+        }
+
 
         // Rewrite lines after clearing the whole screen
         printf("\x1b[1;1H Advent of Code 2024 Day 14: Restroom Redoubt");
 
         printf("\x1b[2;1H Seconds: %d of %d", curr_num, num);
         printf("\x1b[3;1H");
+        // Set color to blue
+        printf(CONSOLE_ESC(%1$d;1m), 34);
         for (i = 0; i < (curr_num - (num - VISUALIZATION_LENGTH)); i++){
             printf("|");
         }
         for (i = curr_num; i < num; i++){
             printf(".");
         }
-
+        // Set color to white
+        printf(CONSOLE_ESC(%1$d;1m), 37);
 
         // Draw empty grid
         for (row = 0; row < GRID_LINES_ROWS; row++){
@@ -169,21 +243,33 @@ int main(int argc, char* argv[])
         }
 
         // Compute positions and draw robot if in grid window
+        // Set color to green
+        printf(CONSOLE_ESC(%1$d;1m), 32);
         for (i = 0; i < 500; i++){
             n_x = (robots[i][0] + curr_num*robots[i][2]) % (MAX_COL+1);
             n_y = (robots[i][1] + curr_num*robots[i][3]) % (MAX_ROW+1);
 
+            // Modulo can be negative, so offset it to its equivalent positive coordinates
+            if (n_x < 0) n_x = n_x + (MAX_COL+1);
+            if (n_y < 0) n_y = n_y + (MAX_ROW+1);
+
             //final_pos[i][0] = n_x;
             //final_pos[i][1] = n_y;
 
-            if ((n_x > WINDOW_COL_OFFSET) && (n_x < (WINDOW_COL_OFFSET + GRID_LINES_COLS)) &&
-                (n_y > WINDOW_ROW_OFFSET) && (n_y < (WINDOW_ROW_OFFSET + GRID_LINES_ROWS))) {
-                    printf("\x1b[%d;%dH#", n_y-WINDOW_ROW_OFFSET+INIT_ROW_GRID_LINES, n_x-WINDOW_COL_OFFSET+INIT_COL_GRID_LINES);
+            if ((n_x > window_col_offset) && (n_x < (window_col_offset + GRID_LINES_COLS)) &&
+                (n_y > window_row_offset) && (n_y < (window_row_offset + GRID_LINES_ROWS))) {
+                    printf("\x1b[%d;%dH#", n_y-window_row_offset+INIT_ROW_GRID_LINES, n_x-window_col_offset+INIT_COL_GRID_LINES);
             }
         }
+        // Set color to white
+        printf(CONSOLE_ESC(%1$d;1m), 37);
 
         // Print borders
+        // Set color to yellow
+        printf(CONSOLE_ESC(%1$d;1m), 33);
         print_borders();
+        // Set color to white
+        printf(CONSOLE_ESC(%1$d;1m), 37);
         
         // Update the console, sending a new frame to the display
         consoleUpdate(NULL);
