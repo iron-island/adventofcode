@@ -1,0 +1,30 @@
+Day 17 part 1: 864 too high
+Day 17 part 2: 1032 too low
+
+Day 20 part 2:
+rx <= kl
+kl <= !(mk & fp & xt & zc)
+mk <= !ll <= (qd & pd & mr & mx & fh & zh & vl & sq & tx)
+fp <= !rc <= (cg & dd & fl & nf & ld & dh & vj & nz & fb)
+xt <= !gv <= (gz & qh & gx & vk & lb & lq & gk & ps & mz)
+zc <= !qf <= (rd & cl & sg & jt & ts & xr & mg & tc)
+
+sq <= pd
+dh <= nz
+gx <= lb
+sg <= ts
+
+Day 25 part 1:
+Cut wires ('pzl', 'hfx') and ('bvb', 'cmg')
+    Already cut component pzl: {'lsr', 'rsh', 'nvd'}
+    Already cut component cmg: {'rzs', 'qnr', 'lhk', 'nvd'}
+    Looking at potential component nvd: {'qnr', 'cmg', 'lhk', 'jqt', 'pzl'}
+    Looking at potential component jqt: {'rhn', 'ntq', 'xhk', 'nvd'}
+    Already cut component bvb: {'hfx', 'ntq', 'xhk', 'rhn'}
+    Already cut component hfx: {'ntq', 'xhk', 'bvb', 'rhn'}
+
+2 components have the least unique connections (after cutting)
+3rd component is connected to the partners of the 2 components
+
+Day 24 part 2:
+Times w/ hailstone collisions: [9, 86, 223]
