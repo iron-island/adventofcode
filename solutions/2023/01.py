@@ -1,5 +1,5 @@
 inputfile = "input1.txt"
-#inputfile = "example1.txt"
+#inputfile = "example01.txt"
 
 total = 0
 total_part2 = 0

@@ -1,5 +1,5 @@
 input_file = "input3.txt"
-example_file = "example3.txt"
+example_file = "example03.txt"
 
 part1_example = 0
 part2_example = 0

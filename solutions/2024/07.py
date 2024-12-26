@@ -1,7 +1,7 @@
 import numpy as np
 
 input_file = "input7.txt"
-example_file = "example7.txt"
+example_file = "example07.txt"
 
 part1_example = 0
 part2_example = 0

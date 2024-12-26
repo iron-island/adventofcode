@@ -1,13 +1,13 @@
 input_file = "input1.txt"
-example_file = "example1.txt"
-example2_file = "example1_2.txt"
-example3_file = "example1_3.txt"
-example4_file = "example1_4.txt"
-example5_file = "example1_5.txt"
-example6_file = "example1_6.txt"
-example7_file = "example1_7.txt"
-example8_file = "example1_8.txt"
-example9_file = "example1_9.txt"
+example_file = "example01.txt"
+example2_file = "example01_2.txt"
+example3_file = "example01_3.txt"
+example4_file = "example01_4.txt"
+example5_file = "example01_5.txt"
+example6_file = "example01_6.txt"
+example7_file = "example01_7.txt"
+example8_file = "example01_8.txt"
+example9_file = "example01_9.txt"
 
 part1_example = 0
 part1_example2 = 0

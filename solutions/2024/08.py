@@ -1,5 +1,5 @@
 input_file = "input8.txt"
-example_file = "example8.txt"
+example_file = "example08.txt"
 #example_file = "example8_2.txt"
 #example_file = "example8_3.txt"
 

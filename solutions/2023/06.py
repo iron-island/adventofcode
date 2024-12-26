@@ -1,6 +1,6 @@
 import re
 input_file = "input6.txt"
-example_file = "example6.txt"
+example_file = "example06.txt"
 
 part1_example = 0
 part2_example = 0

@@ -1,16 +1,16 @@
 from functools import cache
 
 input_file = "input9.txt"
-example_file = "example9.txt"
-example2_file = "example9_2.txt"
-example3_file = "example9_3.txt"
-example4_file = "example9_4.txt"
-example5_file = "example9_5.txt"
-example6_file = "example9_6.txt"
-example7_file = "example9_7.txt"
-example8_file = "example9_8.txt"
-example9_file = "example9_9.txt"
-example10_file = "example9_10.txt"
+example_file = "example09.txt"
+example2_file = "example09_2.txt"
+example3_file = "example09_3.txt"
+example4_file = "example09_4.txt"
+example5_file = "example09_5.txt"
+example6_file = "example09_6.txt"
+example7_file = "example09_7.txt"
+example8_file = "example09_8.txt"
+example9_file = "example09_9.txt"
+example10_file = "example09_10.txt"
 
 part1_example = 0
 part1_example2 = 0

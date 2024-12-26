@@ -1,7 +1,7 @@
 import re
 input_file = "input9.txt"
-example_file = "example9.txt"
-#example_file = "example9_2.txt"
+example_file = "example09.txt"
+#example_file = "example09_2.txt"
 
 part1_example = 0
 part2_example = 0

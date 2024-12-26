@@ -1,8 +1,8 @@
 import re
 input_file   = "input8.txt"
-example_file = "example8_2.txt"
-example_file = "example8.txt"
-example_file = "example8_3.txt"
+example_file = "example08_2.txt"
+example_file = "example08.txt"
+example_file = "example08_3.txt"
 
 part1_example = 0
 part2_example = 0

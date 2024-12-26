@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 input_file = "input4.txt"
-example_file = "example4.txt"
+example_file = "example04.txt"
 
 part1_example = 0
 part2_example = 0

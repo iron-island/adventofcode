@@ -2,7 +2,7 @@ import math
 import re
 
 input_file = "input5.txt"
-example_file = "example5.txt"
+example_file = "example05.txt"
 
 part1_example = 0
 part2_example = 0

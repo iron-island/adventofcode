@@ -1,6 +1,6 @@
 input_file = "input2.txt"
-example_file = "example2.txt"
-example2_file = "example2_2.txt"
+example_file = "example02.txt"
+example2_file = "example02_2.txt"
 
 part1_example = 0
 part2_example = 0

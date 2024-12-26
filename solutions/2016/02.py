@@ -4,9 +4,9 @@ from collections import deque
 from functools import cache
 
 input_file = "input2.txt"
-example_file = "example2.txt"
-example2_file = "example2.txt"
-example3_file = "example2.txt"
+example_file = "example02.txt"
+example2_file = "example02.txt"
+example3_file = "example02.txt"
 
 part1_example = 0
 part1_example2 = 0
