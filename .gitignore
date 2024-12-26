@@ -1,6 +1,6 @@
 input*.txt
 *.log
-log
+log*
 LOG*
 SCRATCH.*
 scratch*.*
