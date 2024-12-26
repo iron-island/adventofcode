@@ -4,7 +4,7 @@ from collections import deque
 from functools import cache
 import math
 
-input_file = "input21.txt"
+input_file = "../../inputs/2024/input21.txt"
 example_file = "example21.txt"
 example2_file = "example21_2.txt"
 example3_file = "example21_3.txt"

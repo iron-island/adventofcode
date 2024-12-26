@@ -1,6 +1,6 @@
 import string
 
-input_file = "input5.txt"
+input_file = "../../inputs/2018/input05.txt"
 example_file = "example05.txt"
 
 part1_example = 0

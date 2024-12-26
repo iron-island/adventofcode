@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-input_file = "input22.txt"
+input_file = "../../inputs/2023/input22.txt"
 example_file = "example22.txt"
 
 part1_example = 0

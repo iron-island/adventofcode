@@ -4,7 +4,7 @@ from copy import deepcopy
 
 sys.setrecursionlimit(50000)
 
-input_file = "input23.txt"
+input_file = "../../inputs/2023/input23.txt"
 example_file = "example23.txt"
 
 part1_example = 0

@@ -5,7 +5,7 @@ import math
 # a = np.vstack((a, [...]))
 # (a==b).all()
 
-input_file = "input13.txt"
+input_file = "../../inputs/2023/input13.txt"
 example_file = "example13.txt"
 
 part1_example = 0

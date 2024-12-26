@@ -1,4 +1,4 @@
-inputfile = "input1.txt"
+inputfile = "../../inputs/2023/input01.txt"
 #inputfile = "example01.txt"
 
 total = 0

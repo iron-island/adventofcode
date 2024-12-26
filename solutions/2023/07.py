@@ -219,7 +219,7 @@ part1_example = 0
 part1 = 0
 
 part1_example = process_inputs('example07.txt')
-part1 = process_inputs('input7.txt')
+part1 = process_inputs('../../inputs/2023/input07.txt')
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
@@ -228,7 +228,7 @@ part2_example = 0
 part2 = 0
 
 part2_example = process_inputs2('example07.txt')
-part2 = process_inputs2('input7.txt')
+part2 = process_inputs2('../../inputs/2023/input07.txt')
 
 print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')

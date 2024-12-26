@@ -1,6 +1,6 @@
 import math
 
-input_file = "input21.txt"
+input_file = "../../inputs/2023/input21.txt"
 example_file = "example21.txt"
 
 part1_example = 0

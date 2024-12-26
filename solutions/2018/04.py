@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-input_file = "input4.txt"
+input_file = "../../inputs/2018/input04.txt"
 example_file = "example04.txt"
 
 part1_example = 0

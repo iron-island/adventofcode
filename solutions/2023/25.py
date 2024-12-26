@@ -1,7 +1,7 @@
 from copy import deepcopy
 import graphviz
 
-input_file = "input25.txt"
+input_file = "../../inputs/2023/input25.txt"
 example_file = "example25.txt"
 
 part1_example = 0

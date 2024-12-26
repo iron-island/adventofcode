@@ -20,7 +20,7 @@ import copy
 #        return func(*args, **kwargs)
 #    return wrapped
 
-input_file = "input24.txt"
+input_file = "../../inputs/2024/input24.txt"
 example_file = "example24.txt"
 example2_file = "example24_2.txt"
 example3_file = "example24_3.txt"

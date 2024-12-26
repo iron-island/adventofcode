@@ -2,7 +2,7 @@ from collections import defaultdict
 from collections import deque
 import math
 
-input_file = "input6.txt"
+input_file = "../../inputs/2018/input06.txt"
 example_file = "example06.txt"
 
 part1_example = 0

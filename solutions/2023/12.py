@@ -1,7 +1,7 @@
 import functools
 import itertools
 
-input_file = "input12.txt"
+input_file = "../../inputs/2023/input12.txt"
 example_file = "example12.txt"
 
 part1_example = 0

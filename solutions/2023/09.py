@@ -1,5 +1,5 @@
 import re
-input_file = "input9.txt"
+input_file = "../../inputs/2023/input09.txt"
 example_file = "example09.txt"
 #example_file = "example09_2.txt"
 

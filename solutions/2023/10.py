@@ -1,7 +1,7 @@
 import re
-input_file = "input10.txt"
-#input_file = "input10_modified.txt"
-#input_file = "input10_padded.txt"
+input_file = "../../inputs/2023/input10.txt"
+#input_file = "../../inputs/2023/input10_modified.txt"
+#input_file = "../../inputs/2023/input10_padded.txt"
 example_file = "example10.txt"
 example_file = "example10_3.txt" # 4 inside
 example_file = "example10_4.txt" # 8 inside

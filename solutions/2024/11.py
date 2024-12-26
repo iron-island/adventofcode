@@ -1,6 +1,6 @@
 import copy
 
-input_file = "input11.txt"
+input_file = "../../inputs/2024/input11.txt"
 example_file = "example11.txt"
 example_file = "example11_2.txt"
 

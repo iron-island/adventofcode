@@ -1,6 +1,6 @@
 import re
 #import numpy as np
-input_file = "input16.txt"
+input_file = "../../inputs/2023/input16.txt"
 example_file = "example16.txt"
 
 part1_example = 0

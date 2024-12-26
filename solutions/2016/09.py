@@ -1,6 +1,6 @@
 from functools import cache
 
-input_file = "input9.txt"
+input_file = "../../inputs/2016/input09.txt"
 example_file = "example09.txt"
 example2_file = "example09_2.txt"
 example3_file = "example09_3.txt"

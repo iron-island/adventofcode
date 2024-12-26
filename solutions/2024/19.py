@@ -3,7 +3,7 @@ from collections import defaultdict
 from collections import deque
 from functools import cache
 
-input_file = "input19.txt"
+input_file = "../../inputs/2024/input19.txt"
 example_file = "example19.txt"
 example2_file = "example19_2.txt"
 example3_file = "example19_3.txt"

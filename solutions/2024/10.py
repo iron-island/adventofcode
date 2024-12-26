@@ -1,4 +1,4 @@
-input_file = "input10.txt"
+input_file = "../../inputs/2024/input10.txt"
 example_file = "example10.txt"
 
 part1_example = 0

@@ -4,7 +4,7 @@ import math
 from sympy import solve
 from sympy.abc import x, y, z, u, v, w, a, b, c
 
-input_file = "input24.txt"
+input_file = "../../inputs/2023/input24.txt"
 example_file = "example24.txt"
 
 part1_example = 0
