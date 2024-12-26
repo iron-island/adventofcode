@@ -1,0 +1,3 @@
+[submodule "inputs"]
+	path = inputs
+	url = git@github.com:iron-island/adventofcode_inputs_submodule
