@@ -181,7 +181,17 @@ def get_dist(coord1, coord2):
 
     return diff_x, diff_y, diff_z
 
-def process_inputs(in_file):
+def get_abs_dist(coord1, coord2):
+    x1, y1, z1 = coord1
+    x2, y2, z2 = coord2
+
+    diff_x = abs(x1 - x2)
+    diff_y = abs(y1 - y2)
+    diff_z = abs(z1 - z2)
+
+    return diff_x + diff_y + diff_z
+
+def process_inputs(in_file, part2=False):
     output = 0
 
     scanner_dict = defaultdict(list)
@@ -361,9 +371,13 @@ def process_inputs(in_file):
     print(f'Initial number of beacons: {init_beacons}')
     scanners_list = list(scanner_dict.keys())
     offset_dict = defaultdict(list)
-    for idx1, scanner1 in enumerate(scanners_list[:-1]):
+    #for idx1, scanner1 in enumerate(scanners_list[:-1]):
+    for idx1, scanner1 in enumerate(scanners_list):
         beacon1_list = scanner_dict[scanner1]
-        for scanner2 in scanners_list[idx1+1:]:
+        #for scanner2 in scanners_list[idx1+1:]:
+        for idx2, scanner2 in enumerate(scanners_list):
+            if (idx1 == idx2):
+                continue
 
             beacon2_list = scanner_dict[scanner2]
 
@@ -439,22 +453,42 @@ def process_inputs(in_file):
                         abs_offset_dict[scanner2] = (vec_tuple, rot_mat)
 
                     changed = True
-                elif (scanner2 in abs_offset_dict) and (scanner1 not in abs_offset_dict):
-                    prev_dist, prev_rot_mat = abs_offset_dict[scanner2]
-                    x1, y1, z1 = prev_dist
-                    x2, y2, z2 = dist
+                #elif (scanner2 in abs_offset_dict) and (scanner1 not in abs_offset_dict):
+                #    prev_dist, prev_rot_mat = abs_offset_dict[scanner2]
+                #    x1, y1, z1 = prev_dist
+                #    x2, y2, z2 = dist
 
-                    # TEST
-                    tot_rot_mat = np.matmul(rot_mat, prev_rot_mat)
-                    tot_rot_mat = np.matmul(prev_rot_mat, rot_mat) # WORKS1
-                    #tot_rot_mat = prev_rot_mat
-                    #tot_rot_mat = rot_mat
+                #    # TEST
+                #    inv_rot_mat = np.linalg.inv(rot_mat)
+                #    inv_prev_rot_mat = np.linalg.inv(prev_rot_mat)
+                #    tot_rot_mat = np.matmul(rot_mat, prev_rot_mat)
+                #    tot_rot_mat = np.matmul(prev_rot_mat, rot_mat) # WORKS1
+                #    #tot_rot_mat = prev_rot_mat
+                #    #tot_rot_mat = rot_mat
+                #    #tot_rot_mat = inv_prev_rot_mat
+                #    #tot_rot_mat = inv_rot_mat
+                #    #tot_rot_mat = np.matmul(inv_rot_mat, prev_rot_mat)
+                #    #tot_rot_mat = np.matmul(prev_rot_mat, inv_rot_mat)
+                #    #tot_rot_mat = np.matmul(inv_prev_rot_mat, inv_rot_mat)
+                #    #tot_rot_mat = np.matmul(inv_rot_mat, inv_prev_rot_mat)
+                #    #tot_rot_mat = np.matmul(inv_prev_rot_mat, rot_mat)
+                #    #tot_rot_mat = np.matmul(rot_mat, inv_prev_rot_mat)
 
-                    x2, y2, z2 = rotate(tot_rot_mat, dist)
-                    vec_tuple = (x1-x2, y1-y2, z1-z2)
-                    abs_offset_dict[scanner1] = (vec_tuple, tot_rot_mat)
+                #    #x2, y2, z2 = rotate(tot_rot_mat, dist)
+                #    #vec_tuple = (x1-x2, y1-y2, z1-z2)
 
-                    changed = True
+                #    x2, y2, z2 = rotate(tot_rot_mat, dist)
+                #    vec_tuple = (x1-x2, y1-y2, z1-z2)
+                #    #vec_tuple = (x1+x2, y1+y2, z1+z2)
+                #    #vec_tuple = (x2-x1, y2-y1, z2-z1)
+                #    #x1, y1, z1 = rotate(tot_rot_mat, prev_dist)
+                #    #vec_tuple = (x1-x2, y1-y2, z1-z2)
+                #    #vec_tuple = (x1+x2, y1+y2, z1+z2)
+                #    #vec_tuple = (x2-x1, y2-y1, z2-z1)
+
+                #    abs_offset_dict[scanner1] = (vec_tuple, tot_rot_mat)
+
+                #    changed = True
         if not (changed):
             break
 
@@ -470,6 +504,19 @@ def process_inputs(in_file):
     scanner_list1 = list(scanner_dict.keys())
     scanner_list2 = list(abs_offset_dict.keys())
     assert(set(scanner_list1) == set(scanner_list2))
+
+    MAX_DIST = 0
+    if (part2):
+        for idx1, scanner1 in enumerate(scanners_list):
+            for idx2, scanner2 in enumerate(scanners_list):
+                coords1, _ = abs_offset_dict[scanner1]
+                coords2, _ = abs_offset_dict[scanner2]
+
+                MAX_DIST = max(MAX_DIST, get_abs_dist(coords1, coords2))
+
+        output = MAX_DIST
+
+        return output
 
     # Check all beacons wrt scanner 0
     beacon_set = set()
@@ -497,13 +544,13 @@ def process_inputs(in_file):
     return output
 
 part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
+part1 = process_inputs(input_file) # 442 correct answer
 # 565 too high
 # 564 incorrect
 # 412 too low
 
-#part2_example = process_inputs2(example_file)
-#part2 = process_inputs2(input_file)
+part2_example = process_inputs(example_file, True)
+part2 = process_inputs(input_file, True)
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
