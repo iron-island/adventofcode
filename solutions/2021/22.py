@@ -1,3 +1,4 @@
+import math
 from collections import defaultdict
 
 input_file = "../../inputs/2021/input22.txt"
@@ -13,23 +14,37 @@ part2_example3 = 0
 part1 = 0
 part2 = 0
 
+def get_regions(min_n, max_n, num_regions):
+    diff_n = int(((max_n - min_n) + 1)/num_regions) + 1
+
+    n_regions_list = []
+    lower = min_n
+    for i in range(0, num_regions):
+        upper = lower + diff_n
+        if (upper > max_n):
+            upper = max_n
+        n_regions_list.append((lower, upper))
+        lower = upper + 1
+
+    return n_regions_list
+
 def get_bounds(axis):
     axis_min, axis_max = axis.split("=")[1].split("..")
     return (int(axis_min), int(axis_max))
 
-def limit_bounds(n_tuple):
+def limit_bounds(n_tuple, lower, upper):
     n_min, n_max = n_tuple
 
-    if (n_min < -50):
-        n_min = -50
-    if (n_max > 50):
-        n_max = 50
+    if (n_min < lower):
+        n_min = lower
+    if (n_max > upper):
+        n_max = upper
 
     return (n_min, n_max)
 
 def is_inside_bounds(n_tuple, n1, n2):
     n_min, n_max = n_tuple
-    if ((n1 <= n_min <= n2) or (n1 <= n_man <= n2)):
+    if ((n1 <= n_min <= n2) or (n1 <= n_max <= n2)):
         return True
     else:
         return False
@@ -96,9 +111,9 @@ def expand_bounds(bounds_list, n_tuple):
             if (next_subbound - subbound) > 1:
                 subbounds_set.add((subbound+1, next_subbound-1))
 
-    if (len(subbounds_set) == 0):
-        print(n_min, n_max)
-        print(idx_min, idx_max)
+    #if (len(subbounds_set) == 0):
+    #    print(n_min, n_max)
+    #    print(idx_min, idx_max)
 
     return subbounds_set
 
@@ -127,9 +142,9 @@ def process_inputs(in_file):
     for step in reboot_list:
         state, x_tuple, y_tuple, z_tuple = step
 
-        x_min, x_max = limit_bounds(x_tuple)
-        y_min, y_max = limit_bounds(y_tuple)
-        z_min, z_max = limit_bounds(z_tuple)
+        x_min, x_max = limit_bounds(x_tuple, -50, 50)
+        y_min, y_max = limit_bounds(y_tuple, -50, 50)
+        z_min, z_max = limit_bounds(z_tuple, -50, 50)
 
         for x in range(x_min, x_max+1):
             for y in range(y_min, y_max+1):
@@ -167,142 +182,188 @@ def process_inputs2(in_file):
             line = file.readline()
 
     # Check pairs of steps and see if there are steps that have no overlap with any other step
-    independent_steps_list = []
-    for idx1, step in enumerate(reboot_list):
-        independent = True
-        for idx2, step in enumerate(reboot_list[(idx1+1):]):
-            state1, x1, y1, z1 = reboot_list[idx1]
-            state2, x2, y2, z2 = reboot_list[idx2]
+    #independent_steps_list = []
+    #for idx1, step in enumerate(reboot_list):
+    #    overlaps = 0
+    #    for idx2, step in enumerate(reboot_list):
+    #        state1, x1, y1, z1 = reboot_list[idx1]
+    #        state2, x2, y2, z2 = reboot_list[idx2]
 
-            x1_min, x1_max = x1
-            x2_min, x2_max = x2
-            y1_min, y1_max = y1
-            y2_min, y2_max = y2
-            z1_min, z1_max = z1
-            z2_min, z2_max = z2
+    #        x1_min, x1_max = x1
+    #        x2_min, x2_max = x2
+    #        y1_min, y1_max = y1
+    #        y2_min, y2_max = y2
+    #        z1_min, z1_max = z1
+    #        z2_min, z2_max = z2
 
-            if ((x1_min > x2_max) or (x2_min > x1_max) or \
-                (y1_min > y2_max) or (y2_min > y1_max) or \
-                (z1_min > z2_max) or (z2_min > z1_max)):
-                continue
-            else:
-                independent = False
-                break
+    #        if (is_inside_bounds(x1, x2_min, x2_max)) and \
+    #           (is_inside_bounds(y1, y2_min, y2_max)) and \
+    #           (is_inside_bounds(z1, z2_min, z2_max)):
+    #            overlaps += 1
 
-        if (independent):
-            independent_steps_list.append(idx1)
+    #    if (overlaps < 10):
+    #        independent_steps_list.append(idx1)
 
-    print(len(independent_steps_list))
-    print(independent_steps_list)
+    #print(len(independent_steps_list))
+    #print(independent_steps_list)
     #return 0
-    independent_steps_list = []
+    #independent_steps_list = []
 
     # Precompute independent steps
-    output = 0
-    for idx in independent_steps_list:
-        state, x, y, z = reboot_list[idx]
+    #output = 0
+    #for idx in independent_steps_list:
+    #    state, x, y, z = reboot_list[idx]
 
-        if (state == "off"):
-            continue
+    #    if (state == "off"):
+    #        continue
+
+    #    x_min, x_max = x
+    #    y_min, y_max = y
+    #    z_min, z_max = z
+
+    #    x_side = (x_max - x_min) + 1
+    #    y_side = (y_max - y_min) + 1
+    #    z_side = (z_max - z_min) + 1
+
+    #    output += x_side*y_side*z_side
+    #return output
+
+    # Find minimum and maximum boundaries
+    MIN_X = math.inf
+    MIN_Y = math.inf
+    MIN_Z = math.inf
+    MAX_X = -math.inf
+    MAX_Y = -math.inf
+    MAX_Z = -math.inf
+    for idx, step in enumerate(reboot_list):
+        state, x, y, z = step
 
         x_min, x_max = x
         y_min, y_max = y
         z_min, z_max = z
 
-        x_side = (x_max - x_min) + 1
-        y_side = (y_max - y_min) + 1
-        z_side = (z_max - z_min) + 1
+        MIN_X = min(MIN_X, x_min)
+        MIN_Y = min(MIN_Y, y_min)
+        MIN_Z = min(MIN_Z, z_min)
 
-        output += x_side*y_side*z_side
-    #return output
+        MAX_X = max(MAX_X, x_max)
+        MAX_Y = max(MAX_Y, y_max)
+        MAX_Z = max(MAX_Z, z_max)
 
-    # Find all possible bounds
-    x_bounds_list = []
-    y_bounds_list = []
-    z_bounds_list = []
-    for idx, step in enumerate(reboot_list):
-        if (idx in independent_steps_list):
-            continue
+    print(MIN_X, MAX_X)
+    print(MIN_Y, MAX_Y)
+    print(MIN_Z, MAX_Z)
 
-        state, x_tuple, y_tuple, z_tuple = step
+    # Divide the space into regions so we compute smaller regions first
+    x_regions_list = []
+    y_regions_list = []
+    z_regions_list = []
+    #x_regions_list.append((MIN_X, MAX_X))
+    #y_regions_list.append((MIN_Y, MAX_Y))
+    #z_regions_list.append((MIN_Z, MAX_Z))
+    NUM_REGIONS = 10
+    x_regions_list = get_regions(MIN_X, MAX_X, NUM_REGIONS)
+    y_regions_list = get_regions(MIN_Y, MAX_Y, NUM_REGIONS)
+    z_regions_list = get_regions(MIN_Z, MAX_Z, NUM_REGIONS)
 
-        x_min, x_max = x_tuple
-        y_min, y_max = y_tuple
-        z_min, z_max = z_tuple
+    regions_list = []
+    for x_lim in x_regions_list:
+        for y_lim in y_regions_list:
+            for z_lim in z_regions_list:
+                regions_list.append((x_lim, y_lim, z_lim))
 
-        #x_bounds_list = update_bounds(x_bounds_list, x_min-1)
-        x_bounds_list = update_bounds(x_bounds_list, x_min)
-        x_bounds_list = update_bounds(x_bounds_list, x_max)
-        #x_bounds_list = update_bounds(x_bounds_list, x_max+1)
-        #y_bounds_list = update_bounds(y_bounds_list, y_min-1)
-        y_bounds_list = update_bounds(y_bounds_list, y_min)
-        y_bounds_list = update_bounds(y_bounds_list, y_max)
-        #y_bounds_list = update_bounds(y_bounds_list, y_max+1)
-        #z_bounds_list = update_bounds(z_bounds_list, z_min-1)
-        z_bounds_list = update_bounds(z_bounds_list, z_min)
-        z_bounds_list = update_bounds(z_bounds_list, z_max)
-        #z_bounds_list = update_bounds(z_bounds_list, z_max+1)
+    for idx_region, region in enumerate(regions_list):
+        x_lim, y_lim, z_lim = region
+        lower_x, upper_x = x_lim
+        lower_y, upper_y = y_lim
+        lower_z, upper_z = z_lim
 
-    print(len(x_bounds_list))
-    print(len(y_bounds_list))
-    print(len(z_bounds_list))
+        # Find all possible bounds
+        x_bounds_list = []
+        y_bounds_list = []
+        z_bounds_list = []
+        for idx, step in enumerate(reboot_list):
+            state, x_tuple, y_tuple, z_tuple = step
 
-    # Reboot
-    cubes_set = set()
-    for idx, step in enumerate(reboot_list):
-        if (idx in independent_steps_list):
-            continue
+            x_min, x_max = limit_bounds(x_tuple, lower_x, upper_x)
+            y_min, y_max = limit_bounds(y_tuple, lower_y, upper_y)
+            z_min, z_max = limit_bounds(z_tuple, lower_z, upper_z)
 
-        print(f'Trying step {idx+1} of {len(reboot_list)}')
-        #print(len(cubes_dict))
-        print(len(cubes_set))
+            #x_bounds_list = update_bounds(x_bounds_list, x_min-1)
+            x_bounds_list = update_bounds(x_bounds_list, x_min)
+            x_bounds_list = update_bounds(x_bounds_list, x_max)
+            #x_bounds_list = update_bounds(x_bounds_list, x_max+1)
+            #y_bounds_list = update_bounds(y_bounds_list, y_min-1)
+            y_bounds_list = update_bounds(y_bounds_list, y_min)
+            y_bounds_list = update_bounds(y_bounds_list, y_max)
+            #y_bounds_list = update_bounds(y_bounds_list, y_max+1)
+            #z_bounds_list = update_bounds(z_bounds_list, z_min-1)
+            z_bounds_list = update_bounds(z_bounds_list, z_min)
+            z_bounds_list = update_bounds(z_bounds_list, z_max)
+            #z_bounds_list = update_bounds(z_bounds_list, z_max+1)
 
-        state, x_tuple, y_tuple, z_tuple = step
+        #print(len(x_bounds_list))
+        #print(len(y_bounds_list))
+        #print(len(z_bounds_list))
 
-        assert(x_min in x_bounds_list)
-        assert(y_min in y_bounds_list)
-        assert(z_min in z_bounds_list)
-        assert(x_max in x_bounds_list)
-        assert(y_max in y_bounds_list)
-        assert(z_max in z_bounds_list)
+        # Reboot
+        cubes_set = set()
+        if (idx_region % NUM_REGIONS*10) == 0:
+            print(f'Trying region {idx_region+1} of {len(regions_list)}')
+        for idx, step in enumerate(reboot_list):
+            #print(f'Trying region {idx_region+1} of {len(regions_list)}, step {idx+1} of {len(reboot_list)}')
+            #print(len(cubes_set))
 
-        # Expand the boundaries based on *_bounds_list
-        x_subbounds_set = expand_bounds(x_bounds_list, x_tuple)
-        y_subbounds_set = expand_bounds(y_bounds_list, y_tuple)
-        z_subbounds_set = expand_bounds(z_bounds_list, z_tuple)
-        #print(len(x_subbounds_set))
-        #print(len(y_subbounds_set))
-        #print(len(z_subbounds_set))
-        for x in x_subbounds_set:
-            for y in y_subbounds_set:
-                for z in z_subbounds_set:
-                    #if (x, y, z) in cubes_dict:
-                    #    print("Already exists")
+            state, x_tuple, y_tuple, z_tuple = step
 
-                    coords = (x, y, z)
-                    if (state == "on"):
-                        #cubes_dict[(x, y, z)] = state
-                        cubes_set.add(coords)
-                    elif (state == "off") and (coords in cubes_set):
-                        #del cubes_dict[(x, y, z)]
-                        cubes_set.remove(coords)
+            x_tuple = limit_bounds(x_tuple, lower_x, upper_x)
+            y_tuple = limit_bounds(y_tuple, lower_y, upper_y)
+            z_tuple = limit_bounds(z_tuple, lower_z, upper_z)
 
-    # Evaluate
-    for xyz in cubes_set:
-        #state = cubes_dict[xyz]
+            #assert(x_min in x_bounds_list)
+            #assert(y_min in y_bounds_list)
+            #assert(z_min in z_bounds_list)
+            #assert(x_max in x_bounds_list)
+            #assert(y_max in y_bounds_list)
+            #assert(z_max in z_bounds_list)
 
-        #if (state == "on"):
-        if (True):
-            x, y, z = xyz
-            x_min, x_max = x
-            y_min, y_max = y
-            z_min, z_max = z
+            # Expand the boundaries based on *_bounds_list
+            x_subbounds_set = expand_bounds(x_bounds_list, x_tuple)
+            y_subbounds_set = expand_bounds(y_bounds_list, y_tuple)
+            z_subbounds_set = expand_bounds(z_bounds_list, z_tuple)
+            #print(len(x_subbounds_set))
+            #print(len(y_subbounds_set))
+            #print(len(z_subbounds_set))
+            for x in x_subbounds_set:
+                for y in y_subbounds_set:
+                    for z in z_subbounds_set:
+                        #if (x, y, z) in cubes_dict:
+                        #    print("Already exists")
 
-            x_side = (x_max - x_min) + 1
-            y_side = (y_max - y_min) + 1
-            z_side = (z_max - z_min) + 1
+                        coords = (x, y, z)
+                        if (state == "on"):
+                            #cubes_dict[(x, y, z)] = state
+                            cubes_set.add(coords)
+                        elif (state == "off") and (coords in cubes_set):
+                            #del cubes_dict[(x, y, z)]
+                            cubes_set.remove(coords)
 
-            output += x_side*y_side*z_side
+        # Evaluate
+        for xyz in cubes_set:
+            #state = cubes_dict[xyz]
+
+            #if (state == "on"):
+            if (True):
+                x, y, z = xyz
+                x_min, x_max = x
+                y_min, y_max = y
+                z_min, z_max = z
+
+                x_side = (x_max - x_min) + 1
+                y_side = (y_max - y_min) + 1
+                z_side = (z_max - z_min) + 1
+
+                output += x_side*y_side*z_side
 
     return output
 
@@ -311,8 +372,8 @@ def process_inputs2(in_file):
 #part1_example3 = process_inputs(example3_file)
 #part1 = process_inputs(input_file)
 
-part2_example3 = process_inputs2(example3_file)
-#part2 = process_inputs2(input_file)
+#part2_example3 = process_inputs2(example3_file)
+part2 = process_inputs2(input_file)
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1 example2: {part1_example2}')
