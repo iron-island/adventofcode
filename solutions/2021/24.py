@@ -274,6 +274,7 @@ def process_inputs(in_file):
 
     # Backtrack to get required z from previous digits
     prev_z_dict = defaultdict(set)
+    MAX_PREV_Z = -math.inf
     for digit in range(14, 0, -1):
         prev_z_set = set()
         params = params_dict[digit]
@@ -284,17 +285,22 @@ def process_inputs(in_file):
         for w in range(9, 0, -1):
         #for w in range(1, 10):
             #for prev_z in range(-26, 26):
-            for prev_z in range(0, 1000000):
+            #for prev_z in range(0, 1000000):
+            for prev_z in range(0, 400000):
                 z = get_z(prev_z, w, params)
 
                 if (digit < 14):
                     if (z in required_z_set):
                         prev_z_set.add(prev_z)
+                        MAX_PREV_Z = max(MAX_PREV_Z, prev_z)
                 elif (z == 0):
                     prev_z_set.add(prev_z)
+                    MAX_PREV_Z = max(MAX_PREV_Z, prev_z)
 
+        assert(len(prev_z_set))
         prev_z_dict[digit] = prev_z_set
     print(prev_z_dict)
+    print(f'Max prev_z: {MAX_PREV_Z}')
 
     # Compute w digits that satisfies values in prev_z_dict
     # Same DFS function can be used, only early exit condition would change
