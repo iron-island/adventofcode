@@ -1,5 +1,6 @@
 import math
 import copy
+import numpy as np
 from frozendict import frozendict
 from collections import defaultdict
 from functools import cache
@@ -16,6 +17,7 @@ def get_z(prev_z: int, w: int, params: tuple):
     A, B, C = params
 
     x = (prev_z % 26) + B
+    #x = int(np.fmod(prev_z, 26)) + B
 
     if (x != w):
         x = 1
@@ -25,6 +27,33 @@ def get_z(prev_z: int, w: int, params: tuple):
     z = int(prev_z/A)*(25*x + 1) + (w + C)*x
 
     return z
+
+def dfs_w(digit, params_dict, prev_z_dict, prev_z, PART1=False):
+    if (digit < 14):
+        required_z_set = prev_z_dict[digit+1]
+    else:
+        required_z_set = set()
+        required_z_set.add(0)
+
+    params = params_dict[digit]
+    if (PART1):
+        WRANGE = range(9, 0, -1)
+    else:
+        WRANGE = range(1, 10)
+    for w in WRANGE:
+        z = get_z(prev_z, w, params)
+
+        if (z in required_z_set):
+            # Base case
+            if (digit == 14):
+                return str(w), True
+            else:
+                next_w, is_valid = dfs_w(digit+1, params_dict, prev_z_dict, z, PART1)
+
+                if (is_valid):
+                    return str(w)+next_w, True
+
+    return "", False
 
 def alu(instr, var_dict, num):
     if ("inp" in instr):
@@ -165,7 +194,11 @@ def process_inputs(in_file):
             break
         else:
             op, a, b = instr.split(" ")
-            prev_digit_instr_list.append((op, a))
+
+            if (b in var_dict):
+                prev_digit_instr_list.append((op, a, b))
+            else:
+                prev_digit_instr_list.append((op, a))
 
     # Check remaining digits 2 to 14
     digit_instr_list = []
@@ -178,7 +211,10 @@ def process_inputs(in_file):
             # Record last instruction before checking
             if (idx == MAX_IDX):
                 op, a, b = instr.split(" ")
-                digit_instr_list.append((op, a))
+                if (b in var_dict):
+                    digit_instr_list.append((op, a, b))
+                else:
+                    digit_instr_list.append((op, a))
 
             if (prev_digit_instr_list == digit_instr_list):
                 print(f'Digit {digit} instructions same as digit {digit-1}!')
@@ -189,7 +225,10 @@ def process_inputs(in_file):
             digit += 1
         else:
             op, a, b = instr.split(" ")
-            digit_instr_list.append((op, a))
+            if (b in var_dict):
+                digit_instr_list.append((op, a, b))
+            else:
+                digit_instr_list.append((op, a))
 
     # Results show that instructions for all digits have the same structure
     # Record parameters for equation
@@ -198,7 +237,7 @@ def process_inputs(in_file):
     #    B: comes from first "add x <B>" instruction
     #    C: comes from first "add y <C>" instruction directly after first "add y w"
     digit = 0
-    digit_params_dict = defaultdict(tuple)
+    params_dict = defaultdict(tuple)
     for instr in instr_list:
         if ("inp" in instr):
             digit += 1
@@ -228,72 +267,100 @@ def process_inputs(in_file):
                 params_list.append(int(C))
                 get_C = False
 
-                digit_params_dict[digit] = tuple(params_list)
+                params_dict[digit] = tuple(params_list)
         else:
             continue
-    print(digit_params_dict)
+    print(params_dict)
+
+    # Backtrack to get required z from previous digits
+    prev_z_dict = defaultdict(set)
+    for digit in range(14, 0, -1):
+        prev_z_set = set()
+        params = params_dict[digit]
+        A = params[0]
+
+        if (digit < 14):
+            required_z_set = copy.deepcopy(prev_z_dict[digit+1])
+        for w in range(9, 0, -1):
+        #for w in range(1, 10):
+            #for prev_z in range(-26, 26):
+            for prev_z in range(0, 1000000):
+                z = get_z(prev_z, w, params)
+
+                if (digit < 14):
+                    if (z in required_z_set):
+                        prev_z_set.add(prev_z)
+                elif (z == 0):
+                    prev_z_set.add(prev_z)
+
+        prev_z_dict[digit] = prev_z_set
+    print(prev_z_dict)
+
+    # Compute w digits that satisfies values in prev_z_dict
+    # Same DFS function can be used, only early exit condition would change
+    #   since part 1 would start from 9 to 1 while part 2 starts from 1 to 9
+    PART1 = True
+    part1, is_valid = dfs_w(1, params_dict, prev_z_dict, 0, PART1)
+    assert(is_valid == True)
+
+    PART1 = False
+    part2, is_valid = dfs_w(1, params_dict, prev_z_dict, 0, PART1)
+    assert(is_valid == True)
 
     # Digit 14: Get possible z13
-    print("Possible values for w14 and z13:")
-    z13_set = set()
-    for w14 in range(9, 0, -1):
-        for z13 in range(-26, 27):
-            x14 = (z13 % 26) - 11
+    #print("Possible values for w14 and z13:")
+    #z13_set = set()
+    #for w14 in range(9, 0, -1):
+    #    for z13 in range(-26, 27):
+    #        x14 = (z13 % 26) - 11
 
-            if (x14 != w14):
-                x14 = 1
-            else:
-                x14 = 0
+    #        if (x14 != w14):
+    #            x14 = 1
+    #        else:
+    #            x14 = 0
 
-            z14 = int(z13/26)*(25*x14 + 1) + (w14 + 9)*x14
+    #        z14 = int(z13/26)*(25*x14 + 1) + (w14 + 9)*x14
 
-            if (z14 == 0):
-                print(f'w14 = {w14}, z13 = {z13}, x14 = {x14}')
-                z13_set.add(z13)
+    #        if (z14 == 0):
+    #            print(f'w14 = {w14}, z13 = {z13}, x14 = {x14}')
+    #            z13_set.add(z13)
 
-    # Digit 13
-    print("Possible values for w13 and z12:")
-    z12_set = set()
-    for w13 in range(9, 0, -1):
-        for z12 in range(-26, 27):
-            x13 = (z12 % 26) + 13
+    ## Digit 13
+    #print("Possible values for w13 and z12:")
+    #z12_set = set()
+    #for w13 in range(9, 0, -1):
+    #    for z12 in range(-26, 27):
+    #        x13 = (z12 % 26) + 13
 
-            if (x13 != w13):
-                x13 = 1
-            else:
-                x13 = 0
+    #        if (x13 != w13):
+    #            x13 = 1
+    #        else:
+    #            x13 = 0
 
-            z13 = int(z12)*(25*x13 + 1) + (w13 + 10)*x13
-            if (z13 in z13_set):
-                print(f'w13 = {w13}, z12 = {z12}, z13 = {z13}')
-                z12_set.add(z12)
+    #        z13 = int(z12)*(25*x13 + 1) + (w13 + 10)*x13
+    #        if (z13 in z13_set):
+    #            print(f'w13 = {w13}, z12 = {z12}, z13 = {z13}')
+    #            z12_set.add(z12)
 
-    # Digit 12
-    print("Possible values for w12 and z11:")
-    z11_set = set()
-    for w12 in range(9, 0, -1):
-        for z11 in range(-26, 27):
-            x12 = (z11 % 26) - 8
+    ## Digit 12
+    #print("Possible values for w12 and z11:")
+    #z11_set = set()
+    #for w12 in range(9, 0, -1):
+    #    for z11 in range(-26, 27):
+    #        x12 = (z11 % 26) - 8
 
-            if (x12 != w12):
-                x12 = 1
-            else:
-                x12 = 0
+    #        if (x12 != w12):
+    #            x12 = 1
+    #        else:
+    #            x12 = 0
 
-            z12 = int(z11/26)*(25*x12 + 1) + (w12 + 4)*x12
-            if (z12 in z12_set):
-                print(f'w12 = {w12}, z11 = {z11}, z12 = {z12}')
+    #        z12 = int(z11/26)*(25*x12 + 1) + (w12 + 4)*x12
+    #        if (z12 in z12_set):
+    #            print(f'w12 = {w12}, z11 = {z11}, z12 = {z12}')
 
-    return output
+    return part1, part2
 
-#part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
+part1, part2 = process_inputs(input_file)
 
-#part2_example = process_inputs2(example_file)
-#part2 = process_inputs2(input_file)
-
-print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-print("")
-print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
