@@ -93,7 +93,7 @@ def process_inputs(in_file):
         #            no_change = False
 
         # OPTIMIZED SET-BASED APPROACH
-        # Move east-facing first, starting from MAX_COL
+        # Move east-facing first
         new_eastward_set = set()
         for rc in eastward_set:
             row, col = rc
@@ -108,7 +108,7 @@ def process_inputs(in_file):
             else:
                 new_eastward_set.add(rc)
 
-        # Move south-facing second, starting from 0
+        # Move south-facing second
         new_southward_set = set()
         for rc in southward_set:
             row, col = rc
