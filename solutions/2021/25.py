@@ -16,7 +16,9 @@ def print_grid(grid_dict, MAX_ROW, MAX_COL):
 def process_inputs(in_file):
     output = 0
 
-    grid_dict = defaultdict(str)
+    #grid_dict = defaultdict(str)
+    eastward_set = set()
+    southward_set = set()
     MAX_ROW = 0
     MAX_COL = 0
     with open(in_file) as file:
@@ -28,7 +30,11 @@ def process_inputs(in_file):
 
             col = 0
             for tile in line:
-                grid_dict[(row, col)] = tile
+                #grid_dict[(row, col)] = tile
+                if (tile == ">"):
+                    eastward_set.add((row, col))
+                elif (tile == "v"):
+                    southward_set.add((row, col))
                 col += 1
             MAX_COL = col-1
 
@@ -38,9 +44,9 @@ def process_inputs(in_file):
         MAX_ROW = row-1
 
     # Debugging
-    print("Initial state")
-    print_grid(grid_dict, MAX_ROW, MAX_COL)
-    print("")
+    #print("Initial state")
+    #print_grid(grid_dict, MAX_ROW, MAX_COL)
+    #print("")
 
     steps = 0
     while True:
@@ -51,39 +57,73 @@ def process_inputs(in_file):
         #if (steps == 5):
         #    break
 
+        # ORIGINAL DICTIONARY-BASED APPROACH
         # Move east-facing first, starting from MAX_COL
-        new_grid_dict = copy.deepcopy(grid_dict)
-        for col in range(MAX_COL, -1, -1):
-            for row in range(0, MAX_ROW+1):
-                if (grid_dict[(row, col)] != ">"):
-                    continue
+        #new_grid_dict = copy.deepcopy(grid_dict)
+        #for col in range(MAX_COL, -1, -1):
+        #    for row in range(0, MAX_ROW+1):
+        #        if (grid_dict[(row, col)] != ">"):
+        #            continue
 
-                if (col < MAX_COL):
-                    n_rc = (row, col+1)
-                else:
-                    n_rc = (row, 0)
+        #        if (col < MAX_COL):
+        #            n_rc = (row, col+1)
+        #        else:
+        #            n_rc = (row, 0)
 
-                if (grid_dict[n_rc] == "."):
-                    new_grid_dict[(row, col)] = "."
-                    new_grid_dict[n_rc] = ">"
-                    no_change = False
+        #        if (grid_dict[n_rc] == "."):
+        #            new_grid_dict[(row, col)] = "."
+        #            new_grid_dict[n_rc] = ">"
+        #            no_change = False
 
         # Move south-facing second, starting from 0
-        grid_dict = copy.deepcopy(new_grid_dict)
-        for row in range(0, MAX_ROW+1):
-            for col in range(0, MAX_COL+1):
-                if (new_grid_dict[(row, col)] != "v"):
-                    continue
+        #grid_dict = copy.deepcopy(new_grid_dict)
+        #for row in range(0, MAX_ROW+1):
+        #    for col in range(0, MAX_COL+1):
+        #        if (new_grid_dict[(row, col)] != "v"):
+        #            continue
 
-                if (row < MAX_ROW):
-                    n_rc = (row+1, col)
-                else:
-                    n_rc = (0, col)
+        #        if (row < MAX_ROW):
+        #            n_rc = (row+1, col)
+        #        else:
+        #            n_rc = (0, col)
 
-                if (new_grid_dict[n_rc] == "."):
-                    grid_dict[(row, col)] = "."
-                    grid_dict[n_rc] = "v"
-                    no_change = False
+        #        if (new_grid_dict[n_rc] == "."):
+        #            grid_dict[(row, col)] = "."
+        #            grid_dict[n_rc] = "v"
+        #            no_change = False
+
+        # OPTIMIZED SET-BASED APPROACH
+        # Move east-facing first, starting from MAX_COL
+        new_eastward_set = set()
+        for rc in eastward_set:
+            row, col = rc
+            if (col < MAX_COL):
+                n_rc = (row, col+1)
+            else:
+                n_rc = (row, 0)
+
+            if (n_rc not in eastward_set) and (n_rc not in southward_set):
+                new_eastward_set.add(n_rc)
+                no_change = False
+            else:
+                new_eastward_set.add(rc)
+
+        # Move south-facing second, starting from 0
+        new_southward_set = set()
+        for rc in southward_set:
+            row, col = rc
+            if (row < MAX_ROW):
+                n_rc = (row+1, col)
+            else:
+                n_rc = (0, col)
+
+            if (n_rc not in new_eastward_set) and (n_rc not in southward_set):
+                new_southward_set.add(n_rc)
+                no_change = False
+            else:
+                new_southward_set.add(rc)
+        eastward_set = new_eastward_set
+        southward_set = new_southward_set
 
         # Check if there is no change
         if (no_change):
