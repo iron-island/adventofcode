@@ -122,19 +122,37 @@ def process_inputs2(in_file):
                     bin_string = "0" + bin_string
 
             # Permutations
-            eq = num_list[0]
+            #eq = num_list[0]
+            eq_int = int(num_list[0])
+            int_result = int(result)
             for idx, b in enumerate(bin_string):
-                op = OPS2[int(b)]
+                # Original solution, slow
+                #op = OPS2[int(b)]
 
-                if (op != '|'):
-                    eq = eq + op + num_list[idx+1]
-                    eq = str(eval(eq))
-                else:
-                    eq = eq + num_list[idx+1]
+                #if (op != '|'):
+                #    eq = eq + op + num_list[idx+1]
+                #    eq = str(eval(eq))
+                #else:
+                #    eq = eq + num_list[idx+1]
+
+                # Optimized solution
+                if (eq_int > int_result):
+                    # Early exit if current test result is already larger than expected
+                    break
+                num_str = num_list[idx+1]
+                if (b == "0"):
+                    # Addition
+                    eq_int = eq_int + int(num_str)
+                elif (b == "1"):
+                    # Multiplication
+                    eq_int = eq_int*int(num_str)
+                elif (b == "2"):
+                    # Concatenation
+                    eq_int = eq_int*(10**len(num_str)) + int(num_str)
 
             # Evaluate
             #test_result = eval(eq)
-            test_result = int(eq)
+            test_result = eq_int
             if (int(result) == test_result):
                 count += 1
                 true_result += test_result
