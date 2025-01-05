@@ -469,16 +469,19 @@ def process_inputs2(in_file, check):
 
     # Loop through best_path to connect cheat0 and cheat2, excluding E for cheat0
     saved_dict = defaultdict(int)
+    num = 0
     for idx, cheat0 in enumerate(best_path[:-1]):
-        cheat2_list = best_path[(idx+1):]
+        #cheat2_list = best_path[(idx+1):]
         if (idx % 100) == 0:
             print(f'Checking cheat0 index {idx} of {len(best_path[:-1])-1}')
-        for cheat2 in cheat2_list:
+        for idx2, cheat2 in enumerate(best_path[idx+1:]):
+            num += 1
             dist = get_dist(cheat0, cheat2)
 
             if (dist <= 20):
-                idx2 = best_path.index(cheat2)
-                saved = (idx2 - idx) - dist
+                #idx2 = best_path.index(cheat2)
+                #saved = (idx2 - idx) - dist
+                saved = idx2 - dist + 1
                 saved_dict[saved] += 1
 
     if (check == "example"):
