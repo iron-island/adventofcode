@@ -390,11 +390,13 @@ def process_inputs2(in_file, check):
     # Initial BFS
     q = []
     visited = set()
+    #idx_dict = defaultdict(int)
     t = 0
     row, col = S_pos
     dist = get_dist(S_pos, E_pos)
     q.append((t+dist, row, col, t))
     node_dict[S_pos] = [t, None]
+    idx = 0
     while (len(q)):
         # Priority queue
         q.sort()
@@ -406,6 +408,10 @@ def process_inputs2(in_file, check):
         if ((row, col) in visited):
             continue
         visited.add((row, col))
+        #if ((row, col) in idx_dict):
+        #    continue
+        #idx_dict[(row, col)] = idx
+        #idx += 1
 
         # up
         n_row = row-1
@@ -467,22 +473,37 @@ def process_inputs2(in_file, check):
     assert(best_path[0] == S_pos)
     assert(best_path[-1] == E_pos)
 
+    # Convert to dict
+    idx_dict = defaultdict(int)
+    for idx, rc in enumerate(best_path):
+        idx_dict[rc] = idx
+
     # Loop through best_path to connect cheat0 and cheat2, excluding E for cheat0
     saved_dict = defaultdict(int)
-    num = 0
     for idx, cheat0 in enumerate(best_path[:-1]):
         #cheat2_list = best_path[(idx+1):]
         if (idx % 100) == 0:
             print(f'Checking cheat0 index {idx} of {len(best_path[:-1])-1}')
-        for idx2, cheat2 in enumerate(best_path[idx+1:]):
-            num += 1
-            dist = get_dist(cheat0, cheat2)
 
-            if (dist <= 20):
-                #idx2 = best_path.index(cheat2)
-                #saved = (idx2 - idx) - dist
-                saved = idx2 - dist + 1
-                saved_dict[saved] += 1
+        start_row, start_col = cheat0
+        for row_offset in range(-20, 21):
+            max_col_offset = 20-abs(row_offset)
+            for col_offset in range(-max_col_offset, max_col_offset+1):
+                dist = abs(row_offset) + abs(col_offset)
+                cheat2 = (start_row+row_offset, start_col+col_offset)
+                assert(dist == get_dist(cheat0, cheat2))
+                if (cheat2 in idx_dict) and (idx_dict[cheat2] > idx):
+                    saved = idx_dict[cheat2] - idx - dist
+                    saved_dict[saved] += 1
+
+        #for idx2, cheat2 in enumerate(best_path[idx+1:]):
+        #    dist = get_dist(cheat0, cheat2)
+
+        #    if (dist <= 20):
+        #        #idx2 = best_path.index(cheat2)
+        #        #saved = (idx2 - idx) - dist
+        #        saved = idx2 - dist + 1
+        #        saved_dict[saved] += 1
 
     if (check == "example"):
         saved = 54
