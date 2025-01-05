@@ -180,11 +180,11 @@ def process_inputs2(in_file):
     # Brute force
     count = 0
     true_result = 0
-    eq_count = 1
-    MAX_EQ_COUNT = len(eq_list)
+    #eq_count = 1
+    #MAX_EQ_COUNT = len(eq_list)
     for eq in eq_list:
-        print(f'{eq_count} of {MAX_EQ_COUNT}')
-        eq_count += 1
+        #print(f'{eq_count} of {MAX_EQ_COUNT}')
+        #eq_count += 1
         result, num_tuple = eq
 
         # Brute-force via DFS with no memoization
