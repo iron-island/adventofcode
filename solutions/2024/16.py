@@ -380,7 +380,7 @@ def process_inputs2(in_file):
     row, col, direction = E_tuple
     output_set = set()
     output_set.add((row, col))
-    print(last_tile_list)
+    #print(last_tile_list)
     q = []
     q.append((row, col, direction))
     while (True):
@@ -390,7 +390,7 @@ def process_inputs2(in_file):
             break
 
         cost, last_tile_list = cost_dict[(row, col, direction)]
-        print(row, col, direction, cost, last_tile_list)
+        #print(row, col, direction, cost, last_tile_list)
         for last_tile in last_tile_list:
             last_row, last_col, last_dir = last_tile
             q.append((last_row, last_col, last_dir))
@@ -410,11 +410,11 @@ def process_inputs2(in_file):
             #    tile = '>'
 
             #grid_dict[(row, col)] = tile
-    output = len(output_set)
-    for row in range(0, MAX_ROW+1):
-        for col in range(0, MAX_COL+1):
-            print(grid_dict[(row, col)], end="")
-        print()
+    #output = len(output_set)
+    #for row in range(0, MAX_ROW+1):
+    #    for col in range(0, MAX_COL+1):
+    #        print(grid_dict[(row, col)], end="")
+    #    print()
 
     return output
 
@@ -423,8 +423,8 @@ def process_inputs2(in_file):
 #part1_example3 = process_inputs(example3_file)
 #part1 = process_inputs(input_file) # 122571 too high
 
-part2_example = process_inputs2(example_file)
-part2_example2 = process_inputs2(example2_file)
+#part2_example = process_inputs2(example_file)
+#part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file)
 
