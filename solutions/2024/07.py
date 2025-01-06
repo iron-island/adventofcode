@@ -173,11 +173,25 @@ def process_inputs2(in_file):
 
             result, nums = line.split(": ")
             num_tuple = tuple([int(x) for x in nums.split()])
-            eq_list.append([int(result), num_tuple])
+            eq_list.append(tuple([int(result), num_tuple]))
 
             line = file.readline()
 
-    # Brute force
+    # Part 1:
+    part1 = 0
+    skip_eq_set = set()
+    for eq in eq_list:
+        result, num_tuple = eq
+
+        # Brute-force via DFS with no memoization
+        test_result = dfs_part1(num_tuple[0], num_tuple[1:], result)
+
+        # Evaluate
+        if (result == test_result):
+            part1 += test_result
+            skip_eq_set.add(eq)
+
+    # Part 2:
     count = 0
     true_result = 0
     #eq_count = 1
@@ -186,6 +200,11 @@ def process_inputs2(in_file):
         #print(f'{eq_count} of {MAX_EQ_COUNT}')
         #eq_count += 1
         result, num_tuple = eq
+
+        # If equation was already true in Part 1, immediately add result to total and skip it
+        if (eq in skip_eq_set):
+            true_result += result
+            continue
 
         # Brute-force via DFS with no memoization
         test_result = dfs(num_tuple[0], num_tuple[1:], result)
@@ -252,13 +271,13 @@ def process_inputs2(in_file):
     print(count)
     output = true_result
     
-    return output
+    return part1, output
 
 #part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
+#part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+part1, part2 = process_inputs2(input_file)
 
 #print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
