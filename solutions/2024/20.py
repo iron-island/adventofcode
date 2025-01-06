@@ -480,21 +480,24 @@ def process_inputs2(in_file, check):
 
     # Loop through best_path to connect cheat0 and cheat2, excluding E for cheat0
     saved_dict = defaultdict(int)
+    offset_list = [(r, c) for r in range(-20, 21) for c in range(abs(r)-20, (20-abs(r))+1)]
     for idx, cheat0 in enumerate(best_path[:-1]):
         #cheat2_list = best_path[(idx+1):]
-        if (idx % 100) == 0:
-            print(f'Checking cheat0 index {idx} of {len(best_path[:-1])-1}')
+        #if (idx % 100) == 0:
+        #    print(f'Checking cheat0 index {idx} of {len(best_path[:-1])-1}')
 
         start_row, start_col = cheat0
-        for row_offset in range(-20, 21):
-            max_col_offset = 20-abs(row_offset)
-            for col_offset in range(-max_col_offset, max_col_offset+1):
-                dist = abs(row_offset) + abs(col_offset)
-                cheat2 = (start_row+row_offset, start_col+col_offset)
-                assert(dist == get_dist(cheat0, cheat2))
-                if (cheat2 in idx_dict) and (idx_dict[cheat2] > idx):
-                    saved = idx_dict[cheat2] - idx - dist
-                    saved_dict[saved] += 1
+        #for row_offset in range(-20, 21):
+        #    max_col_offset = 20-abs(row_offset)
+        #    for col_offset in range(-max_col_offset, max_col_offset+1):
+        for offset in offset_list:
+            row_offset, col_offset = offset
+            dist = abs(row_offset) + abs(col_offset)
+            cheat2 = (start_row+row_offset, start_col+col_offset)
+            #assert(dist == get_dist(cheat0, cheat2))
+            if (cheat2 in idx_dict) and (idx_dict[cheat2] > idx):
+                saved = idx_dict[cheat2] - idx - dist
+                saved_dict[saved] += 1
 
         #for idx2, cheat2 in enumerate(best_path[idx+1:]):
         #    dist = get_dist(cheat0, cheat2)
@@ -878,7 +881,7 @@ def process_inputs2(in_file, check):
 #part1_example3 = process_inputs(example3_file)
 #part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file, "example")
+#part2_example = process_inputs2(example_file, "example")
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file, "input")
