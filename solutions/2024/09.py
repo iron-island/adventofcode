@@ -1,3 +1,5 @@
+from math import ceil
+
 input_file = "../../inputs/2024/input09.txt"
 example_file = "example09.txt"
 
@@ -5,6 +7,13 @@ part1_example = 0
 part2_example = 0
 part1 = 0
 part2 = 0
+
+def get_checksum(start_idx, length, file_id):
+    sum_idx = 0
+    for i in range(start_idx, start_idx+length):
+        sum_idx += i
+    return sum_idx*file_id
+
 def process_inputs(in_file):
     output = 0
 
@@ -173,11 +182,112 @@ def process_inputs2(in_file):
 
     return output
 
+def process_inputs_parts1_2(in_file):
+    with open(in_file) as file:
+        line = file.readline()
+    
+        while line:
+            line = line.strip()
+
+            disk = [int(x) for x in line]
+
+            line = file.readline()
+
+
+    # Part 1
+    is_block = True
+    idx = 0
+
+    # Get IDs
+    len_disk = len(disk)
+    id_num = 0
+    id_num_end = ceil(len_disk/2) - 1
+
+    # Get block count of last file, which is always
+    # at index id_num_end*2
+    count = disk[id_num_end*2]
+    part1 = 0
+    for digit in disk:
+        if (is_block):
+            if (id_num < id_num_end):
+                # Compute indices*id_num where indices is just
+                # the sum of an arithmetic sequence of length digit
+                # starting from idx
+                #print(f'File! Computing {id_num} times indices {idx} to {idx+digit-1}')
+                #for i in range(idx, idx+digit):
+                #    part1 += i*id_num
+                part1 += get_checksum(idx, digit, id_num)
+                idx += digit
+                id_num += 1
+
+                is_block = False
+            elif (id_num == id_num_end):
+                # Compute indices*id_num where indices is just
+                # the sum of an arithmetic sequence of length count
+                # starting from idx
+                #print(f'File! Computing {id_num} times indices {idx} to {idx+count-1}')
+                #for i in range(idx, idx+count):
+                #    part1 += i*id_num
+                part1 += get_checksum(idx, count, id_num)
+                break
+            elif (id_num > id_num_end):
+                break
+        else:
+            # Iteratively move blocks pointed by id_num_end to the
+            #   spaces
+            spaces = digit
+            while True:
+                # If there are enough files to fill in the spaces
+                if (count >= spaces):
+                    # Compute indices*id_num_end where indices is just
+                    # the sum of an arithmetic sequence of length spaces
+                    # starting from idx
+                    #print(f'Space1! Computing {id_num_end} times indices {idx} to {idx+spaces-1}')
+                    #for i in range(idx, idx+spaces):
+                    #    part1 += i*id_num_end
+                    part1 += get_checksum(idx, spaces, id_num_end)
+                    idx += spaces
+                    count = count-spaces
+
+                    # Space has been filled exactly
+                    # If file block count is depleted, move on to next end ID number
+                    # before proceeding to next digit
+                    if (count == 0):
+                        id_num_end -= 1
+                        count = disk[id_num_end*2]
+                    break
+                # Else there were not enough blocks to fill in the space
+                else:
+                    # Compute indices*id_num_end where indices is just
+                    # the sume of an arithmetic sequence of length count
+                    # starting from idx
+                    #print(f'Space2! Computing {id_num_end} times indices {idx} to {idx+count-1}')
+                    #for i in range(idx, idx+count):
+                    #    part1 += i*id_num_end
+                    part1 += get_checksum(idx, count, id_num_end)
+                    idx += count
+                    spaces = spaces-count
+
+                    # New count value would be the next end file
+                    id_num_end -= 1
+                    count = disk[id_num_end*2]
+
+            is_block = True
+
+    # Part 2
+    # TODO
+    part2 = 0
+
+    return part1, part2
+
 #part1_example = process_inputs(example_file)
 #part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
+#part2_example = process_inputs2(example_file)
 part2 = process_inputs2(input_file)
+
+#part1_example, part2_example = process_inputs_parts1_2(example_file)
+part1, _ = process_inputs_parts1_2(input_file)
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
