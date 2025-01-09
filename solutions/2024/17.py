@@ -1,9 +1,3 @@
-import numpy as np
-from collections import defaultdict
-from collections import deque
-from functools import cache
-import math
-
 input_file = "../../inputs/2024/input17.txt"
 example_file = "example17.txt"
 example2_file = "example17_2.txt"
@@ -42,6 +36,61 @@ B = 0
 C = 0
 ip = 0
 prog_output = []
+prog = []
+
+# NOTE: Runtime is minimal (<30ms) with and without cache,
+#       so caching wasn't added to avoid overheads
+def dfs_quine(A_tuple, idx):
+    global A
+    global B
+    global C
+    global ip
+    global prog_output
+
+    # Regenerate orig_A
+    orig_A = 0
+    for i in range(idx+1, 16):
+        orig_A += A_tuple[i]*(8**i)
+
+    # Iterate through possible 3-bit values that gets
+    #   the desired program output
+    A_list = list(A_tuple)
+    for i in range(0, 8):
+        curr_A = orig_A + i*(8**idx)
+
+        # Reset
+        A = curr_A
+        B = 0
+        C = 0
+        ip = 0
+        prog_output = []
+        
+        # Run program
+        while (ip < len(prog)):
+            opcode = prog[ip]
+            operand = prog[ip+1]
+
+            alu(opcode, operand)
+
+        # Check program output
+        int_prog_output = [int(x) for x in prog_output]
+        if (int_prog_output[idx:] == prog[idx:]):
+            # Base case
+            if (idx == 0):
+                return curr_A, True
+
+            # Recursion
+            A_list[idx] = i
+            next_curr_A, early_exit = dfs_quine(tuple(A_list), idx-1)
+
+            # Early exit
+            if (early_exit):
+                return next_curr_A, True
+
+    # Default return if there are no program outputs across all possible
+    #   3-bit values for current index
+    return 0, False
+
 def getcombop(operand):
     global A
     global B
@@ -111,6 +160,7 @@ def process_inputs3(in_file):
     global C
     global ip
     global prog_output
+    global prog
     prog_output = []
     ip = 0
 
@@ -136,41 +186,53 @@ def process_inputs3(in_file):
 
             line = file.readline()
 
+    # Optimized solutions
+    # Part 2
+    part2, _ = dfs_quine(tuple(16*[0]), 15)
+
+    return part2
+
     # Alternative 3:
-    A_list = []
-    orig_A = 8**(len(prog)-1)
-    for idx, p in enumerate(prog):
-        idx_reverse = (len(prog)-1) - idx
-        p_reverse = prog[idx_reverse]
-        print(f'Checking idx = {idx_reverse} for {p_reverse}')
-        modifier = 8**idx_reverse
+    #A_list = []
+    #orig_A = 8**(len(prog)-1)
+    #for idx, p in enumerate(prog):
+    #    idx_reverse = (len(prog)-1) - idx
+    #    p_reverse = prog[idx_reverse]
+    #    print(f'Checking idx = {idx_reverse} for {p_reverse}')
+    #    modifier = 8**idx_reverse
+    #    #if (idx_reverse == 8):
+    #    #    modifier = 528364*8**idx_reverse
 
-        while True:
-            # Reset
-            A = orig_A
-            B = 0
-            C = 0
-            ip = 0
-            prog_output = []
+    #    num_iter = 0
+    #    while True:
+    #        # Reset
+    #        A = orig_A
+    #        B = 0
+    #        C = 0
+    #        ip = 0
+    #        prog_output = []
 
-            # Run program
-            while (ip < len(prog)):
-                opcode = prog[ip]
-                operand = prog[ip+1]
+    #        # Run program
+    #        while (ip < len(prog)):
+    #            opcode = prog[ip]
+    #            operand = prog[ip+1]
 
-                alu(opcode, operand)
+    #            alu(opcode, operand)
 
-            int_prog_output = [int(x) for x in prog_output]
-            #if (len(int_prog_output) > idx) and (int_prog_output[idx_reverse] == p_reverse):
-            if (int_prog_output[idx_reverse:] == prog[idx_reverse:]):
-                A_list.append(orig_A)
-                print(orig_A)
-                print(int_prog_output)
-                break
-            orig_A += modifier
-    print(A_list)
-    output = A_list[-1]
-    return output
+    #        int_prog_output = [int(x) for x in prog_output]
+    #        print(int_prog_output)
+    #        #if (len(int_prog_output) > idx) and (int_prog_output[idx_reverse] == p_reverse):
+    #        if (int_prog_output[idx_reverse:] == prog[idx_reverse:]):
+    #            A_list.append(orig_A)
+    #            print(orig_A)
+    #            print(int_prog_output)
+    #            break
+    #        orig_A += modifier
+    #        num_iter += 1
+    #    print(f'Iterations: {num_iter}')
+    #print(A_list)
+    #output = A_list[-1]
+    #return output
 
 def process_inputs(in_file):
     global A
@@ -401,7 +463,7 @@ def process_inputs2(in_file):
 #part1_example7 = process_inputs(example7_file)\
 
 #part1_example8 = process_inputs(example8_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
