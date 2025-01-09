@@ -111,7 +111,7 @@ def process_inputs(in_file):
         n_tuple = (n_row, n_col)
         if (n_tuple in grid_dict):
             n_tile = grid_dict[n_tuple]
-            print(n_tile)
+            #print(n_tile)
 
             if (n_tile == '.'):
                 robot_pos = [n_row, n_col]
@@ -145,7 +145,7 @@ def process_inputs(in_file):
                 pos_list = []
                 sn_tuple = (sn_row, sn_col)
                 orig_sn_tuple = sn_tuple
-                print(sn_tuple)
+                #print(sn_tuple)
                 while (True):
                     if (sn_tuple in grid_dict):
                         sn_row, sn_col = sn_tuple
@@ -158,17 +158,17 @@ def process_inputs(in_file):
                                 sn_tuple = (sn_row, sn_col+modifier)
                         elif (sn_tile == '.'):
                             pos_list.append(sn_tuple)
-                            print("Space found!")
+                            #print("Space found!")
                             break
                         elif (sn_tile == '#'):
                             pos_list = []
-                            print("Wall found!")
+                            #print("Wall found!")
                             break
                     else:
                         break
 
                 # Move tiles
-                print(pos_list)
+                #print(pos_list)
                 if (len(pos_list)):
                     for pos in pos_list:
                         grid_dict[pos] = 'O'
@@ -452,34 +452,34 @@ def process_inputs2(in_file):
 
         # Assertion
         # Check if boxes are still correct
-        assertion_pass = True
-        for pos in grid_dict:
-            row, col = pos
-            tile = grid_dict[pos]
+        #assertion_pass = True
+        #for pos in grid_dict:
+        #    row, col = pos
+        #    tile = grid_dict[pos]
 
-            if (tile == '[') and (grid_dict[(row, col+1)] != ']'):
-                assertion_pass = False
-                break
-            if (tile == ']') and (grid_dict[(row, col-1)] != '['):
-                assertion_pass = False
-                break
+        #    if (tile == '[') and (grid_dict[(row, col+1)] != ']'):
+        #        assertion_pass = False
+        #        break
+        #    if (tile == ']') and (grid_dict[(row, col-1)] != '['):
+        #        assertion_pass = False
+        #        break
 
         # One move ended, so print
-        if (assertion_pass):
-            continue
-        #if ((idx_m+1) in [4000, 4001]):
-        print(f'Move {move}: {idx_m+1} of {len(moves_list)}')
-        for row in range(0, MAX_ROW+1):
-            for col in range(0, MAX_COL+1):
-                if ((row, col) in grid_dict):
-                    print(grid_dict[(row, col)], end="")
+        #if (assertion_pass):
+        #    continue
+        ##if ((idx_m+1) in [4000, 4001]):
+        #print(f'Move {move}: {idx_m+1} of {len(moves_list)}')
+        #for row in range(0, MAX_ROW+1):
+        #    for col in range(0, MAX_COL+1):
+        #        if ((row, col) in grid_dict):
+        #            print(grid_dict[(row, col)], end="")
 
-            print()
-        for i in range(0, 11):
-            print()
-        if (not assertion_pass):
-            print("Assertion failed!")
-            break
+        #    print()
+        #for i in range(0, 11):
+        #    print()
+        #if (not assertion_pass):
+        #    print("Assertion failed!")
+        #    break
                 
     # GPS
     for pos in grid_dict:
@@ -494,9 +494,9 @@ def process_inputs2(in_file):
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)  # Check line 7085
+#part2_example = process_inputs2(example_file)  # Check line 7085
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 #part2_example4 = process_inputs2(example4_file)
