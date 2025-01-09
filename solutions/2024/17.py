@@ -187,10 +187,19 @@ def process_inputs3(in_file):
             line = file.readline()
 
     # Optimized solutions
+    # Part 1
+    # Run program
+    while (ip < len(prog)):
+        opcode = prog[ip]
+        operand = prog[ip+1]
+
+        alu(opcode, operand)
+    part1 = ",".join(prog_output)
+
     # Part 2
     part2, _ = dfs_quine(tuple(16*[0]), 15)
 
-    return part2
+    return part1, part2
 
     # Alternative 3:
     #A_list = []
@@ -463,7 +472,7 @@ def process_inputs2(in_file):
 #part1_example7 = process_inputs(example7_file)\
 
 #part1_example8 = process_inputs(example8_file)
-part1 = process_inputs(input_file)
+#part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
@@ -471,20 +480,20 @@ part1 = process_inputs(input_file)
 #part2_example7 = process_inputs2(example7_file)
 #part2 = process_inputs2(input_file)
 
-part2 = process_inputs3(input_file)
+part1, part2 = process_inputs3(input_file)
 
-print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
 #print(f'Part 1 example3: {part1_example3}')
 #print(f'Part 1 example4: {part1_example4}')
 #print(f'Part 1 example5: {part1_example5}')
 #print(f'Part 1 example6: {part1_example6}')
 #print(f'Part 1 example7: {part1_example7}')
-print(f'Part 1 example8: {part1_example8}')
+#print(f'Part 1 example8: {part1_example8}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
-print(f'Part 2 example7: {part2_example7}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example7: {part2_example7}')
 print(f'Part 2: {part2}')
