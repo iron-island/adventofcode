@@ -356,8 +356,6 @@ def process_inputs(in_file):
     return output
 
 def process_inputs2(in_file, check):
-    output = 0
-
     grid_dict = defaultdict(str)
     node_dict = defaultdict(list)
     with open(in_file) as file:
@@ -478,6 +476,8 @@ def process_inputs2(in_file, check):
     # Loop through best_path to connect cheat0 and cheat2, excluding E for cheat0
     saved_dict = defaultdict(int)
     offset_list = [(r, c) for r in range(-20, 21) for c in range(abs(r)-20, (20-abs(r))+1)]
+    part1 = 0
+    part2 = 0
     for idx, cheat0 in enumerate(best_path[:-1]):
         #cheat2_list = best_path[(idx+1):]
         #if (idx % 100) == 0:
@@ -494,7 +494,14 @@ def process_inputs2(in_file, check):
             #assert(dist == get_dist(cheat0, cheat2))
             if (cheat2 in idx_dict) and (idx_dict[cheat2] > idx):
                 saved = idx_dict[cheat2] - idx - dist
-                saved_dict[saved] += 1
+                #saved_dict[saved] += 1
+
+                if (saved >= 100):
+                    # Part 1 is a subset of Part 2 when cheat lasts at most 2 picoseconds
+                    if (dist <= 2):
+                        part1 += 1
+
+                    part2 += 1
 
         #for idx2, cheat2 in enumerate(best_path[idx+1:]):
         #    dist = get_dist(cheat0, cheat2)
@@ -504,16 +511,18 @@ def process_inputs2(in_file, check):
         #        #saved = (idx2 - idx) - dist
         #        saved = idx2 - dist + 1
         #        saved_dict[saved] += 1
+    return part1, part2
 
+    # Initial optimization when savings were added to a dictionary,
     if (check == "example"):
         saved = 54
-        output = saved_dict[saved]
+        part2 = saved_dict[saved]
     else:
         for saved in saved_dict:
-            if (saved >= 100) and (saved in saved_dict):
-                output += saved_dict[saved]
+            if (saved >= 100):
+                part2 += saved_dict[saved]
 
-    return output
+    return part1, part2
 
     # Alternatives 1 and 2: DOES NOT WORK
     # Get list of inner walls where cheats can start
@@ -876,12 +885,12 @@ def process_inputs2(in_file, check):
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-part1 = process_inputs(input_file)
+#part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file, "example")
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
-part2 = process_inputs2(input_file, "input")
+part1, part2 = process_inputs2(input_file, "input")
 
 #print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
