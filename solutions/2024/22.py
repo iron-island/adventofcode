@@ -1,5 +1,6 @@
-from collections import defaultdict
+#from collections import defaultdict
 from math import inf
+from array import array
 
 input_file = "../../inputs/2024/input22.txt"
 example_file = "example22.txt"
@@ -111,22 +112,34 @@ def process_inputs2(in_file, t):
 
             line = file.readline()
 
-    last_secret_list = []
-    changes_array = []
-    digit_array = []
-    banana_dict = defaultdict(int)
+    #banana_dict = defaultdict(int)
     part1 = 0
+
+    # Idea of using arrays which would be faster than the dictionary
+    #   is from Reddit user u/notrom11
+    # Comment: https://www.reddit.com/r/adventofcode/comments/1hjroap/comment/m3cdba8/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+    # Repo: https://github.com/APMorto/aoc2024/blob/master/day_22_monkey_market/monkey_market.py
+    ARRAY_SIZE = 18*(19**3 + 19**2 + 19 + 1)
+    banana_array = array('H', [0]*ARRAY_SIZE)
+    seq_array = array('H', [0]*ARRAY_SIZE)
     for idx_s, secret_num in enumerate(init_list):
+        next_idx_s = idx_s+1
         new_secret = secret_num
         #changes_list = []
-        changes_list = [None, None, None, None]
-        changes_set = set()
+        changes_list = [0, 0, 0, 0]
+        #changes_list = deque([], 4)
+        #changes_set = set()
         for i in range(0, t):
             # Compute secret in-line to remove function call overheads
             #new_secret = evolve(new_secret)
-            new_secret = (new_secret^(new_secret << 6)) & 16777215
-            new_secret = (new_secret^(new_secret >> 5)) & 16777215
+            new_secret = (new_secret^(new_secret <<  6)) & 16777215
+            new_secret = (new_secret^(new_secret >>  5)) & 16777215
             new_secret = (new_secret^(new_secret << 11)) & 16777215
+
+            # TODO: Numbers repeat so we can skip some iterations?
+            #if (new_secret in init_set):
+            #    num_repeat += 1
+            #    print(f'{new_secret} with index {i}  already in init_list! {num_repeat}')
 
             # Record
             #digit_list.append(new_secret % 10)
@@ -140,17 +153,35 @@ def process_inputs2(in_file, t):
             prev_d = d
 
             #changes_list.append(change)
+
+            # Manual shift register, faster than deque for maxlen=4
             changes_list[0] = changes_list[1]
             changes_list[1] = changes_list[2]
             changes_list[2] = changes_list[3]
             changes_list[3] = change
 
+            # Shift register via deque, slower than manual shift register
+            #changes_list.append(change)
+
             if (i >= 4):
                 #seq = tuple(changes_list[(i-3):(i+1)])
-                seq = tuple(changes_list)
-                if (seq not in changes_set):
-                    banana_dict[seq] += d
-                    changes_set.add(seq)
+
+                idx_array = changes_list[3]*19**3 + \
+                            changes_list[2]*19**2 + \
+                            changes_list[1]*19 + \
+                            changes_list[0]
+                if (seq_array[idx_array] <= idx_s):
+                    seq_array[idx_array] = next_idx_s
+                    banana_array[idx_array] += d
+                # If its the first time that the sequence is seen,
+                #   increment the bananas
+                #seq = tuple(changes_list)
+                #if (seq not in changes_set):
+                #    changes_set.add(seq)
+
+                #    # Only increment if difference is non-zero to save some operations
+                #    if (d > 0):
+                #        banana_dict[seq] += d
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
@@ -174,11 +205,16 @@ def process_inputs2(in_file, t):
         #digit_array.append(digit_list)
         #changes_array.append(changes_list)
 
+    #part2 = max(banana_dict.values())
+    part2 = max(banana_array)
+    
+    return part1, part2
+
     # Evaluate
-    max_banana = 0
-    for seq in banana_dict:
-        max_banana = max(max_banana, banana_dict[seq])
-    output = max_banana
+    #max_banana = 0
+    #for seq in banana_dict:
+    #    max_banana = max(max_banana, banana_dict[seq])
+    #output = max_banana
 
     # Sliding window
     #max_bananas = 0
@@ -187,7 +223,7 @@ def process_inputs2(in_file, t):
     #    # Iterate through digit_list and changes_list
     #    for idx_array, digit_list in enumerate(digit_array):
 
-    return part1, output
+    #return part1, output
 
 #part1_example = process_inputs(example_file,10)
 #part1_example2 = process_inputs(example2_file,2000)
