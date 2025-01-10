@@ -104,6 +104,7 @@ def process_inputs2(in_file, t):
     changes_array = []
     digit_array = []
     banana_dict = defaultdict(int)
+    part1 = 0
     for idx_s, secret_num in enumerate(init_list):
         new_secret = secret_num
         digit_list = []
@@ -114,6 +115,9 @@ def process_inputs2(in_file, t):
 
             # Record
             digit_list.append(new_secret % 10)
+
+        # Part 1 is a subset of Part 2 so immediately compute Part 1 here
+        part1 += new_secret
 
         # Get changes
         for idx, d in enumerate(digit_list):
@@ -147,16 +151,16 @@ def process_inputs2(in_file, t):
     #    # Iterate through digit_list and changes_list
     #    for idx_array, digit_list in enumerate(digit_array):
 
-    return output
+    return part1, output
 
 #part1_example = process_inputs(example_file,10)
 #part1_example2 = process_inputs(example2_file,2000)
-part1 = process_inputs(input_file, 2000)
+#part1 = process_inputs(input_file, 2000)
 
 #part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file, 2000)
-part2 = process_inputs2(input_file, 2000)
+part1, part2 = process_inputs2(input_file, 2000)
 
 #print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
