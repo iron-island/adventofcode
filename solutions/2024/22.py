@@ -39,21 +39,32 @@ def mix(secret_num, val):
     return new_secret
 
 def prune(secret_num):
-    new_secret = secret_num % 16777216
+    # Get lowest 24 bits
+
+    # Through modulus
+    #new_secret = secret_num % 16777216
+    # Through bitmask
+    new_secret = secret_num & 16777215
     return new_secret
 
 def evolve(secret_num):
-    val = secret_num*64
-    new_secret = mix(secret_num, val)
-    new_secret = prune(new_secret)
+    # Right shift by 6 bits before mixing and pruning
+    #val = secret_num*64
+    #new_secret = mix(secret_num, val)
+    #new_secret = prune(new_secret)
+    new_secret = (secret_num^(secret_num << 6)) & 16777215
 
-    val = int(new_secret/32)
-    new_secret = mix(new_secret, val)
-    new_secret = prune(new_secret)
-    
-    val = new_secret*2048
-    new_secret = mix(new_secret, val)
-    new_secret = prune(new_secret)
+    # Right shift by 5 bits before mixing and pruning
+    #val = int(new_secret/32)
+    #new_secret = mix(new_secret, val)
+    #new_secret = prune(new_secret)
+    new_secret = (new_secret^(new_secret >> 5)) & 16777215
+   
+    # Left shift by 11 bits before mixing and pruning
+    #val = new_secret*2048
+    #new_secret = mix(new_secret, val)
+    #new_secret = prune(new_secret)
+    new_secret = (new_secret^(new_secret << 11)) & 16777215
 
     return new_secret
 
@@ -107,32 +118,57 @@ def process_inputs2(in_file, t):
     part1 = 0
     for idx_s, secret_num in enumerate(init_list):
         new_secret = secret_num
-        digit_list = []
-        changes_list = []
+        #changes_list = []
+        changes_list = [None, None, None, None]
         changes_set = set()
         for i in range(0, t):
-            new_secret = evolve(new_secret)
+            # Compute secret in-line to remove function call overheads
+            #new_secret = evolve(new_secret)
+            new_secret = (new_secret^(new_secret << 6)) & 16777215
+            new_secret = (new_secret^(new_secret >> 5)) & 16777215
+            new_secret = (new_secret^(new_secret << 11)) & 16777215
 
             # Record
-            digit_list.append(new_secret % 10)
+            #digit_list.append(new_secret % 10)
+
+            # Get changes
+            d = (new_secret % 10)
+            if (i == 0):
+                change = inf
+            else:
+                change = d - prev_d
+            prev_d = d
+
+            #changes_list.append(change)
+            changes_list[0] = changes_list[1]
+            changes_list[1] = changes_list[2]
+            changes_list[2] = changes_list[3]
+            changes_list[3] = change
+
+            if (i >= 4):
+                #seq = tuple(changes_list[(i-3):(i+1)])
+                seq = tuple(changes_list)
+                if (seq not in changes_set):
+                    banana_dict[seq] += d
+                    changes_set.add(seq)
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
 
         # Get changes
-        for idx, d in enumerate(digit_list):
-            if (idx == 0):
-                change = inf
-            else:
-                change = d - (digit_list[idx-1])
+        #for idx, d in enumerate(digit_list):
+        #    if (idx == 0):
+        #        change = inf
+        #    else:
+        #        change = d - (digit_list[idx-1])
 
-            changes_list.append(change)
+        #    changes_list.append(change)
 
-            if (idx >= 4):
-                seq = tuple(changes_list[(idx-3):(idx+1)])
-                if (seq not in changes_set):
-                    banana_dict[seq] += d
-                    changes_set.add(seq)
+        #    if (idx >= 4):
+        #        seq = tuple(changes_list[(idx-3):(idx+1)])
+        #        if (seq not in changes_set):
+        #            banana_dict[seq] += d
+        #            changes_set.add(seq)
 
         # Record
         #digit_array.append(digit_list)
