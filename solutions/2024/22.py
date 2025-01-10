@@ -1,8 +1,5 @@
-import numpy as np
 from collections import defaultdict
-from collections import deque
-from functools import cache
-import math
+from math import inf
 
 input_file = "../../inputs/2024/input22.txt"
 example_file = "example22.txt"
@@ -21,7 +18,7 @@ part2 = 0
 def move_dir(rc, direction):
     row, col = rc
 
-    assert(direction in ["up", "down", "left", "right"])
+    #assert(direction in ["up", "down", "left", "right"])
     if (direction == "up"):
         n_row = row-1
         n_col = col
@@ -121,7 +118,7 @@ def process_inputs2(in_file, t):
         # Get changes
         for idx, d in enumerate(digit_list):
             if (idx == 0):
-                change = math.inf
+                change = inf
             else:
                 change = d - (digit_list[idx-1])
 
@@ -154,19 +151,19 @@ def process_inputs2(in_file, t):
 
 #part1_example = process_inputs(example_file,10)
 #part1_example2 = process_inputs(example2_file,2000)
-#part1 = process_inputs(input_file, 2000)
+part1 = process_inputs(input_file, 2000)
 
 #part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
-part2_example3 = process_inputs2(example3_file, 2000)
+#part2_example3 = process_inputs2(example3_file, 2000)
 part2 = process_inputs2(input_file, 2000)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

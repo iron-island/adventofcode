@@ -1,5 +1,5 @@
 from math import ceil, inf
-from collections import defaultdict, deque
+from collections import defaultdict
 
 input_file = "../../inputs/2024/input09.txt"
 example_file = "example09.txt"

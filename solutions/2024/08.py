@@ -96,16 +96,16 @@ def process_inputs(in_file):
                         antinode_loc_list.append((antinode_row2, antinode_col2))
 
     # Debug
-    for row, rowline in enumerate(grid):
-        for col, colchar in enumerate(rowline):
-            antinode_tuple = (row, col)
-            if (colchar == '.') and (antinode_tuple in antinode_loc_list):
-                print('#',end="")
-            else:
-                print(colchar,end="")
+    #for row, rowline in enumerate(grid):
+    #    for col, colchar in enumerate(rowline):
+    #        antinode_tuple = (row, col)
+    #        if (colchar == '.') and (antinode_tuple in antinode_loc_list):
+    #            print('#',end="")
+    #        else:
+    #            print(colchar,end="")
 
-        # newline
-        print()
+    #    # newline
+    #    print()
 
     # Evaluate
     output = len(set(antinode_loc_list))
@@ -226,16 +226,16 @@ def process_inputs2(in_file):
                             break
 
     # Debug
-    for row, rowline in enumerate(grid):
-        for col, colchar in enumerate(rowline):
-            antinode_tuple = (row, col)
-            if (colchar == '.') and (antinode_tuple in antinode_loc_list):
-                print('#',end="")
-            else:
-                print(colchar,end="")
+    #for row, rowline in enumerate(grid):
+    #    for col, colchar in enumerate(rowline):
+    #        antinode_tuple = (row, col)
+    #        if (colchar == '.') and (antinode_tuple in antinode_loc_list):
+    #            print('#',end="")
+    #        else:
+    #            print(colchar,end="")
 
-        # newline
-        print()
+    #    # newline
+    #    print()
 
     # Evaluate
     antinode_loc_set = set(antinode_loc_list)
@@ -251,13 +251,13 @@ def process_inputs2(in_file):
     return output
 
 #part1_example = process_inputs(example_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
+#part2_example = process_inputs2(example_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')

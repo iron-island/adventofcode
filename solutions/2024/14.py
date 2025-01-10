@@ -1,8 +1,3 @@
-import numpy as np
-from collections import defaultdict
-from collections import deque
-from functools import cache
-
 input_file = "../../inputs/2024/input14.txt"
 example_file = "example14.txt"
 example2_file = "example14_2.txt"
@@ -56,8 +51,8 @@ def process_inputs(in_file, MAX_ROW, MAX_COL):
 
         final_pos_list.append((n_x, n_y))
 
-        if (idx == 10):
-            print(n_x, n_y)
+        #if (idx == 10):
+        #    print(n_x, n_y)
 
     # Check quadrants
     q1 = 0
@@ -80,8 +75,8 @@ def process_inputs(in_file, MAX_ROW, MAX_COL):
         elif (x > X_MID) and (y > Y_MID):
             q4 += 1
 
-    print(final_pos_list)
-    print(q1, q2, q3, q4)
+    #print(final_pos_list)
+    #print(q1, q2, q3, q4)
     output = q1*q2*q3*q4
 
     return output
@@ -134,7 +129,7 @@ def process_inputs2(in_file, MAX_ROW, MAX_COL):
 
             final_pos_list.append((n_x, n_y))
 
-        print(NUM)
+        #print(NUM)
         if (not invalid):
             output = NUM
             return output
@@ -160,28 +155,28 @@ def process_inputs2(in_file, MAX_ROW, MAX_COL):
         elif (x > X_MID) and (y > Y_MID):
             q4 += 1
 
-    print(final_pos_list)
-    print(q1, q2, q3, q4)
+    #print(final_pos_list)
+    #print(q1, q2, q3, q4)
     output = q1*q2*q3*q4
 
     return output
 
 #part1_example = process_inputs(example_file, 6, 10)
-#part1 = process_inputs(input_file, 102, 100)
+part1 = process_inputs(input_file, 102, 100)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
 
-part2_example = process_inputs2(example_file, 6, 10)
+#part2_example = process_inputs2(example_file, 6, 10)
 part2 = process_inputs2(input_file, 102, 100)
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

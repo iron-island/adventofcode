@@ -1,7 +1,4 @@
-import numpy as np
 from collections import defaultdict
-from collections import deque
-from functools import cache
 
 input_file = "../../inputs/2024/input15.txt"
 example_file = "example15.txt"
@@ -408,8 +405,8 @@ def process_inputs2(in_file):
                     if (move == 'v'):
                         visited.reverse()
 
-                    if ((idx_m+1) in [4000, 4001]):
-                        print(visited)
+                    #if ((idx_m+1) in [4000, 4001]):
+                    #    print(visited)
                     for v in visited:
                         row, col = v
                         tile = grid_dict[v]
@@ -502,13 +499,13 @@ part1 = process_inputs(input_file)
 #part2_example4 = process_inputs2(example4_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
-print(f'Part 2 example4: {part2_example4}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example4: {part2_example4}')
 print(f'Part 2: {part2}')

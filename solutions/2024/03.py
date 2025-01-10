@@ -34,7 +34,7 @@ def process_inputs(in_file):
                     try:
                         product = eval(line[i:(i+j+2)])
                         output += product
-                        print(line[i:(i+j+2)])
+                        #print(line[i:(i+j+2)])
                     except:
                         product = 0
 
@@ -74,7 +74,7 @@ def process_inputs2(in_file):
         dont_split = line.split("don't()")
         enabled_line = dont_split[0]
         dont_split = dont_split[1:]
-        print(len(dont_split))
+        #print(len(dont_split))
         for d in dont_split:
             if ("do()" in d):
                 d_split = d.split("do()")
@@ -104,13 +104,13 @@ def process_inputs2(in_file):
     return output
 
 #part1_example = process_inputs(example_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
+#part2_example = process_inputs2(example_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')

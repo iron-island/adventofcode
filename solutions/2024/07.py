@@ -156,7 +156,7 @@ def process_inputs(in_file):
         #    #    true_result += int(eq)
         #    #    break
 
-    print(count)
+    #print(count)
     output = true_result
     
     return output
@@ -268,7 +268,7 @@ def process_inputs2(in_file):
         #        true_result += test_result
         #        break
 
-    print(count)
+    #print(count)
     output = true_result
     
     return part1, output

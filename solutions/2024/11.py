@@ -27,7 +27,7 @@ def process_inputs(in_file):
     new_list = copy.deepcopy(s_list)
     for b in range(0, 25):
         #print(new_list)
-        print(b)
+        #print(b)
         offset = 0
         for idx, s in enumerate(s_list):
             #print(f'idx = {idx}, s = {s}')
@@ -116,19 +116,19 @@ def process_inputs2(in_file):
                         new_dict[right_s] = num
                 else:
                     new_s = int(s*2024)
-                    if (s == 2) and (b == BLINKS):
-                        print(f's = 2 with num = {num}, and new_s = {new_s}')
+                    #if (s == 2) and (b == BLINKS):
+                    #    print(f's = 2 with num = {num}, and new_s = {new_s}')
 
                     new_dict[s] -= num
                     if (new_s in new_dict):
-                        if (s == 2) and (b == BLINKS):
-                            print("Add 4048 to dict")
+                        #if (s == 2) and (b == BLINKS):
+                        #    print("Add 4048 to dict")
                         new_dict[new_s] += num
                     else:
                         new_dict[new_s] = num
-                        if (s == 2) and (b == BLINKS):
-                            print(f'Initialize {new_s} to dict with {num}')
-                            print(f'new_dict[new_s] = {new_dict[new_s]}')
+                        #if (s == 2) and (b == BLINKS):
+                        #    print(f'Initialize {new_s} to dict with {num}')
+                        #    print(f'new_dict[new_s] = {new_dict[new_s]}')
         # Update
         s_dict = copy.deepcopy(new_dict)
 
@@ -136,7 +136,7 @@ def process_inputs2(in_file):
     for s in new_dict:
         num = new_dict[s]
         #print(f'{s}: {num}')
-        assert(num >= 0)
+        #assert(num >= 0)
         output += num
 
     # Blink
@@ -192,13 +192,13 @@ def process_inputs2(in_file):
     return output
 
 #part1_example = process_inputs(example_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')

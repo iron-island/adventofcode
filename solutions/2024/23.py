@@ -1,7 +1,4 @@
-import numpy as np
 from collections import defaultdict
-from collections import deque
-from functools import cache
 
 input_file = "../../inputs/2024/input23.txt"
 example_file = "example23.txt"
@@ -72,8 +69,8 @@ def process_inputs(in_file):
                         lan_list.sort()
                         lan_set.add(tuple(lan_list))
 
-            if (c1 == "td"):
-                print(output)
+            #if (c1 == "td"):
+            #    print(output)
     output = len(lan_set)
 
             # Check connections by BFS
@@ -102,7 +99,7 @@ def process_inputs(in_file):
             #if (c1 == "ta"):
             #    print(output)
 
-    print(conn_dict)
+    #print(conn_dict)
 
     return output
 
@@ -175,22 +172,22 @@ def process_inputs2(in_file):
 
     return output
 
-part1_example = process_inputs(example_file)
+#part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
 part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
+#part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

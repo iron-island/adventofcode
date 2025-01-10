@@ -1,7 +1,4 @@
-import numpy as np
-from collections import defaultdict
-from collections import deque
-from functools import cache
+from collections import defaultdict, deque
 
 input_file = "../../inputs/2024/input18.txt"
 example_file = "example18.txt"
@@ -47,7 +44,7 @@ def process_inputs(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         row, col, steps = q.popleft()
 
         if (MAX_ROW, MAX_COL) == (row, col):
-            print("BREAK!")
+            #print("BREAK!")
             visited.add((row, col))
             #steps += 1
             break
@@ -65,8 +62,8 @@ def process_inputs(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         if (n_tuple not in grid_dict) and (n_row >= 0):
             q.append(n_list)
 
-            if (n_tuple == (4, 6)):
-                print("up")
+            #if (n_tuple == (4, 6)):
+            #    print("up")
 
         # down
         n_row = row+1
@@ -75,8 +72,8 @@ def process_inputs(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         n_list = [n_row, n_col, steps+1]
         if (n_tuple not in grid_dict) and (n_row <= MAX_ROW):
             q.append(n_list)
-            if (n_tuple == (4, 6)):
-                print("down")
+            #if (n_tuple == (4, 6)):
+            #    print("down")
 
         # left
         n_row = row
@@ -85,8 +82,8 @@ def process_inputs(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         n_list = [n_row, n_col, steps+1]
         if (n_tuple not in grid_dict) and (n_col >= 0):
             q.append(n_list)
-            if (n_tuple == (4, 6)):
-                print("left")
+            #if (n_tuple == (4, 6)):
+            #    print("left")
 
         # right
         n_row = row
@@ -95,11 +92,11 @@ def process_inputs(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         n_list = [n_row, n_col, steps+1]
         if (n_tuple not in grid_dict) and (n_col <= MAX_COL):
             q.append(n_list)
-            if (n_tuple == (4, 6)):
-                print("right")
+            #if (n_tuple == (4, 6)):
+            #    print("right")
 
     output = steps
-    print(visited)
+    #print(visited)
 
     #for row in range(0, MAX_ROW+1):
     #    for col in range(0, MAX_COL+1):
@@ -141,8 +138,8 @@ def process_inputs2(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         y, x = coords
         new_coords_list.append((y, x))
     for idx, coords in enumerate(coords_list):
-        if (idx % 100) == 0:
-            print(f'Trial {idx} of {len(coords_list)-1}')
+        #if (idx % 100) == 0:
+        #    print(f'Trial {idx} of {len(coords_list)-1}')
         #y, x = coords
         #new_coords_list.append((y, x))
         new_coords_list.popleft()
@@ -214,7 +211,7 @@ def process_inputs2(in_file, MAX_ROW, MAX_COL, MAX_LEN):
         #    break
         if (exit_found):
             y, x = coords
-            print(f'{len(coords_list)-idx-1}')
+            #print(f'{len(coords_list)-idx-1}')
             output = f'{x},{y}'
             break
 
@@ -234,19 +231,19 @@ def process_inputs2(in_file, MAX_ROW, MAX_COL, MAX_LEN):
 #part1_example = process_inputs(example_file, 6, 6, 12)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-#part1 = process_inputs(input_file, 70, 70, 1024)
+part1 = process_inputs(input_file, 70, 70, 1024)
 
-part2_example = process_inputs2(example_file, 6, 6, 12)
+#part2_example = process_inputs2(example_file, 6, 6, 12)
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file, 70, 70, 1024)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

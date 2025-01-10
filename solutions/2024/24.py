@@ -1,9 +1,4 @@
-import numpy as np
 from collections import defaultdict
-from collections import deque
-from functools import cache
-import functools
-import copy
 
 # Ref: https://stackoverflow.com/questions/6358481/using-functools-lru-cache-with-dictionary-arguments
 #from frozendict import frozendict
@@ -59,7 +54,6 @@ def get_bit_diff(expected, actual):
 
     return i_list
 
-@cache
 def dfs_swap(swap_set):
     return 0
     # Swap
@@ -258,10 +252,10 @@ def process_inputs3(in_file):
             if (wire not in and_input_list) or (wire not in xor_input_list):
                 incorrect_AxorB_list.append(wire)
 
-    print(xor_list)
-    print(incorrect_cin_list)
-    print(incorrect_and_out_list)
-    print(incorrect_AxorB_list)
+    #print(xor_list)
+    #print(incorrect_cin_list)
+    #print(incorrect_and_out_list)
+    #print(incorrect_AxorB_list)
 
     # Evaluate
     incorrect_z_list = []
@@ -275,95 +269,95 @@ def process_inputs3(in_file):
 
     ###########################################
 
-    x_list = []
-    y_list = []
-    z_list = [] # 46 bits
-    x_val = 0
-    y_val = 0
-    for i in range(44, -1, -1):
-        next_index = False
-        for wire in wires_dict:
-            num = wires_dict[wire]
-            if (str(i) in wire):
-                if ("x" in wire):
-                    x_list.append(num)
-                    x_val += num*(2**i)
-                    next_index = True
-                    break
-                elif ("y" in wire):
-                    y_list.append(num)
-                    y_val += num*(2**i)
-                    next_index = True
-                    break
-            if (next_index):
-                break
-            
-    expected_z_val = x_val + y_val
-    print(f'expected: {expected_z_val}')
+    #x_list = []
+    #y_list = []
+    #z_list = [] # 46 bits
+    #x_val = 0
+    #y_val = 0
+    #for i in range(44, -1, -1):
+    #    next_index = False
+    #    for wire in wires_dict:
+    #        num = wires_dict[wire]
+    #        if (str(i) in wire):
+    #            if ("x" in wire):
+    #                x_list.append(num)
+    #                x_val += num*(2**i)
+    #                next_index = True
+    #                break
+    #            elif ("y" in wire):
+    #                y_list.append(num)
+    #                y_val += num*(2**i)
+    #                next_index = True
+    #                break
+    #        if (next_index):
+    #            break
+    #        
+    #expected_z_val = x_val + y_val
+    #print(f'expected: {expected_z_val}')
 
-    output, invalid = sim_eval(gates_dict, wires_dict)
-    print(f'actual  : {output}')
+    #output, invalid = sim_eval(gates_dict, wires_dict)
+    #print(f'actual  : {output}')
 
-    # Get bit differences
-    diff_bit_list = get_bit_diff(expected_z_val, output)
+    ## Get bit differences
+    #diff_bit_list = get_bit_diff(expected_z_val, output)
 
-    #############################################
-    # Sure swaps:
-    #   z09 with gwh
-    #   (z21, z39) with (wbw, jcq)
-    #     based on test: ('z21', 'jcq') ('z39', 'wbw')
-    sure_swap = ("z09", "gwh")
-    wire1_list = ["z21", "z39"]
-    wire2_list = ["wbw", "jcq"]
-    swap_list = [[("z21", "wbw"), ("z39", "jcq")],[("z21", "jcq"), ("z39", "wbw")]]
-    BEST_DIFF = len(diff_bit_list)
-    print(f'BEST_DIFF = {BEST_DIFF}')
-    for swap in swap_list:
-        pair1, pair2 = swap
-        wire1, wire2 = pair1
-        wire3, wire4 = pair2
+    ##############################################
+    ## Sure swaps:
+    ##   z09 with gwh
+    ##   (z21, z39) with (wbw, jcq)
+    ##     based on test: ('z21', 'jcq') ('z39', 'wbw')
+    #sure_swap = ("z09", "gwh")
+    #wire1_list = ["z21", "z39"]
+    #wire2_list = ["wbw", "jcq"]
+    #swap_list = [[("z21", "wbw"), ("z39", "jcq")],[("z21", "jcq"), ("z39", "wbw")]]
+    #BEST_DIFF = len(diff_bit_list)
+    #print(f'BEST_DIFF = {BEST_DIFF}')
+    #for swap in swap_list:
+    #    pair1, pair2 = swap
+    #    wire1, wire2 = pair1
+    #    wire3, wire4 = pair2
 
-        new_wires_dict = copy.deepcopy(wires_dict)
-        new_gates_dict = copy.deepcopy(gates_dict)
-        # Do the swaps
-        # pair 1
-        tuple1 = gates_dict[wire1]
-        tuple2 = gates_dict[wire2]
+    #    new_wires_dict = copy.deepcopy(wires_dict)
+    #    new_gates_dict = copy.deepcopy(gates_dict)
+    #    # Do the swaps
+    #    # pair 1
+    #    tuple1 = gates_dict[wire1]
+    #    tuple2 = gates_dict[wire2]
 
-        new_gates_dict[wire1] = tuple2
-        new_gates_dict[wire2] = tuple1
+    #    new_gates_dict[wire1] = tuple2
+    #    new_gates_dict[wire2] = tuple1
 
-        # pair 2
-        tuple1 = gates_dict[wire3]
-        tuple2 = gates_dict[wire4]
+    #    # pair 2
+    #    tuple1 = gates_dict[wire3]
+    #    tuple2 = gates_dict[wire4]
 
-        new_gates_dict[wire3] = tuple2
-        new_gates_dict[wire4] = tuple1
+    #    new_gates_dict[wire3] = tuple2
+    #    new_gates_dict[wire4] = tuple1
 
-        # Sure swaps
-        s1, s2 = sure_swap
-        tuple1 = gates_dict[s1]
-        tuple2 = gates_dict[s2]
+    #    # Sure swaps
+    #    s1, s2 = sure_swap
+    #    tuple1 = gates_dict[s1]
+    #    tuple2 = gates_dict[s2]
 
-        new_gates_dict[s1] = tuple2
-        new_gates_dict[s2] = tuple1
+    #    new_gates_dict[s1] = tuple2
+    #    new_gates_dict[s2] = tuple1
 
-        # Check
-        output, invalid = sim_eval(new_gates_dict, new_wires_dict)
-        if (invalid):
-            continue
-        new_diff_bit_list = get_bit_diff(expected_z_val, output)
+    #    # Check
+    #    output, invalid = sim_eval(new_gates_dict, new_wires_dict)
+    #    if (invalid):
+    #        continue
+    #    new_diff_bit_list = get_bit_diff(expected_z_val, output)
 
-        if (len(new_diff_bit_list) < BEST_DIFF):
-            print("NEW BEST DIFF")
-            #print(output)
-            #print(new_diff_bit_list)
-            BEST_DIFF = len(new_diff_bit_list)
-            print(BEST_DIFF, pair1, pair2)
+    #    if (len(new_diff_bit_list) < BEST_DIFF):
+    #        print("NEW BEST DIFF")
+    #        #print(output)
+    #        #print(new_diff_bit_list)
+    #        BEST_DIFF = len(new_diff_bit_list)
+    #        print(BEST_DIFF, pair1, pair2)
 
-    output = []
+    #output = []
 
-    return output
+    #return output
 
 def process_inputs2(in_file):
     global wires_dict
@@ -529,8 +523,8 @@ def process_inputs2(in_file):
 
     return output
 
-part1_example = process_inputs(example_file)
-part1_example2 = process_inputs(example2_file)
+#part1_example = process_inputs(example_file)
+#part1_example2 = process_inputs(example2_file)
 part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
@@ -539,12 +533,12 @@ part1 = process_inputs(input_file)
 #part2 = process_inputs2(input_file)
 part2 = process_inputs3(input_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

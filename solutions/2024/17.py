@@ -104,8 +104,8 @@ def getcombop(operand):
         return B
     elif (operand == 6):
         return C
-    else:
-        print("Invalid operand!")
+    #else:
+    #    print("Invalid operand!")
 
 def alu(opcode, operand):
     global A

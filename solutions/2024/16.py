@@ -1,7 +1,4 @@
-import numpy as np
 from collections import defaultdict
-from collections import deque
-from functools import cache
 
 input_file = "../../inputs/2024/input16.txt"
 example_file = "example16.txt"
@@ -163,9 +160,9 @@ def process_inputs(in_file):
 
         if (tile == 'E'):
             cost, pos = cost_dict[cost_tuple]
-            print(cost, pos)
+            #print(cost, pos)
             output = min(output, cost)
-            print(output)
+            #print(output)
 
             if (output == cost):
                 E_tuple = cost_tuple
@@ -190,10 +187,10 @@ def process_inputs(in_file):
             tile = '>'
 
         grid_dict[(row, col)] = tile
-    for row in range(0, MAX_ROW+1):
-        for col in range(0, MAX_COL+1):
-            print(grid_dict[(row, col)], end="")
-        print()
+    #for row in range(0, MAX_ROW+1):
+    #    for col in range(0, MAX_COL+1):
+    #        print(grid_dict[(row, col)], end="")
+    #    print()
 
     return output
 
@@ -268,11 +265,11 @@ def process_inputs2(in_file):
             n_cost_last, prev_tile_list = cost_dict[(n_row, n_col, n_dir)]
             if (prev_tile_list == None):
                 prev_tile_list = []
-            if (n_row, n_col, n_dir) == (6, 15, "up"):
-                print("DEBUG!")
-                print(n_cost, n_cost_last)
-                print(n_row, n_col, n_dir)
-            assert(prev_tile_list != None)
+            #if (n_row, n_col, n_dir) == (6, 15, "up"):
+            #    print("DEBUG!")
+            #    print(n_cost, n_cost_last)
+            #    print(n_row, n_col, n_dir)
+            #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
                 q.append((n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
@@ -298,7 +295,7 @@ def process_inputs2(in_file):
             n_cost_last, prev_tile_list = cost_dict[(n_row, n_col, n_dir)]
             if (prev_tile_list == None):
                 prev_tile_list = []
-            assert(prev_tile_list != None)
+            #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
                 q.append((n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
@@ -324,7 +321,7 @@ def process_inputs2(in_file):
             n_cost_last, prev_tile_list = cost_dict[(n_row, n_col, n_dir)]
             if (prev_tile_list == None):
                 prev_tile_list = []
-            assert(prev_tile_list != None)
+            #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
                 q.append((n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
@@ -350,7 +347,7 @@ def process_inputs2(in_file):
             n_cost_last, prev_tile_list = cost_dict[(n_row, n_col, n_dir)]
             if (prev_tile_list == None):
                 prev_tile_list = []
-            assert(prev_tile_list != None)
+            #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
                 q.append((n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
@@ -410,7 +407,7 @@ def process_inputs2(in_file):
             #    tile = '>'
 
             #grid_dict[(row, col)] = tile
-    #output = len(output_set)
+    output = len(output_set)
     #for row in range(0, MAX_ROW+1):
     #    for col in range(0, MAX_COL+1):
     #        print(grid_dict[(row, col)], end="")
@@ -421,19 +418,19 @@ def process_inputs2(in_file):
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file) # 12048 initial, expected is 11048
 #part1_example3 = process_inputs(example3_file)
-#part1 = process_inputs(input_file) # 122571 too high
+part1 = process_inputs(input_file) # 122571 too high
 
 #part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

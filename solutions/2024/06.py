@@ -256,7 +256,7 @@ def process_inputs2(in_file):
             line = file.readline()
         MAX_ROW = row-1
 
-    print(MAX_ROW, MAX_COL)
+    #print(MAX_ROW, MAX_COL)
     path_set = bfs_path_part1(INIT_GUARD, rowcol_list, colrow_list)
     part1 = len(path_set)
 

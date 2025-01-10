@@ -1,7 +1,4 @@
-#import numpy as np
-from collections import defaultdict
-from collections import deque
-#from functools import cache
+from collections import defaultdict, deque
 
 input_file = "../../inputs/2024/input12.txt"
 example_file = "example12.txt"
@@ -42,7 +39,7 @@ def process_inputs(in_file):
 
     # BFS
     for l in types_dict:
-        print(l)
+        #print(l)
         visited = set()
         region_dict = defaultdict(list)
         perimeter_dict = defaultdict(int)
@@ -109,12 +106,12 @@ def process_inputs(in_file):
             perimeter_dict[init_coord] = perimeter
 
         # Compute area
-        if (l == 'I'):
-            print(region_dict)
+        #if (l == 'I'):
+        #    print(region_dict)
         for init_coord in region_dict:
             area = len(region_dict[init_coord])
             perimeter = perimeter_dict[init_coord]
-            print(area, perimeter)
+            #print(area, perimeter)
             output += area*perimeter
 
     return output
@@ -207,7 +204,7 @@ def process_inputs2(in_file):
 
     # BFS
     for l in types_dict:
-        print(l)
+        #print(l)
         visited = set()
         region_dict = defaultdict(list)
         leftfences_dict = defaultdict(list)
@@ -282,11 +279,11 @@ def process_inputs2(in_file):
             perimeter_dict[init_coord] = perimeter
 
         # Compute area
-        if (l == 'O'):
-            print(upfences_dict)
-            print(downfences_dict)
-            print(leftfences_dict)
-            print(rightfences_dict)
+        #if (l == 'O'):
+        #    print(upfences_dict)
+        #    print(downfences_dict)
+        #    print(leftfences_dict)
+        #    print(rightfences_dict)
         for init_coord in region_dict:
             area = len(region_dict[init_coord])
 
@@ -307,7 +304,7 @@ def process_inputs2(in_file):
 
             sides = upsides + downsides + leftsides + rightsides
             sides_tuple = (upsides, downsides, leftsides, rightsides)
-            print(area, sides, sides_tuple)
+            #print(area, sides, sides_tuple)
             output += area*sides
 
     return output
@@ -315,19 +312,19 @@ def process_inputs2(in_file):
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
-part2_example2 = process_inputs2(example2_file)
+#part2_example = process_inputs2(example_file)
+#part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}') # should be 80
-print(f'Part 2 example2: {part2_example2}') # should be 436
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}') # should be 80
+#print(f'Part 2 example2: {part2_example2}') # should be 436
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

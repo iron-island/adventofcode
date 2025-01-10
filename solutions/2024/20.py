@@ -1,7 +1,4 @@
-import numpy as np
-from collections import defaultdict
-from collections import deque
-from functools import cache
+from collections import defaultdict, deque
 
 input_file = "../../inputs/2024/input20.txt"
 example_file = "example20.txt"
@@ -59,7 +56,7 @@ def process_inputs(in_file):
             line = file.readline()
 
     MAX_ROW = row-1
-    print(MAX_ROW, MAX_COL)
+    #print(MAX_ROW, MAX_COL)
 
     # Initial BFS
     q = deque()
@@ -176,8 +173,8 @@ def process_inputs(in_file):
     # Find all cheats
     #for idx, cheat in enumerate(cheat_set):
     for idx, wall in enumerate(wall_list):
-        if ((idx % 500) == 0):
-            print(f'{idx} of {len(wall_list)-1}')
+        #if ((idx % 500) == 0):
+        #    print(f'{idx} of {len(wall_list)-1}')
 
         row1, col1 = wall
         cheat1 = wall
@@ -208,8 +205,8 @@ def process_inputs(in_file):
             grid_dict[(row2, col2)] = '2'
 
             # Debug:
-            if (cheat1 == (7, 10)) and (cheat2 == (7, 9)):
-                print_grid(grid_dict, MAX_ROW, MAX_COL)
+            #if (cheat1 == (7, 10)) and (cheat2 == (7, 9)):
+            #    print_grid(grid_dict, MAX_ROW, MAX_COL)
 
             # Internal BFS
             q = deque()
@@ -385,7 +382,7 @@ def process_inputs2(in_file, check):
             line = file.readline()
 
     MAX_ROW = row-1
-    print(MAX_ROW, MAX_COL)
+    #print(MAX_ROW, MAX_COL)
 
     # Initial BFS
     q = []
@@ -469,9 +466,9 @@ def process_inputs2(in_file, check):
 
         prev_t, prev_node = node_dict[prev_node]
     best_path.reverse()
-    assert(len(best_path) == max_t+1)
-    assert(best_path[0] == S_pos)
-    assert(best_path[-1] == E_pos)
+    #assert(len(best_path) == max_t+1)
+    #assert(best_path[0] == S_pos)
+    #assert(best_path[-1] == E_pos)
 
     # Convert to dict
     idx_dict = defaultdict(int)
@@ -571,8 +568,8 @@ def process_inputs2(in_file, check):
     #for idx, wall in enumerate(wall_list):
     idx = 0
     for cheat0 in cheat0_set:
-        if ((idx % 100) == 0):
-            print(f'{idx} of {len(wall_list)-1}')
+        #if ((idx % 100) == 0):
+        #    print(f'{idx} of {len(wall_list)-1}')
         idx += 1
 
         row0, col0 = cheat0
@@ -774,8 +771,8 @@ def process_inputs2(in_file, check):
                         q.append((row2, col2, t+diff_cheat))
                         cheat_mode = 2
                         # Debug
-                        if (cheat0 == S_pos) and (cheat2 == (7, 3)) and (diff_cheat == 6):
-                            print(f'Adding to visited, t = {t}, diff_cheat = {diff_cheat}')
+                        #if (cheat0 == S_pos) and (cheat2 == (7, 3)) and (diff_cheat == 6):
+                        #    print(f'Adding to visited, t = {t}, diff_cheat = {diff_cheat}')
 
                         min_row = min(row0, row2)
                         max_row = max(row0, row2)
@@ -786,9 +783,9 @@ def process_inputs2(in_file, check):
                                 rc = (r, c)
                                 if (rc != cheat2):
                                     visited.add((rc))
-                        if (cheat0 == S_pos) and (cheat2 == (7, 3)) and (diff_cheat == 6):
-                            print("print_grid in BFS")
-                            print_grid(grid_dict, MAX_ROW, MAX_COL, visited)
+                        #if (cheat0 == S_pos) and (cheat2 == (7, 3)) and (diff_cheat == 6):
+                        #    print("print_grid in BFS")
+                        #    print_grid(grid_dict, MAX_ROW, MAX_COL, visited)
                         continue
 
                     # up
@@ -836,16 +833,16 @@ def process_inputs2(in_file, check):
                         q.append((n_row, n_col, t+1))
 
                 # BFS while loop ended here
-                if (cheat0 == S_pos) and (cheat2 == (7, 3)) and (diff_cheat == 6):
-                    print("print_grid")
-                    print(t)
-                    for row in range(0, MAX_ROW+1):
-                        for col in range(0, MAX_COL+1):
-                            if ((row, col) in visited):
-                                print("O", end="")
-                            else:
-                                print(grid_dict[(row, col)], end="")
-                        print("")
+                #if (cheat0 == S_pos) and (cheat2 == (7, 3)) and (diff_cheat == 6):
+                #    print("print_grid")
+                #    print(t)
+                #    for row in range(0, MAX_ROW+1):
+                #        for col in range(0, MAX_COL+1):
+                #            if ((row, col) in visited):
+                #                print("O", end="")
+                #            else:
+                #                print(grid_dict[(row, col)], end="")
+                #        print("")
 
                 # Evaluate
                 if (check == "example"):
@@ -879,19 +876,19 @@ def process_inputs2(in_file, check):
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file, "example")
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file, "input")
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

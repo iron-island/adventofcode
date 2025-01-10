@@ -64,8 +64,8 @@ def process_inputs(in_file):
                 if (c == "X") and (grid[row-1][col-1] == "M") and (grid[row-2][col-2] == "A") and (grid[row-3][col-3] == "S"):
                     output += 1
                     diag2 += 1
-                    print(f'diag2 (row,col) = ({row},{col})')
-                    print(f'grid[row-2][col-2] = {grid[row-2][col-2]}')
+                    #print(f'diag2 (row,col) = ({row},{col})')
+                    #print(f'grid[row-2][col-2] = {grid[row-2][col-2]}')
 
             # up to down diagonal \
             if (row <= (MAX_ROW - 3)) and (col <= (MAX_COL - 3)):
@@ -105,14 +105,14 @@ def process_inputs(in_file):
             #except:
             #    output += 0
 
-    print(f'hor = {hor}') # should be 3
-    print(f'hor_reverse = {hor_reverse}') # should be 2
-    print(f'vert = {vert}') # should be 1
-    print(f'vert_reverse = {vert_reverse}') # should be 2
-    print(f'diag1 = {diag1}') # should be 4
-    print(f'diag2 = {diag2}') # should be 4
-    print(f'diag3 = {diag3}') # should be 1
-    print(f'diag4 = {diag4}') # should be 1
+    #print(f'hor = {hor}') # should be 3
+    #print(f'hor_reverse = {hor_reverse}') # should be 2
+    #print(f'vert = {vert}') # should be 1
+    #print(f'vert_reverse = {vert_reverse}') # should be 2
+    #print(f'diag1 = {diag1}') # should be 4
+    #print(f'diag2 = {diag2}') # should be 4
+    #print(f'diag3 = {diag3}') # should be 1
+    #print(f'diag4 = {diag4}') # should be 1
 
     return output
 
@@ -192,13 +192,13 @@ def process_inputs2(in_file):
     return output
 
 #part1_example = process_inputs(example_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
+#part2_example = process_inputs2(example_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')

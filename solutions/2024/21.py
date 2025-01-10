@@ -1,8 +1,6 @@
-import numpy as np
 from collections import defaultdict
-from collections import deque
 from functools import cache
-import math
+from math import inf
 
 input_file = "../../inputs/2024/input21.txt"
 example_file = "example21.txt"
@@ -45,7 +43,7 @@ rev_dir_dict = defaultdict(tuple)
 def move_dir(rc, direction):
     row, col = rc
 
-    assert(direction in ["up", "down", "left", "right"])
+    #assert(direction in ["up", "down", "left", "right"])
     if (direction == "up"):
         n_row = row-1
         n_col = col
@@ -268,7 +266,7 @@ def get_key_to_robot_dir(startkey, endkey, key_dict, rev_key_dict):
     # Reconstruct path
     endkey_rc = rev_key_dict[endkey]
     cost, _ = prev_node_dict[endkey_rc]
-    print(cost)
+    #print(cost)
     curr_rc_set = set()
     curr_rc_set.add(endkey_rc)
     seq = ""
@@ -361,7 +359,7 @@ def dfs_key(startkey_rc, endkey_rc, num_robots):
     # A button
     A_tuple = ('A', 1)
     INIT_COST = 10000000000000000000
-    INIT_COST = math.inf
+    INIT_COST = inf
     if (len(moves_list) == 1):
         moves_list.append(A_tuple)
 
@@ -400,8 +398,8 @@ def dfs_key(startkey_rc, endkey_rc, num_robots):
             # DFS on seq
             cost = min(cost, dfs_dir1_seq(seq, num_robots-1))
 
-    assert(cost < INIT_COST)
-    assert(cost > 0)
+    #assert(cost < INIT_COST)
+    #assert(cost > 0)
 
     return cost
 
@@ -440,7 +438,7 @@ def dfs_dir1(startdir1, enddir1, num_robots):
     # A button
     A_tuple = ('A', 1)
     INIT_COST = 10000000000000000000
-    INIT_COST = math.inf
+    INIT_COST = inf
     if (len(moves_list) <= 1):
         moves_list.append(A_tuple)
 
@@ -480,8 +478,8 @@ def dfs_dir1(startdir1, enddir1, num_robots):
             # DFS on seq
             cost = min(cost, dfs_dir2_seq(seq, num_robots-1))
 
-    assert(cost < INIT_COST)
-    assert(cost > 0)
+    #assert(cost < INIT_COST)
+    #assert(cost > 0)
 
     return cost
 
@@ -524,7 +522,7 @@ def dfs_dir2(startdir2, enddir2, num_robots):
     # A button
     A_tuple = ('A', 1)
     INIT_COST = 10000000000000000000
-    INIT_COST = math.inf
+    INIT_COST = inf
     if (len(moves_list) == 1):
         moves_list.append(A_tuple)
 
@@ -581,8 +579,8 @@ def dfs_dir2(startdir2, enddir2, num_robots):
                 # DFS on seq
                 cost = min(cost, dfs_dir2_seq(seq, num_robots-1))
 
-    assert(cost < INIT_COST)
-    assert(cost > 0)
+    #assert(cost < INIT_COST)
+    #assert(cost > 0)
 
     return cost
 
@@ -606,7 +604,7 @@ def simulate_dir2(human_seq, dir_dict):
     # Direction starts at A
     row, col = (0, 2)
     for h in human_seq:
-        assert((row, col) in dir_dict)
+        #assert((row, col) in dir_dict)
         if (h == 'A'):
             seq = seq + dir_dict[(row, col)]
             continue
@@ -633,7 +631,7 @@ def simulate_key(input_seq, key_dict):
     # Direction starts at A
     row, col = (3, 2)
     for h in input_seq:
-        assert((row, col) in key_dict)
+        #assert((row, col) in key_dict)
         if (h == 'A'):
             seq = seq + key_dict[(row, col)]
             continue
@@ -711,7 +709,7 @@ def process_inputs(in_file):
             dir1_dict['A'] = 1
 
             len_dir1_dict = len(dir1_dict.keys())
-            assert(len_dir1_dict in [2, 3])
+            #assert(len_dir1_dict in [2, 3])
 
             # Get dir2_dict
             dir2_dict_list = []
@@ -743,17 +741,17 @@ def process_inputs(in_file):
             #tot_cost += curr_cost
 
         # Debug
-        if (code == "379A"):
-            dir1_seq = simulate_dir2(seq, dir_dict)
-            sim_code = simulate_key(dir1_seq, key_dict)
-            print(sim_code)
+        #if (code == "379A"):
+        #    dir1_seq = simulate_dir2(seq, dir_dict)
+        #    sim_code = simulate_key(dir1_seq, key_dict)
+        #    print(sim_code)
 
         # Record cost
         code_cost += get_tot_human_cost(seq, human_cost_dict)
         code_cost_dict[code] = code_cost
 
-        if (code == '379A'):
-            print(seq)
+        #if (code == '379A'):
+        #    print(seq)
         
         # Record in seq_dict
         seq_dict[code] = seq
@@ -784,25 +782,25 @@ def process_inputs(in_file):
     #actual_seq = simulate_dir2("<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A", dir_dict)
 
     # For 379A
-    dir2_seq = simulate_dir2("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", dir_dict)
-    print(dir2_seq)
-    dir1_seq = simulate_dir2(dir2_seq, dir_dict)
-    actual_code = simulate_key(dir1_seq, key_dict)
-    print(actual_code)
+    #dir2_seq = simulate_dir2("<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A", dir_dict)
+    #print(dir2_seq)
+    #dir1_seq = simulate_dir2(dir2_seq, dir_dict)
+    #actual_code = simulate_key(dir1_seq, key_dict)
+    #print(actual_code)
 
     # For 029A
     #dir1_seq = simulate_dir2("v<<A>>^A<A>AvA<^AA>A<vAAA>^A", dir_dict)
     #actual_code = simulate_key(dir1_seq, key_dict)
     #print(actual_code)
 
-    dir1_seq = simulate_dir2("<A>Av<<AA>^AA>AvAA^Av<AAA^>A", dir_dict)
-    code_seq = simulate_key(dir1_seq, key_dict)
-    print(f'Wrong   dir1_seq: {dir1_seq}')
-    print(f'Wrong   code_seq: {code_seq}')
-    dir1_seq = simulate_dir2("<A>Av<<AA>^AA>AvAA^A<vAAA>^A", dir_dict)
-    code_seq = simulate_key(dir1_seq, key_dict)
-    print(f'Correct dir1_seq: {dir1_seq}')
-    print(f'Correct code_seq: {code_seq}')
+    #dir1_seq = simulate_dir2("<A>Av<<AA>^AA>AvAA^Av<AAA^>A", dir_dict)
+    #code_seq = simulate_key(dir1_seq, key_dict)
+    #print(f'Wrong   dir1_seq: {dir1_seq}')
+    #print(f'Wrong   code_seq: {code_seq}')
+    #dir1_seq = simulate_dir2("<A>Av<<AA>^AA>AvAA^A<vAAA>^A", dir_dict)
+    #code_seq = simulate_key(dir1_seq, key_dict)
+    #print(f'Correct dir1_seq: {dir1_seq}')
+    #print(f'Correct code_seq: {code_seq}')
 
     return output
 
@@ -871,7 +869,7 @@ def process_inputs1(in_file, num_robots):
         num  = int(code[:-1])
 
         complexity = cost*num
-        print(f'Code {code}, complexity {complexity} = {cost}*{num}')
+        #print(f'Code {code}, complexity {complexity} = {cost}*{num}')
         output += complexity
 
     return output
@@ -884,12 +882,12 @@ part1 = process_inputs1(input_file, 2)
 #part2_example = process_inputs2(example_file)
 part2 = process_inputs1(input_file, 25)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')

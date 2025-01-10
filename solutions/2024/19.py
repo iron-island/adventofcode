@@ -1,6 +1,3 @@
-import numpy as np
-from collections import defaultdict
-from collections import deque
 from functools import cache
 
 input_file = "../../inputs/2024/input19.txt"
@@ -140,10 +137,10 @@ def process_inputs(in_file):
     valid = 0
     towels_tuple = tuple(towels_list)
     for idx, design in enumerate(designs_list):
-        print(f'Checking design {idx} of {len(designs_list)-1}')
+        #print(f'Checking design {idx} of {len(designs_list)-1}')
         valid = check_design(design, towels_tuple)
         if valid:
-            print(f'{design} is possible')
+            #print(f'{design} is possible')
             output += 1
 
     return output
@@ -171,33 +168,33 @@ def process_inputs2(in_file):
     towels_tuple = tuple(towels_list)
     valid_list = []
     for idx, design in enumerate(designs_list):
-        print(f'Checking design {idx} of {len(designs_list)-1}')
+        #print(f'Checking design {idx} of {len(designs_list)-1}')
         valid = check_design2(design, towels_tuple)
         if valid:
-            print(f'{design} is possible')
+            #print(f'{design} is possible')
             valid_list.append(valid)
             output += valid
 
-    print(valid_list)
+    #print(valid_list)
 
     return output
 
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-#part1 = process_inputs(input_file)
+part1 = process_inputs(input_file)
 
-part2_example = process_inputs2(example_file)
-part2_example2 = process_inputs2(example2_file)
-part2_example3 = process_inputs2(example3_file)
+#part2_example = process_inputs2(example_file)
+#part2_example2 = process_inputs2(example2_file)
+#part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file)
 
-print(f'Part 1 example: {part1_example}')
-print(f'Part 1 example2: {part1_example2}')
-print(f'Part 1 example3: {part1_example3}')
+#print(f'Part 1 example: {part1_example}')
+#print(f'Part 1 example2: {part1_example2}')
+#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
 print("")
-print(f'Part 2 example: {part2_example}')
-print(f'Part 2 example2: {part2_example2}')
-print(f'Part 2 example3: {part2_example3}')
+#print(f'Part 2 example: {part2_example}')
+#print(f'Part 2 example2: {part2_example2}')
+#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')
