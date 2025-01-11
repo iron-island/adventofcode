@@ -1,4 +1,5 @@
-import copy
+#import copy
+from collections import defaultdict
 
 input_file = "../../inputs/2024/input11.txt"
 example_file = "example11.txt"
@@ -57,7 +58,8 @@ def process_inputs(in_file):
 def process_inputs2(in_file):
     output = 0
 
-    s_list = []
+    #s_list = []
+    new_dict = defaultdict(int)
     with open(in_file) as file:
         line = file.readline()
     
@@ -65,18 +67,20 @@ def process_inputs2(in_file):
             line = line.strip()
 
             line = line.split()
-            s_list = [int(x) for x in line]
+            #s_list = [int(x) for x in line]
+            for s in line:
+                new_dict[int(s)] += 1
 
             line = file.readline()
 
     # Dictionary
-    s_dict = {}
-    for s in s_list:
-        if (s not in s_dict):
-            s_dict[s] = 1
-        else:
-            s_dict[s] += 1
-    new_dict = copy.deepcopy(s_dict)
+    #s_dict = {}
+    #for s in s_list:
+    #    if (s not in s_dict):
+    #        s_dict[s] = 1
+    #    else:
+    #        s_dict[s] += 1
+    #new_dict = s_dict.copy()
 
     # Blink
     BLINKS = 75
@@ -84,6 +88,9 @@ def process_inputs2(in_file):
     for b in range(1, BLINKS+1):
         #print(f'Blink {b}:')
         #print(new_dict)
+
+        # Update
+        s_dict = new_dict.copy()
         for s in s_dict:
             num = s_dict[s]
             if (num == 0):
@@ -133,8 +140,6 @@ def process_inputs2(in_file):
         # Part 1: Compute when blinks are 25
         if (b == 25):
             part1 = sum(new_dict.values())
-        # Update
-        s_dict = copy.deepcopy(new_dict)
 
     part2 = sum(new_dict.values())
     
