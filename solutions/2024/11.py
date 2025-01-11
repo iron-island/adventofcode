@@ -80,6 +80,7 @@ def process_inputs2(in_file):
 
     # Blink
     BLINKS = 75
+    part1 = 0
     for b in range(1, BLINKS+1):
         #print(f'Blink {b}:')
         #print(new_dict)
@@ -129,27 +130,34 @@ def process_inputs2(in_file):
                         #if (s == 2) and (b == BLINKS):
                         #    print(f'Initialize {new_s} to dict with {num}')
                         #    print(f'new_dict[new_s] = {new_dict[new_s]}')
+        # Part 1: Compute when blinks are 25
+        if (b == 25):
+            part1 = sum(new_dict.values())
         # Update
         s_dict = copy.deepcopy(new_dict)
 
+    part2 = sum(new_dict.values())
+    
+    return part1, part2
+
     # Evaluate
-    for s in new_dict:
-        num = new_dict[s]
-        #print(f'{s}: {num}')
-        #assert(num >= 0)
-        output += num
+    #for s in new_dict:
+    #    num = new_dict[s]
+    #    #print(f'{s}: {num}')
+    #    #assert(num >= 0)
+    #    output += num
 
     # Blink
-    s_list = [4610211]
+    #s_list = [4610211]
     #s_list = [4] # 13
     #s_list = [0] # 17
     #s_list = [59] # 14
     #s_list = [3907] # 14
     #s_list = [201586]
-    s_list = [586] # after blink
+    #s_list = [586] # after blink
     #s_list = [929] # 16
     #s_list = [33750]
-    new_list = copy.deepcopy(s_list)
+    #new_list = copy.deepcopy(s_list)
 
     #for b in range(0, 50):
     #    #print(new_list)
@@ -189,13 +197,13 @@ def process_inputs2(in_file):
 
     #output = len(new_list)
 
-    return output
+    #return output
 
 #part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
+#part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+part1, part2 = process_inputs2(input_file)
 
 #print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
