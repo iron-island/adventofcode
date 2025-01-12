@@ -484,6 +484,9 @@ def process_inputs_bfs(in_file):
     # BFS between 1 starting node and all other nodes, and get the longest path
     #   which should be between the starting node and an ending node on another subgraph
     #   once the graph has been cut. This may not be general if one of the subgraphs is significantly larger than the other
+    # Idea adapted from Reddit user u/e_blake
+    # Ref: https://www.reddit.com/r/adventofcode/comments/18qbsxs/comment/kqatvpo/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+    # 
     part1 = 0
     node_list = list(comp_dict.keys())
     MAX_COST = 0
