@@ -1,7 +1,7 @@
 #from copy import deepcopy
 #import graphviz
-#from collections import defaultdict, deque
-import networkx as nx
+from collections import defaultdict, deque
+#import networkx as nx
 
 input_file = "../../inputs/2023/input25.txt"
 example_file = "example25.txt"
@@ -481,86 +481,195 @@ def process_inputs_bfs(in_file):
 
             line = file.readline()
 
+    # BFS between 1 starting node and all other nodes, and get the longest path
+    #   which should be between the starting node and an ending node on another subgraph
+    #   once the graph has been cut. This may not be general if one of the subgraphs is significantly larger than the other
     part1 = 0
     node_list = list(comp_dict.keys())
-    removed_edges_set = set()
-    for i in range(0, 4):
-        MAX_COST = 0
-        for idx, start_node in enumerate(node_list[0:1]):
-            for idx_end, end_node in enumerate(node_list[idx+1:]):
-                if (idx_end == idx):
-                    continue
-                #print(f'idx {idx}, idx_end {idx_end} of {len(node_list)-1}')
-                # BFS
-                q = deque()
-                q.append((0, start_node))
-                visited = set()
-                curr_cost_dict = cost_dict.copy()
-                curr_cost_dict[start_node] = (0, None)
-                found_end = False
-                while len(q):
-                    curr_cost, curr_node = q.popleft()
+    MAX_COST = 0
+    start_node = node_list[0]
+    for end_node in node_list[1:]:
+        if (start_node == end_node):
+            continue
+        #print(f'idx {idx}, idx_end {idx_end} of {len(node_list)-1}')
+        # BFS
+        q = deque()
+        q.append((0, start_node))
+        visited = set()
+        curr_cost_dict = cost_dict.copy()
+        curr_cost_dict[start_node] = (0, None)
+        found_end = False
+        while len(q):
+            curr_cost, curr_node = q.popleft()
 
-                    if (curr_node == end_node):
-                        found_end = True
-                        break
+            if (curr_node == end_node):
+                found_end = True
+                break
 
-                    if (curr_node in visited):
-                        continue
-                    visited.add(curr_node)
+            if (curr_node in visited):
+                continue
+            visited.add(curr_node)
 
-                    next_node_list = comp_dict[curr_node]
-                    for next_node in next_node_list:
-                        if (next_node not in visited):
-                            edge_tuple = tuple(sorted([curr_node, next_node]))
-                            if (edge_tuple not in removed_edges_set):
-                                prev_cost, prev_node = curr_cost_dict[next_node]
-                                next_cost = curr_cost+1
-                                if (next_cost < prev_cost):
-                                    # Update costs
-                                    curr_cost_dict[next_node] = (next_cost, curr_node)
+            next_node_list = comp_dict[curr_node]
+            for next_node in next_node_list:
+                if (next_node not in visited):
+                    #edge_tuple = tuple(sorted([curr_node, next_node]))
+                    #if (edge_tuple not in removed_edges_set):
+                    prev_cost, prev_node = curr_cost_dict[next_node]
+                    next_cost = curr_cost+1
+                    if (next_cost < prev_cost):
+                        # Update costs
+                        curr_cost_dict[next_node] = (next_cost, curr_node)
 
-                                    # Update edge count
-                                    #edge_count_dict[edge_tuple] += 1
+                        # Update edge count
+                        #edge_count_dict[edge_tuple] += 1
 
-                                    # Add to queue
-                                    q.append((next_cost, next_node))
+                        # Add to queue
+                        q.append((next_cost, next_node))
 
-                if (found_end) and (curr_cost > MAX_COST):
-                    MAX_COST = curr_cost
+        if (found_end) and (curr_cost > MAX_COST):
+            MAX_COST = curr_cost
+            LAST_END_NODE = end_node
 
-                    # Reconstruct path
-                    curr_node = end_node
-                    edges_list = []
-                    while True:
-                        cost, prev_node = curr_cost_dict[curr_node]
+            # Reconstruct path
+            curr_node = end_node
+            edges1_list = []
+            while True:
+                cost, prev_node = curr_cost_dict[curr_node]
 
-                        if (prev_node == None):
-                            break
-                        edge_tuple = tuple(sorted([curr_node, prev_node]))
-                        edges_list.append(edge_tuple)
-                        curr_node = prev_node
-                elif not found_end:
-                    # Graph was already cut
+                if (prev_node == None):
+                    break
+                edge_tuple = tuple(sorted([curr_node, prev_node]))
+                edges1_list.append(edge_tuple)
+                curr_node = prev_node
+
+    # Rerun BFS twice, using LAST_END_NODE but with previous paths removed
+    for i in range(0, 2):
+        if (i == 0):
+            removed_edges_set = set(edges1_list)
+        elif (i == 1):
+            removed_edges_set = removed_edges_set | set(edges2_list)
+
+        # BFS
+        q = deque()
+        q.append((0, start_node))
+        visited = set()
+        curr_cost_dict = cost_dict.copy()
+        curr_cost_dict[start_node] = (0, None)
+        found_end = False
+        while len(q):
+            curr_cost, curr_node = q.popleft()
+
+            if (curr_node == LAST_END_NODE):
+                found_end = True
+                break
+
+            if (curr_node in visited):
+                continue
+            visited.add(curr_node)
+
+            next_node_list = comp_dict[curr_node]
+            for next_node in next_node_list:
+                if (next_node not in visited):
+                    edge_tuple = tuple(sorted([curr_node, next_node]))
+                    if (edge_tuple not in removed_edges_set):
+                        prev_cost, prev_node = curr_cost_dict[next_node]
+                        next_cost = curr_cost+1
+                        if (next_cost < prev_cost):
+                            # Update costs
+                            curr_cost_dict[next_node] = (next_cost, curr_node)
+
+                            # Add to queue
+                            q.append((next_cost, next_node))
+
+        if (found_end):
+            # Reconstruct path
+            curr_node = LAST_END_NODE
+
+            if (i == 0):
+                edges2_list = []
+            elif (i == 1):
+                edges3_list = []
+
+            while True:
+                cost, prev_node = curr_cost_dict[curr_node]
+
+                if (prev_node == None):
+                    break
+                edge_tuple = tuple(sorted([curr_node, prev_node]))
+                curr_node = prev_node
+
+                if (i == 0):
+                    edges2_list.append(edge_tuple)
+                elif (i == 1):
+                    edges3_list.append(edge_tuple)
+
+    # Find the edge to be cut from each path
+    min_cut_edges_list = []
+    for i in range(0, 3):
+        if (i == 0):
+            path = edges3_list
+        elif (i == 1):
+            removed_edges_set = set(edges1_list) | set(edges3_list)
+            path = edges2_list
+        elif (i == 2):
+            # On the 3rd BFS, remove only the 2 edges that were previously found
+            #   so that the size of the subgraph can be computed in the same run
+            #removed_edges_set = set(edges2_list) | set(edges3_list)
+            removed_edges_set = set(min_cut_edges_list)
+            path = edges1_list
+
+        for edge in path:
+            # Remove edge
+            removed_edges_set.add(edge)
+
+            # BFS
+            q = deque()
+            q.append((0, start_node))
+            visited = set()
+            curr_cost_dict = cost_dict.copy()
+            curr_cost_dict[start_node] = (0, None)
+            found_end = False
+            while len(q):
+                curr_cost, curr_node = q.popleft()
+
+                if (curr_node == LAST_END_NODE):
+                    found_end = True
                     break
 
-        # Remove edges
-        for edge in edges_list:
-            removed_edges_set.add(edge)
-        print(removed_edges_set)
-    print(MAX_COST)
+                if (curr_node in visited):
+                    continue
+                visited.add(curr_node)
 
-    # Get top edges
-    #edge_count_list = sorted(list(edge_count_dict.values()))
-    #top1_edge = max(edge_count_dict, key=edge_count_dict.get)
-    #edge_count_dict[top1_edge] = 0
-    #top2_edge = max(edge_count_dict, key=edge_count_dict.get)
-    #edge_count_dict[top2_edge] = 0
-    #top3_edge = max(edge_count_dict, key=edge_count_dict.get)
-    #print(top1_edge, top2_edge, top3_edge)
+                next_node_list = comp_dict[curr_node]
+                for next_node in next_node_list:
+                    if (next_node not in visited):
+                        edge_tuple = tuple(sorted([curr_node, next_node]))
+                        if (edge_tuple not in removed_edges_set):
+                            prev_cost, prev_node = curr_cost_dict[next_node]
+                            next_cost = curr_cost+1
+                            if (next_cost < prev_cost):
+                                # Update costs
+                                curr_cost_dict[next_node] = (next_cost, curr_node)
 
-    # Expected top 3
+                                # Add to queue
+                                q.append((next_cost, next_node))
+
+            # If end_node wasn't found, an edge for min-cut was found
+            if not (found_end):
+                min_cut_edges_list.append(edge)
+                subgraph_size = len(visited)
+                break
+
+            # Add back the removed edge only on the 3rd iteration
+            if (i == 2):
+                removed_edges_set.add(edge)
+
+    # Expected min-cut edges with my input:
     # ('jbz', 'sqh'), ('nvg', 'vfj'), ('fch', 'fvh')
+    #print(min_cut_edges_list)
+    #print(subgraph_size)
+    part1 = subgraph_size*(len(node_list) - subgraph_size)
 
     return part1
 
@@ -597,8 +706,8 @@ def process_inputs_networkx(in_file):
 #part2_example = process_inputs2(example_file)
 #part2 = process_inputs2(input_file)
 
-#part1 = process_inputs_bfs(input_file)
-part1 = process_inputs_networkx(input_file)
+part1 = process_inputs_bfs(input_file)
+#part1 = process_inputs_networkx(input_file)
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
