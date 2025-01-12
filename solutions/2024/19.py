@@ -14,6 +14,8 @@ part2_example3 = 0
 part1 = 0
 part2 = 0
 
+towels_list = []
+
 @cache
 def check_design(design, towels_tuple):
     #print(design)
@@ -98,9 +100,9 @@ def check_design(design, towels_tuple):
 #    return tot_valid
 # Alternative 2
 @cache
-def check_design2(design, towels_tuple):
+def check_design2(design):
     valid = 0
-    for towel in towels_tuple:
+    for towel in towels_list:
         len_towel = len(towel)
 
         if (len_towel > len(design)):
@@ -110,7 +112,7 @@ def check_design2(design, towels_tuple):
             valid += 1
 
         if (towel == design[0:len_towel]):
-            valid += check_design2(design[len_towel:], towels_tuple)
+            valid += check_design2(design[len_towel:])
 
     return valid
             
@@ -146,6 +148,8 @@ def process_inputs(in_file):
     return output
 
 def process_inputs2(in_file):
+    global towels_list
+
     output = 0
 
     designs_list = []
@@ -165,29 +169,31 @@ def process_inputs2(in_file):
 
     # Iterate
     valid = 0
-    towels_tuple = tuple(towels_list)
-    valid_list = []
-    for idx, design in enumerate(designs_list):
+    #towels_tuple = tuple(towels_list)
+    #valid_list = []
+    part1 = 0
+    for design in designs_list:
         #print(f'Checking design {idx} of {len(designs_list)-1}')
-        valid = check_design2(design, towels_tuple)
+        valid = check_design2(design)
         if valid:
             #print(f'{design} is possible')
-            valid_list.append(valid)
+            #valid_list.append(valid)
             output += valid
+            part1 += 1
 
     #print(valid_list)
 
-    return output
+    return part1, output
 
 #part1_example = process_inputs(example_file)
 #part1_example2 = process_inputs(example2_file)
 #part1_example3 = process_inputs(example3_file)
-part1 = process_inputs(input_file)
+#part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
 #part2_example2 = process_inputs2(example2_file)
 #part2_example3 = process_inputs2(example3_file)
-part2 = process_inputs2(input_file)
+part1, part2 = process_inputs2(input_file)
 
 #print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
