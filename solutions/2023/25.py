@@ -1,5 +1,7 @@
-from copy import deepcopy
-import graphviz
+#from copy import deepcopy
+#import graphviz
+#from collections import defaultdict, deque
+import networkx as nx
 
 input_file = "../../inputs/2023/input25.txt"
 example_file = "example25.txt"
@@ -455,11 +457,148 @@ def process_inputs(in_file):
     
     return output
 
+def process_inputs_bfs(in_file):
+    comp_dict = defaultdict(list)
+    cost_dict = defaultdict(tuple)
+    with open(in_file) as file:
+        line = file.readline()
+    
+        while line:
+            line = line.strip()
+
+            left, right = line.split(": ")
+            right_list = right.split()
+            comp_dict[left] += right_list
+            cost_dict[left] = (1000, None)
+
+            # Construct connections from right-side node to left-side node
+            # Set not used to automatically check membership since
+            #   list is small enough
+            for r in right_list:
+                if (left not in comp_dict[r]):
+                    comp_dict[r].append(left)
+                    cost_dict[r] = (1000, None)
+
+            line = file.readline()
+
+    part1 = 0
+    node_list = list(comp_dict.keys())
+    removed_edges_set = set()
+    for i in range(0, 4):
+        MAX_COST = 0
+        for idx, start_node in enumerate(node_list[0:1]):
+            for idx_end, end_node in enumerate(node_list[idx+1:]):
+                if (idx_end == idx):
+                    continue
+                #print(f'idx {idx}, idx_end {idx_end} of {len(node_list)-1}')
+                # BFS
+                q = deque()
+                q.append((0, start_node))
+                visited = set()
+                curr_cost_dict = cost_dict.copy()
+                curr_cost_dict[start_node] = (0, None)
+                found_end = False
+                while len(q):
+                    curr_cost, curr_node = q.popleft()
+
+                    if (curr_node == end_node):
+                        found_end = True
+                        break
+
+                    if (curr_node in visited):
+                        continue
+                    visited.add(curr_node)
+
+                    next_node_list = comp_dict[curr_node]
+                    for next_node in next_node_list:
+                        if (next_node not in visited):
+                            edge_tuple = tuple(sorted([curr_node, next_node]))
+                            if (edge_tuple not in removed_edges_set):
+                                prev_cost, prev_node = curr_cost_dict[next_node]
+                                next_cost = curr_cost+1
+                                if (next_cost < prev_cost):
+                                    # Update costs
+                                    curr_cost_dict[next_node] = (next_cost, curr_node)
+
+                                    # Update edge count
+                                    #edge_count_dict[edge_tuple] += 1
+
+                                    # Add to queue
+                                    q.append((next_cost, next_node))
+
+                if (found_end) and (curr_cost > MAX_COST):
+                    MAX_COST = curr_cost
+
+                    # Reconstruct path
+                    curr_node = end_node
+                    edges_list = []
+                    while True:
+                        cost, prev_node = curr_cost_dict[curr_node]
+
+                        if (prev_node == None):
+                            break
+                        edge_tuple = tuple(sorted([curr_node, prev_node]))
+                        edges_list.append(edge_tuple)
+                        curr_node = prev_node
+                elif not found_end:
+                    # Graph was already cut
+                    break
+
+        # Remove edges
+        for edge in edges_list:
+            removed_edges_set.add(edge)
+        print(removed_edges_set)
+    print(MAX_COST)
+
+    # Get top edges
+    #edge_count_list = sorted(list(edge_count_dict.values()))
+    #top1_edge = max(edge_count_dict, key=edge_count_dict.get)
+    #edge_count_dict[top1_edge] = 0
+    #top2_edge = max(edge_count_dict, key=edge_count_dict.get)
+    #edge_count_dict[top2_edge] = 0
+    #top3_edge = max(edge_count_dict, key=edge_count_dict.get)
+    #print(top1_edge, top2_edge, top3_edge)
+
+    # Expected top 3
+    # ('jbz', 'sqh'), ('nvg', 'vfj'), ('fch', 'fvh')
+
+    return part1
+
+# Uses networkx library and based on Hyperneutrino's demo solution:
+# Ref: https://www.youtube.com/watch?v=S_rdenmcsm8
+def process_inputs_networkx(in_file):
+    nx_graph = nx.Graph()
+
+    with open(in_file) as file:
+        line = file.readline()
+    
+        while line:
+            line = line.strip()
+
+            left, right = line.split(": ")
+            right_list = right.split()
+
+            for r in right_list:
+                nx_graph.add_edge(left, r)
+
+            line = file.readline()
+
+    nx_graph.remove_edges_from(nx.minimum_edge_cut(nx_graph))
+
+    subgraph1, subgraph2 = nx.connected_components(nx_graph)
+
+    part1 = len(subgraph1)*len(subgraph2)
+
+    return part1
+
 #part1_example = process_inputs(example_file) # disconnect hfx/pzl, bvb/cmg, nvd/jqt
-part1 = process_inputs(input_file)
+#part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
 #part2 = process_inputs2(input_file)
+
+#part1 = process_inputs_bfs(input_file)
+part1 = process_inputs_networkx(input_file)
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
