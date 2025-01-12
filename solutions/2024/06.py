@@ -284,8 +284,9 @@ def process_inputs2(in_file):
 #part1_example, part2_example = process_inputs2(example_file)
 part1, part2 = process_inputs2(input_file)
 
+print("")
+print("--- Advent of Code 2024 Day 6: Guard Gallivant ---")
 #print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-print("")
 #print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')

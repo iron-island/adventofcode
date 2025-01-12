@@ -234,11 +234,12 @@ def process_inputs2(in_file, t):
 #part2_example3 = process_inputs2(example3_file, 2000)
 part1, part2 = process_inputs2(input_file, 2000)
 
+print("")
+print("--- Advent of Code 2024 Day 22: Monkey Market ---")
 #print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
 #print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-print("")
 #print(f'Part 2 example: {part2_example}')
 #print(f'Part 2 example2: {part2_example2}')
 #print(f'Part 2 example3: {part2_example3}')

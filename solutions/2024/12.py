@@ -319,11 +319,12 @@ part1 = process_inputs(input_file)
 #part2_example3 = process_inputs2(example3_file)
 part2 = process_inputs2(input_file)
 
+print("")
+print("--- Advent of Code 2024 Day 12: Garden Groups ---")
 #print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
 #print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-print("")
 #print(f'Part 2 example: {part2_example}') # should be 80
 #print(f'Part 2 example2: {part2_example2}') # should be 436
 #print(f'Part 2 example3: {part2_example3}')

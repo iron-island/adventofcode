@@ -418,11 +418,12 @@ def process_inputs_part1_2(in_file):
 
 part1, part2 = process_inputs_part1_2(input_file)
 
+print("")
+print("--- Advent of Code 2024 Day 18: RAM Run ---")
 #print(f'Part 1 example: {part1_example}')
 #print(f'Part 1 example2: {part1_example2}')
 #print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-print("")
 #print(f'Part 2 example: {part2_example}')
 #print(f'Part 2 example2: {part2_example2}')
 #print(f'Part 2 example3: {part2_example3}')
