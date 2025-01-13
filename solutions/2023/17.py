@@ -548,16 +548,16 @@ def process_inputs_part1_2(in_file):
         #print(cost, curr_tuple)
         row, col, direction = curr_tuple
 
-        # DEBUG
-        #if (row == MAX_ROW) and (col == MAX_COL):
-        #    part1 = cost
-        #    break
+        # Early exit condition when exit is encountered the first time
+        if (row == MAX_ROW) and (col == MAX_COL):
+            part1 = cost
+            break
 
-        #if (curr_tuple in visited):
-        #    continue
-        #visited.add(curr_tuple)
+        if (curr_tuple in visited):
+            continue
+        visited.add(curr_tuple)
 
-        ## Early exit condition is when exit is reached in both directions
+        # Early exit condition is when exit is reached in both directions
         #if (END_RIGHT_TUPLE in visited) and (END_DOWN_TUPLE in visited):
         #    break
 
@@ -573,17 +573,16 @@ def process_inputs_part1_2(in_file):
                 next_cost = cost + heat_loss
 
                 next_tuple = (next_row, col, "u") # direction dependent
-                #if (next_tuple not in visited):
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
 
-                if (next_tuple in cost_dict):
-                    prev_cost = cost_dict[next_tuple]
-
-                    if (prev_cost > next_cost):
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            q.append((next_cost, next_tuple))
+                    else:
                         cost_dict[next_tuple] = next_cost
                         q.append((next_cost, next_tuple))
-                else:
-                    cost_dict[next_tuple] = next_cost
-                    q.append((next_cost, next_tuple))
 
             # Down
             heat_loss = 0
@@ -595,17 +594,16 @@ def process_inputs_part1_2(in_file):
                 next_cost = cost + heat_loss
 
                 next_tuple = (next_row, col, "d") # direction dependent
-                #if (next_tuple not in visited):
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
 
-                if (next_tuple in cost_dict):
-                    prev_cost = cost_dict[next_tuple]
-
-                    if (prev_cost > next_cost):
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            q.append((next_cost, next_tuple))
+                    else:
                         cost_dict[next_tuple] = next_cost
                         q.append((next_cost, next_tuple))
-                else:
-                    cost_dict[next_tuple] = next_cost
-                    q.append((next_cost, next_tuple))
 
         # Horizontal directions
         if (direction not in ["l", "r"]): # direction dependent
@@ -619,17 +617,16 @@ def process_inputs_part1_2(in_file):
                 next_cost = cost + heat_loss
 
                 next_tuple = (row, next_col, "l") # direction dependent
-                #if (next_tuple not in visited):
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
 
-                if (next_tuple in cost_dict):
-                    prev_cost = cost_dict[next_tuple]
-
-                    if (prev_cost > next_cost):
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            q.append((next_cost, next_tuple))
+                    else:
                         cost_dict[next_tuple] = next_cost
                         q.append((next_cost, next_tuple))
-                else:
-                    cost_dict[next_tuple] = next_cost
-                    q.append((next_cost, next_tuple))
 
             # Right
             heat_loss = 0
@@ -641,33 +638,25 @@ def process_inputs_part1_2(in_file):
                 next_cost = cost + heat_loss
 
                 next_tuple = (row, next_col, "r") # direction dependent
-                #if (next_tuple not in visited):
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
 
-                if (next_tuple in cost_dict):
-                    prev_cost = cost_dict[next_tuple]
-
-                    if (prev_cost > next_cost):
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            q.append((next_cost, next_tuple))
+                    else:
                         cost_dict[next_tuple] = next_cost
                         q.append((next_cost, next_tuple))
-                else:
-                    cost_dict[next_tuple] = next_cost
-                    q.append((next_cost, next_tuple))
         # End of Dijkstra's
 
-    #print(cost_dict)
-    #print(MAX_ROW, MAX_COL)
-
-    cost1 = 100000 
-    cost2 = 100000 
-    if (END_RIGHT_TUPLE in cost_dict):
-        cost1 = cost_dict[END_RIGHT_TUPLE]
-    if (END_DOWN_TUPLE in cost_dict):
-        cost2 = cost_dict[END_DOWN_TUPLE]
-    part1 = min(cost1, cost2)
-
-    # DEBUG
-    #for curr_tuple in cost_dict:
-    #    print(f'{curr_tuple} : {cost_dict[curr_tuple]}')
+    #cost1 = 100000 
+    #cost2 = 100000 
+    #if (END_RIGHT_TUPLE in cost_dict):
+    #    cost1 = cost_dict[END_RIGHT_TUPLE]
+    #if (END_DOWN_TUPLE in cost_dict):
+    #    cost2 = cost_dict[END_DOWN_TUPLE]
+    #part1 = min(cost1, cost2)
 
     # Part 2
     # TODO
