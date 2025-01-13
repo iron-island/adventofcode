@@ -1,3 +1,6 @@
+#from functools import cache
+from collections import deque
+
 input_file = "../../inputs/2023/input17.txt"
 example_file = "example17.txt"
 #example_file = "example17_2.txt"
@@ -6,6 +9,104 @@ part1_example = 0
 part2_example = 0
 part1 = 0
 part2 = 0
+
+#@cache
+def dfs_crucible_part1(row, col, direction, counter):
+    print(row, col, direction, counter)
+
+    if ((row, col, direction, counter) in visited):
+        return 10000
+    visited.add((row, col, direction, counter))
+
+    # Base case
+    curr_heat_loss = grid[row][col]
+    if (row == MAX_ROW) and (col == MAX_COL):
+        return curr_heat_loss
+
+    u_heat_loss = 10000
+    r_heat_loss = 10000
+    d_heat_loss = 10000
+    l_heat_loss = 10000
+    for next_dir in ["u", "d", "l", "r"]:
+        if (next_dir == direction):
+            if (counter == 3):
+                continue
+            else:
+                next_counter = counter+1
+        # Do not move back to previous tile by checking current and next directions
+        elif ((direction == "d") and (next_dir == "u")) or \
+             ((direction == "u") and (next_dir == "d")) or \
+             ((direction == "l") and (next_dir == "r")) or \
+             ((direction == "r") and (next_dir == "l")):
+            continue
+        else:
+            next_counter = 1
+
+        # Up
+        if (next_dir == "u") and (row > 0):
+            next_row = row-1
+            next_col = col
+            if ((next_row, next_col, next_dir, next_counter) not in visited):
+                u_heat_loss = dfs_crucible_part1(next_row, next_col, next_dir, next_counter)
+        # Down
+        elif (next_dir == "d") and (row < MAX_ROW):
+            next_row = row+1
+            next_col = col
+            if ((next_row, next_col, next_dir, next_counter) not in visited):
+                d_heat_loss = dfs_crucible_part1(next_row, next_col, next_dir, next_counter)
+        # Left
+        elif (next_dir == "l") and (col > 0):
+            next_row = row
+            next_col = col-1
+            if ((next_row, next_col, next_dir, next_counter) not in visited):
+                l_heat_loss = dfs_crucible_part1(next_row, next_col, next_dir, next_counter)
+        # Right
+        elif (next_dir == "r") and (col < MAX_COL):
+            next_row = row
+            next_col = col+1
+            if ((next_row, next_col, next_dir, next_counter) not in visited):
+                r_heat_loss = dfs_crucible_part1(next_row, next_col, next_dir, next_counter)
+
+    # Return minimum heat loss
+    return curr_heat_loss + min(u_heat_loss, r_heat_loss, d_heat_loss, l_heat_loss)
+
+#@cache
+def dfs_crucible_part2(row, col, direction, counter):
+    curr_heat_loss = grid[row][col]
+
+    # Base case
+    if (row == MAX_ROW) and (col == MAX_COL):
+        return curr_heat_loss
+
+    u_heat_loss = 10000
+    r_heat_loss = 10000
+    d_heat_loss = 10000
+    l_heat_loss = 10000
+    for next_dir in ["u", "d", "l", "r"]:
+        if (next_dir == direction):
+            if (counter == 3):
+                continue
+            else:
+                next_counter = counter+1
+        else:
+            next_counter = 1
+
+        # Up
+        if (next_dir == "u") and (row > 0):
+            u_heat_loss = curr_heat_loss + dfs_crucible_part2(row-1, col, next_dir, next_counter)
+        # Down
+        elif (next_dir == "d") and (row < MAX_ROW):
+            d_heat_loss = curr_heat_loss + dfs_crucible_part2(row+1, col, next_dir, next_counter)
+        # Left
+        elif (next_dir == "l") and (col > 0):
+            l_heat_loss = curr_heat_loss + dfs_crucible_part2(row, col-1, next_dir, next_counter)
+        # Right
+        elif (next_dir == "r") and (col < MAX_COL):
+            r_heat_loss = curr_heat_loss + dfs_crucible_part2(row, col+1, next_dir, next_counter)
+
+    # Return minimum heat loss
+    return min(u_heat_loss, r_heat_loss, d_heat_loss, l_heat_loss)
+
 def process_inputs(in_file):
     output = 0
 
@@ -410,11 +511,178 @@ def process_inputs2(in_file):
 
     return output
 
+def process_inputs_part1_2(in_file):
+    grid = []
+    with open(in_file) as file:
+        line = file.readline()
+    
+        while line:
+            line = line.strip()
+
+            grid.append([int(x) for x in line])
+
+            line = file.readline()
+
+    MAX_ROW = len(grid)-1
+    MAX_COL = len(grid[0])-1
+
+    # Part 1
+    part1 = 0
+    q = []
+    q.append((0, (0, 0, "init")))
+
+    visited = set()
+    for direction in ["l", "u"]:
+        visited.add((0, 0, direction))
+
+    # Dictionary of costs saved as (row, col, direction) : cost
+    cost_dict = {}
+    END_RIGHT_TUPLE = (MAX_ROW, MAX_COL, "r")
+    END_DOWN_TUPLE  = (MAX_ROW, MAX_COL, "d")
+
+    # Dijkstra's
+    while len(q):
+        # Priority queue
+        q.sort()
+        cost, curr_tuple = q.pop(0)
+        #print(cost, curr_tuple)
+        row, col, direction = curr_tuple
+
+        # DEBUG
+        #if (row == MAX_ROW) and (col == MAX_COL):
+        #    part1 = cost
+        #    break
+
+        #if (curr_tuple in visited):
+        #    continue
+        #visited.add(curr_tuple)
+
+        ## Early exit condition is when exit is reached in both directions
+        #if (END_RIGHT_TUPLE in visited) and (END_DOWN_TUPLE in visited):
+        #    break
+
+        # Vertical directions
+        if (direction not in ["u", "d"]): # direction dependent
+            # Up
+            heat_loss = 0
+            for next_row in range(row-1, row-4, -1): # direction dependent
+                if (next_row < 0): # direction dependent
+                    break
+
+                heat_loss += grid[next_row][col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (next_row, col, "u") # direction dependent
+                #if (next_tuple not in visited):
+
+                if (next_tuple in cost_dict):
+                    prev_cost = cost_dict[next_tuple]
+
+                    if (prev_cost > next_cost):
+                        cost_dict[next_tuple] = next_cost
+                        q.append((next_cost, next_tuple))
+                else:
+                    cost_dict[next_tuple] = next_cost
+                    q.append((next_cost, next_tuple))
+
+            # Down
+            heat_loss = 0
+            for next_row in range(row+1, row+4): # direction dependent
+                if (next_row > MAX_ROW): # direction dependent
+                    break
+
+                heat_loss += grid[next_row][col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (next_row, col, "d") # direction dependent
+                #if (next_tuple not in visited):
+
+                if (next_tuple in cost_dict):
+                    prev_cost = cost_dict[next_tuple]
+
+                    if (prev_cost > next_cost):
+                        cost_dict[next_tuple] = next_cost
+                        q.append((next_cost, next_tuple))
+                else:
+                    cost_dict[next_tuple] = next_cost
+                    q.append((next_cost, next_tuple))
+
+        # Horizontal directions
+        if (direction not in ["l", "r"]): # direction dependent
+            # Left
+            heat_loss = 0
+            for next_col in range(col-1, col-4, -1): # direction dependent
+                if (next_col < 0): # direction dependent
+                    break
+
+                heat_loss += grid[row][next_col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (row, next_col, "l") # direction dependent
+                #if (next_tuple not in visited):
+
+                if (next_tuple in cost_dict):
+                    prev_cost = cost_dict[next_tuple]
+
+                    if (prev_cost > next_cost):
+                        cost_dict[next_tuple] = next_cost
+                        q.append((next_cost, next_tuple))
+                else:
+                    cost_dict[next_tuple] = next_cost
+                    q.append((next_cost, next_tuple))
+
+            # Right
+            heat_loss = 0
+            for next_col in range(col+1, col+4): # direction dependent
+                if (next_col > MAX_COL): # direction dependent
+                    break
+
+                heat_loss += grid[row][next_col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (row, next_col, "r") # direction dependent
+                #if (next_tuple not in visited):
+
+                if (next_tuple in cost_dict):
+                    prev_cost = cost_dict[next_tuple]
+
+                    if (prev_cost > next_cost):
+                        cost_dict[next_tuple] = next_cost
+                        q.append((next_cost, next_tuple))
+                else:
+                    cost_dict[next_tuple] = next_cost
+                    q.append((next_cost, next_tuple))
+        # End of Dijkstra's
+
+    #print(cost_dict)
+    #print(MAX_ROW, MAX_COL)
+
+    cost1 = 100000 
+    cost2 = 100000 
+    if (END_RIGHT_TUPLE in cost_dict):
+        cost1 = cost_dict[END_RIGHT_TUPLE]
+    if (END_DOWN_TUPLE in cost_dict):
+        cost2 = cost_dict[END_DOWN_TUPLE]
+    part1 = min(cost1, cost2)
+
+    # DEBUG
+    #for curr_tuple in cost_dict:
+    #    print(f'{curr_tuple} : {cost_dict[curr_tuple]}')
+
+    # Part 2
+    # TODO
+    part2 = 0
+
+    return part1, part2
+
 #part1_example = process_inputs(example_file)
 #part1 = process_inputs(input_file)
 
 #part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+#part2 = process_inputs2(input_file)
+
+#part1, part2 = process_inputs_part1_2(example_file)
+part1, part2 = process_inputs_part1_2(input_file)
 
 print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
