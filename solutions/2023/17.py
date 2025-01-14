@@ -657,9 +657,138 @@ def process_inputs_part1_2(in_file):
     #    cost2 = cost_dict[END_DOWN_TUPLE]
     #part1 = min(cost1, cost2)
 
-    # Part 2
-    # TODO
-    part2 = 0
+    # Part 2: Same as Part 1, just updated the range from +1 to +4 steps to +4 to +11 steps,
+    #           and initialized the heat loss with the losses from the first 3 steps
+    h = []
+    heapq.heappush(h, (0, (0, 0, "init")))
+
+    visited = set()
+    for direction in ["ver", "hor"]:
+        visited.add((0, 0, direction))
+
+    # Dictionary of costs saved as (row, col, direction) : cost
+    cost_dict = {}
+
+    # Dijkstra's
+    while len(h):
+        # Priority queue using heapq
+        cost, curr_tuple = heapq.heappop(h)
+        #print(cost, curr_tuple)
+        row, col, direction = curr_tuple
+
+        # Early exit condition when exit is encountered the first time
+        if (row == MAX_ROW) and (col == MAX_COL):
+            part2 = cost
+            break
+
+        if (curr_tuple in visited):
+            continue
+        visited.add(curr_tuple)
+
+        # Early exit condition is when exit is reached in both directions
+        #if (END_RIGHT_TUPLE in visited) and (END_DOWN_TUPLE in visited):
+        #    break
+
+        # Vertical directions
+        if (direction != "ver"): # direction dependent
+            # Up
+            heat_loss = 0
+            for next_row in range(row-4, row-11, -1): # direction dependent
+                if (next_row < 0): # direction dependent
+                    break
+                elif not (heat_loss):
+                    # Initialize heat_loss with the losses from the 1st to 3rd steps
+                    heat_loss = grid[row-1][col] + grid[row-2][col] + grid[row-3][col]
+
+                heat_loss += grid[next_row][col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (next_row, col, "ver") # direction dependent
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
+
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            heapq.heappush(h, (next_cost, next_tuple))
+                    else:
+                        cost_dict[next_tuple] = next_cost
+                        heapq.heappush(h, (next_cost, next_tuple))
+
+            # Down
+            heat_loss = 0
+            for next_row in range(row+4, row+11): # direction dependent
+                if (next_row > MAX_ROW): # direction dependent
+                    break
+                elif not (heat_loss):
+                    # Initialize heat_loss with the losses from the 1st to 3rd steps
+                    heat_loss = grid[row+1][col] + grid[row+2][col] + grid[row+3][col]
+
+                heat_loss += grid[next_row][col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (next_row, col, "ver") # direction dependent
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
+
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            heapq.heappush(h, (next_cost, next_tuple))
+                    else:
+                        cost_dict[next_tuple] = next_cost
+                        heapq.heappush(h, (next_cost, next_tuple))
+
+        # Horizontal directions
+        if (direction != "hor"): # direction dependent
+            # Left
+            heat_loss = 0
+            for next_col in range(col-4, col-11, -1): # direction dependent
+                if (next_col < 0): # direction dependent
+                    break
+                elif not (heat_loss):
+                    # Initialize heat_loss with the losses from the 1st to 3rd steps
+                    heat_loss = grid[row][col-1] + grid[row][col-2] + grid[row][col-3]
+
+                heat_loss += grid[row][next_col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (row, next_col, "hor") # direction dependent
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
+
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            heapq.heappush(h, (next_cost, next_tuple))
+                    else:
+                        cost_dict[next_tuple] = next_cost
+                        heapq.heappush(h, (next_cost, next_tuple))
+
+            # Right
+            heat_loss = 0
+            for next_col in range(col+4, col+11): # direction dependent
+                if (next_col > MAX_COL): # direction dependent
+                    break
+                elif not (heat_loss):
+                    # Initialize heat_loss with the losses from the 1st to 3rd steps
+                    heat_loss = grid[row][col+1] + grid[row][col+2] + grid[row][col+3]
+
+                heat_loss += grid[row][next_col] # direction dependent
+                next_cost = cost + heat_loss
+
+                next_tuple = (row, next_col, "hor") # direction dependent
+                if (next_tuple not in visited):
+                    if (next_tuple in cost_dict):
+                        prev_cost = cost_dict[next_tuple]
+
+                        if (prev_cost > next_cost):
+                            cost_dict[next_tuple] = next_cost
+                            heapq.heappush(h, (next_cost, next_tuple))
+                    else:
+                        cost_dict[next_tuple] = next_cost
+                        heapq.heappush(h, (next_cost, next_tuple))
+        # End of Dijkstra's
 
     return part1, part2
 
