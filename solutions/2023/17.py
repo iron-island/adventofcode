@@ -528,18 +528,17 @@ def process_inputs_part1_2(in_file):
     MAX_COL = len(grid[0])-1
 
     # Part 1
-    part1 = 0
     h = []
     heapq.heappush(h, (0, (0, 0, "init")))
 
     visited = set()
-    for direction in ["l", "u"]:
+    for direction in ["ver", "hor"]:
         visited.add((0, 0, direction))
 
     # Dictionary of costs saved as (row, col, direction) : cost
     cost_dict = {}
-    END_RIGHT_TUPLE = (MAX_ROW, MAX_COL, "r")
-    END_DOWN_TUPLE  = (MAX_ROW, MAX_COL, "d")
+    END_RIGHT_TUPLE = (MAX_ROW, MAX_COL, "ver")
+    END_DOWN_TUPLE  = (MAX_ROW, MAX_COL, "hor")
 
     # Dijkstra's
     while len(h):
@@ -562,7 +561,7 @@ def process_inputs_part1_2(in_file):
         #    break
 
         # Vertical directions
-        if (direction not in ["u", "d"]): # direction dependent
+        if (direction != "ver"): # direction dependent
             # Up
             heat_loss = 0
             for next_row in range(row-1, row-4, -1): # direction dependent
@@ -572,7 +571,7 @@ def process_inputs_part1_2(in_file):
                 heat_loss += grid[next_row][col] # direction dependent
                 next_cost = cost + heat_loss
 
-                next_tuple = (next_row, col, "u") # direction dependent
+                next_tuple = (next_row, col, "ver") # direction dependent
                 if (next_tuple not in visited):
                     if (next_tuple in cost_dict):
                         prev_cost = cost_dict[next_tuple]
@@ -593,7 +592,7 @@ def process_inputs_part1_2(in_file):
                 heat_loss += grid[next_row][col] # direction dependent
                 next_cost = cost + heat_loss
 
-                next_tuple = (next_row, col, "d") # direction dependent
+                next_tuple = (next_row, col, "ver") # direction dependent
                 if (next_tuple not in visited):
                     if (next_tuple in cost_dict):
                         prev_cost = cost_dict[next_tuple]
@@ -606,7 +605,7 @@ def process_inputs_part1_2(in_file):
                         heapq.heappush(h, (next_cost, next_tuple))
 
         # Horizontal directions
-        if (direction not in ["l", "r"]): # direction dependent
+        if (direction != "hor"): # direction dependent
             # Left
             heat_loss = 0
             for next_col in range(col-1, col-4, -1): # direction dependent
@@ -616,7 +615,7 @@ def process_inputs_part1_2(in_file):
                 heat_loss += grid[row][next_col] # direction dependent
                 next_cost = cost + heat_loss
 
-                next_tuple = (row, next_col, "l") # direction dependent
+                next_tuple = (row, next_col, "hor") # direction dependent
                 if (next_tuple not in visited):
                     if (next_tuple in cost_dict):
                         prev_cost = cost_dict[next_tuple]
@@ -637,7 +636,7 @@ def process_inputs_part1_2(in_file):
                 heat_loss += grid[row][next_col] # direction dependent
                 next_cost = cost + heat_loss
 
-                next_tuple = (row, next_col, "r") # direction dependent
+                next_tuple = (row, next_col, "hor") # direction dependent
                 if (next_tuple not in visited):
                     if (next_tuple in cost_dict):
                         prev_cost = cost_dict[next_tuple]
