@@ -33,6 +33,11 @@
 - Original solution with both parts runs in 9 seconds. Mostly Part 2 has the high runtime
 - Removed checks and no other optimizations and reduced runtime to ~100ms
 
+## Day 16
+
+- TODO: add details
+- Original solutions with both parts already runs at 330ms, but after learning about `heapq` and seeing the runtime reduction in 2023 day 17, I changed the iteratively sorted priority queue to a min-heap with `heapq` and now it runs at 200ms. I additionally replaced the last BFS for Part 2 with a normal list to a `deque` to slightly reduce runtime though it isn't noticeable.
+
 ## Day 17
 
 - TODO: add details
@@ -47,6 +52,7 @@
 - Optimized solution is 35ms via binary search, replacing list for searching for corruptions into sets, combining Part 1 to Part 2, and removing unnecessary data structures
 
 ## Day 19
+
 - TODO: add details
 - Original solution ran in 1.1s
 - Optimized solution runs in 570ms after computing Part 1 in the same Part 1 run, and some slight optimizations that may necessarily have mattered like using `towels_list` as a global variable to prevent it needing to be an argument in the recursive `check_design2` function, and from needing to convert to a tuple.
