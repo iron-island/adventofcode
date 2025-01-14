@@ -1,106 +1,9 @@
 #from collections import defaultdict
-from math import inf
 from array import array
 
 input_file = "../../inputs/2024/input22.txt"
-example_file = "example22.txt"
-example2_file = "example22_2.txt"
-example3_file = "example22_3.txt"
-
-part1_example = 0
-part1_example2 = 0
-part1_example3 = 0
-part2_example = 0
-part2_example2 = 0
-part2_example3 = 0
-part1 = 0
-part2 = 0
-
-def move_dir(rc, direction):
-    row, col = rc
-
-    #assert(direction in ["up", "down", "left", "right"])
-    if (direction == "up"):
-        n_row = row-1
-        n_col = col
-    elif (direction == "down"):
-        n_row = row+1
-        n_col = col
-    elif (direction == "left"):
-        n_row = row
-        n_col = col-1
-    elif (direction == "right"):
-        n_row = row
-        n_col = col+1
-
-    return (n_row, n_col)
-
-def mix(secret_num, val):
-    new_secret = secret_num ^ val
-    return new_secret
-
-def prune(secret_num):
-    # Get lowest 24 bits
-
-    # Through modulus
-    #new_secret = secret_num % 16777216
-    # Through bitmask
-    new_secret = secret_num & 16777215
-    return new_secret
-
-def evolve(secret_num):
-    # Right shift by 6 bits before mixing and pruning
-    #val = secret_num*64
-    #new_secret = mix(secret_num, val)
-    #new_secret = prune(new_secret)
-    new_secret = (secret_num^(secret_num << 6)) & 16777215
-
-    # Right shift by 5 bits before mixing and pruning
-    #val = int(new_secret/32)
-    #new_secret = mix(new_secret, val)
-    #new_secret = prune(new_secret)
-    new_secret = (new_secret^(new_secret >> 5)) & 16777215
-   
-    # Left shift by 11 bits before mixing and pruning
-    #val = new_secret*2048
-    #new_secret = mix(new_secret, val)
-    #new_secret = prune(new_secret)
-    new_secret = (new_secret^(new_secret << 11)) & 16777215
-
-    return new_secret
-
-def process_inputs(in_file, t):
-    output = 0
-
-    init_list = []
-    with open(in_file) as file:
-        line = file.readline()
-    
-        while line:
-            line = line.strip()
-
-            init_list.append(int(line))
-
-            line = file.readline()
-
-    last_secret_list = []
-    for secret_num in init_list:
-        new_secret = secret_num
-        for i in range(0, t):
-            new_secret = evolve(new_secret)
-
-        # Record
-        last_secret_list.append(new_secret)
-
-    # Evaluate
-    for s in last_secret_list:
-        output += s
-
-    return output
 
 def process_inputs2(in_file, t):
-    output = 0
-
     init_list = []
     with open(in_file) as file:
         line = file.readline()
@@ -122,11 +25,11 @@ def process_inputs2(in_file, t):
     ARRAY_SIZE = 18*(19**3 + 19**2 + 19 + 1)
     banana_array = array('H', [0]*ARRAY_SIZE)
     seq_array = array('H', [0]*ARRAY_SIZE)
+    changes_list = [0, 0, 0, 0]
     for idx_s, secret_num in enumerate(init_list):
         next_idx_s = idx_s+1
         new_secret = secret_num
         #changes_list = []
-        changes_list = [0, 0, 0, 0]
         #changes_list = deque([], 4)
         #changes_set = set()
         for i in range(0, t):
@@ -147,23 +50,23 @@ def process_inputs2(in_file, t):
             # Get changes
             d = (new_secret % 10)
             if (i == 0):
-                change = inf
+                change = 0
             else:
-                change = d - prev_d
+                change = (d - prev_d) + 9
             prev_d = d
 
             #changes_list.append(change)
-
-            # Manual shift register, faster than deque for maxlen=4
-            changes_list[0] = changes_list[1]
-            changes_list[1] = changes_list[2]
-            changes_list[2] = changes_list[3]
-            changes_list[3] = change
 
             # Shift register via deque, slower than manual shift register
             #changes_list.append(change)
 
             if (i >= 4):
+                # Manual shift register, faster than deque for maxlen=4
+                changes_list[0] = changes_list[1]
+                changes_list[1] = changes_list[2]
+                changes_list[2] = changes_list[3]
+                changes_list[3] = change
+
                 #seq = tuple(changes_list[(i-3):(i+1)])
 
                 idx_array = changes_list[3]*19**3 + \
@@ -182,6 +85,8 @@ def process_inputs2(in_file, t):
                 #    # Only increment if difference is non-zero to save some operations
                 #    if (d > 0):
                 #        banana_dict[seq] += d
+            else:
+                changes_list[i] = change
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
