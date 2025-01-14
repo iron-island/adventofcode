@@ -1,4 +1,5 @@
-from collections import defaultdict
+import heapq
+from collections import defaultdict, deque
 
 input_file = "../../inputs/2024/input16.txt"
 example_file = "example16.txt"
@@ -42,15 +43,14 @@ def process_inputs(in_file):
         MAX_ROW = row-1
 
     # Dijkstra's
-    q = []
+    h = []
     visited = set()
     E_visited_dict = {"up": False, "right": False}
     n_tuple = (0, S_pos[0], S_pos[1], "right")
-    q.append(n_tuple)
-    while (len(q)):
+    heapq.heappush(h, n_tuple)
+    while (len(h)):
         # Priority queue
-        q.sort()
-        cost, row, col, direction = q.pop(0)
+        cost, row, col, direction = heapq.heappop(h)
         #if (cost > 1000):
         #    print(cost)
 
@@ -91,7 +91,7 @@ def process_inputs(in_file):
 
             n_cost_last, _ = cost_dict[(n_row, n_col, n_dir)]
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, (row, col, direction)]
 
         # down
@@ -110,7 +110,7 @@ def process_inputs(in_file):
 
             n_cost_last, _ = cost_dict[(n_row, n_col, n_dir)]
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, (row, col, direction)]
 
         # left
@@ -129,7 +129,7 @@ def process_inputs(in_file):
 
             n_cost_last, _ = cost_dict[(n_row, n_col, n_dir)]
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, (row, col, direction)]
 
         # right
@@ -148,7 +148,7 @@ def process_inputs(in_file):
 
             n_cost_last, _ = cost_dict[(n_row, n_col, n_dir)]
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, (row, col, direction)]
 
     # Evaluate
@@ -168,25 +168,25 @@ def process_inputs(in_file):
                 E_tuple = cost_tuple
 
     # Debugging
-    row, col, direction = E_tuple
-    while (True):
-        cost, last_tile = cost_dict[(row, col, direction)]
+    #row, col, direction = E_tuple
+    #while (True):
+    #    cost, last_tile = cost_dict[(row, col, direction)]
 
-        row, col, direction = last_tile
+    #    row, col, direction = last_tile
 
-        if (grid_dict[(row, col)] == 'S'):
-            break
+    #    if (grid_dict[(row, col)] == 'S'):
+    #        break
 
-        if (direction == "up"): 
-            tile = '^'
-        elif (direction == "down"):
-            tile = 'v'
-        elif (direction == "left"):
-            tile = '<'
-        elif (direction == "right"):
-            tile = '>'
+    #    if (direction == "up"): 
+    #        tile = '^'
+    #    elif (direction == "down"):
+    #        tile = 'v'
+    #    elif (direction == "left"):
+    #        tile = '<'
+    #    elif (direction == "right"):
+    #        tile = '>'
 
-        grid_dict[(row, col)] = tile
+    #    grid_dict[(row, col)] = tile
     #for row in range(0, MAX_ROW+1):
     #    for col in range(0, MAX_COL+1):
     #        print(grid_dict[(row, col)], end="")
@@ -223,15 +223,14 @@ def process_inputs2(in_file):
         MAX_ROW = row-1
 
     # Dijkstra's
-    q = []
+    h = []
     visited = set()
     E_visited_dict = {"up": False, "right": False}
     n_tuple = (0, S_pos[0], S_pos[1], "right")
-    q.append(n_tuple)
-    while (len(q)):
+    heapq.heappush(h, n_tuple)
+    while (len(h)):
         # Priority queue
-        q.sort()
-        cost, row, col, direction = q.pop(0)
+        cost, row, col, direction = heapq.heappop(h)
         #if (cost > 1000):
         #    print(cost)
 
@@ -271,10 +270,10 @@ def process_inputs2(in_file):
             #    print(n_row, n_col, n_dir)
             #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
             elif (n_cost == n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 prev_tile_list.append((row, col, direction))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, prev_tile_list]
 
@@ -297,10 +296,10 @@ def process_inputs2(in_file):
                 prev_tile_list = []
             #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
             elif (n_cost == n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 prev_tile_list.append((row, col, direction))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, prev_tile_list]
 
@@ -323,10 +322,10 @@ def process_inputs2(in_file):
                 prev_tile_list = []
             #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
             elif (n_cost == n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 prev_tile_list.append((row, col, direction))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, prev_tile_list]
 
@@ -349,10 +348,10 @@ def process_inputs2(in_file):
                 prev_tile_list = []
             #assert(prev_tile_list != None)
             if (n_cost < n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, [(row, col, direction)]]
             elif (n_cost == n_cost_last):
-                q.append((n_cost, n_row, n_col, n_dir))
+                heapq.heappush(h, (n_cost, n_row, n_col, n_dir))
                 prev_tile_list.append((row, col, direction))
                 cost_dict[(n_row, n_col, n_dir)] = [n_cost, prev_tile_list]
 
@@ -378,10 +377,10 @@ def process_inputs2(in_file):
     output_set = set()
     output_set.add((row, col))
     #print(last_tile_list)
-    q = []
+    q = deque()
     q.append((row, col, direction))
     while (True):
-        row, col, direction = q.pop(0)
+        row, col, direction = q.popleft()
         output_set.add((row, col))
         if (grid_dict[(row, col)] == 'S'):
             break
