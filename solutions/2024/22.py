@@ -25,13 +25,14 @@ def process_inputs2(in_file, t):
     ARRAY_SIZE = 18*(19**3 + 19**2 + 19 + 1)
     banana_array = array('H', [0]*ARRAY_SIZE)
     seq_array = array('H', [0]*ARRAY_SIZE)
-    changes_list = [0, 0, 0, 0]
+    #changes_list = [0, 0, 0, 0]
     for idx_s, secret_num in enumerate(init_list):
         next_idx_s = idx_s+1
         new_secret = secret_num
         #changes_list = []
         #changes_list = deque([], 4)
         #changes_set = set()
+        prev_idx_array = 0
         for i in range(0, t):
             # Compute secret in-line to remove function call overheads
             #new_secret = evolve(new_secret)
@@ -70,19 +71,20 @@ def process_inputs2(in_file, t):
             # Shift register via deque, slower than manual shift register
             #changes_list.append(change)
 
+            # Instead of shifting the sequence of changes which we end up just using
+            #   as an index, we instead compute the index straight away, and shifting
+            #   is done by simply dividing the previous index by 19
+            idx_array = change*(19**3) + (prev_idx_array//19)
+            prev_idx_array = idx_array
             if (i >= 4):
                 # Manual shift register, faster than deque for maxlen=4
-                changes_list[0] = changes_list[1]
-                changes_list[1] = changes_list[2]
-                changes_list[2] = changes_list[3]
-                changes_list[3] = change
+                #changes_list[0] = changes_list[1]
+                #changes_list[1] = changes_list[2]
+                #changes_list[2] = changes_list[3]
+                #changes_list[3] = change
 
                 #seq = tuple(changes_list[(i-3):(i+1)])
 
-                idx_array = changes_list[3]*19**3 + \
-                            changes_list[2]*19**2 + \
-                            changes_list[1]*19 + \
-                            changes_list[0]
                 if (seq_array[idx_array] <= idx_s):
                     seq_array[idx_array] = next_idx_s
                     banana_array[idx_array] += d
@@ -95,8 +97,6 @@ def process_inputs2(in_file, t):
                 #    # Only increment if difference is non-zero to save some operations
                 #    if (d > 0):
                 #        banana_dict[seq] += d
-            else:
-                changes_list[i] = change
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
