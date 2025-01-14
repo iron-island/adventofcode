@@ -1,23 +1,23 @@
 input_file = "../../inputs/2024/input07.txt"
-example_file = "example07.txt"
+#example_file = "example07.txt"
 
-part1_example = 0
-part2_example = 0
-part1 = 0
-part2 = 0
+#part1_example = 0
+#part2_example = 0
+#part1 = 0
+#part2 = 0
 
 # Note: Adding a cache slows down the DFS, since this is already fast
 def dfs_part1(eq, num_tuple, result):
     # Early exit if current test result is already larger than expected
     if (eq > result):
-        return None
+        return 0
 
     # Base case since there are no more numbers to operate on
     if (len(num_tuple) == 0):
         if (eq == result):
             return eq
         else:
-            return None
+            return 0
 
     # Get next number to operate on, while remaining numbers
     #   in num_tuple[1:] will be used on further calls
@@ -36,22 +36,21 @@ def dfs_part1(eq, num_tuple, result):
     if (eq2 == result):
         return result
 
-    # If did not become equal to result, return None so it fails test equality
-    # Python "returns" this by default, but putting here just to be more explicit
-    return None
+    # If did not become equal to result, return 0 so it fails test equality
+    return 0
 
 # Note: Adding a cache slows down the DFS, since this is already fast
 def dfs(eq, num_tuple, result):
     # Early exit if current test result is already larger than expected
     if (eq > result):
-        return None
+        return 0
 
     # Base case since there are no more numbers to operate on
     if (len(num_tuple) == 0):
         if (eq == result):
             return eq
         else:
-            return None
+            return 0
 
     # Get next number to operate on, while remaining numbers
     #   in num_tuple[1:] will be used on further calls
@@ -59,26 +58,26 @@ def dfs(eq, num_tuple, result):
     next_num_tuple = num_tuple[1:]
 
     # Addition
-    eq1 = dfs(eq + num, next_num_tuple, result)
-
-    if (eq1 == result):
+    if (dfs(eq + num, next_num_tuple, result) == result):
         return result
 
     # Multiplication
-    eq2 = dfs(eq*num, next_num_tuple, result)
-
-    if (eq2 == result):
+    if (dfs(eq*num, next_num_tuple, result) == result):
         return result
 
     # Concatenation
-    eq3 = dfs(eq*(10**len(str(num))) + num, next_num_tuple, result)
-
-    if (eq3 == result):
+    if (num >= 100):
+        num_digits = 3
+    elif (num >= 10):
+        num_digits = 2
+    else:
+        num_digits = 1
+    #NUM_DIGITS = len(str(num))
+    if (dfs(eq*(10**num_digits) + num, next_num_tuple, result) == result):
         return result
 
-    # If did not become equal to result, return None so it fails test equality
-    # Python "returns" this by default, but putting here just to be more explicit
-    return None
+    # If did not become equal to result, return 0 so it fails test equality
+    return 0
 
 def process_inputs2(in_file):
     output = 0
@@ -111,8 +110,7 @@ def process_inputs2(in_file):
             skip_eq_set.add(eq)
 
     # Part 2:
-    count = 0
-    true_result = 0
+    true_result = part1
     #eq_count = 1
     #MAX_EQ_COUNT = len(eq_list)
     for eq in eq_list:
@@ -120,9 +118,8 @@ def process_inputs2(in_file):
         #eq_count += 1
         result, num_tuple = eq
 
-        # If equation was already true in Part 1, immediately add result to total and skip it
+        # If equation was already true in Part 1, skip it
         if (eq in skip_eq_set):
-            true_result += result
             continue
 
         # Brute-force via DFS with no memoization
@@ -130,7 +127,6 @@ def process_inputs2(in_file):
 
         # Evaluate
         if (result == test_result):
-            count += 1
             true_result += test_result
 
     return part1, true_result
