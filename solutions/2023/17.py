@@ -1,5 +1,6 @@
 #from functools import cache
-from collections import deque
+#from collections import deque
+import heapq
 
 input_file = "../../inputs/2023/input17.txt"
 example_file = "example17.txt"
@@ -528,8 +529,8 @@ def process_inputs_part1_2(in_file):
 
     # Part 1
     part1 = 0
-    q = []
-    q.append((0, (0, 0, "init")))
+    h = []
+    heapq.heappush(h, (0, (0, 0, "init")))
 
     visited = set()
     for direction in ["l", "u"]:
@@ -541,10 +542,9 @@ def process_inputs_part1_2(in_file):
     END_DOWN_TUPLE  = (MAX_ROW, MAX_COL, "d")
 
     # Dijkstra's
-    while len(q):
-        # Priority queue
-        q.sort()
-        cost, curr_tuple = q.pop(0)
+    while len(h):
+        # Priority queue using heapq
+        cost, curr_tuple = heapq.heappop(h)
         #print(cost, curr_tuple)
         row, col, direction = curr_tuple
 
@@ -579,10 +579,10 @@ def process_inputs_part1_2(in_file):
 
                         if (prev_cost > next_cost):
                             cost_dict[next_tuple] = next_cost
-                            q.append((next_cost, next_tuple))
+                            heapq.heappush(h, (next_cost, next_tuple))
                     else:
                         cost_dict[next_tuple] = next_cost
-                        q.append((next_cost, next_tuple))
+                        heapq.heappush(h, (next_cost, next_tuple))
 
             # Down
             heat_loss = 0
@@ -600,10 +600,10 @@ def process_inputs_part1_2(in_file):
 
                         if (prev_cost > next_cost):
                             cost_dict[next_tuple] = next_cost
-                            q.append((next_cost, next_tuple))
+                            heapq.heappush(h, (next_cost, next_tuple))
                     else:
                         cost_dict[next_tuple] = next_cost
-                        q.append((next_cost, next_tuple))
+                        heapq.heappush(h, (next_cost, next_tuple))
 
         # Horizontal directions
         if (direction not in ["l", "r"]): # direction dependent
@@ -623,10 +623,10 @@ def process_inputs_part1_2(in_file):
 
                         if (prev_cost > next_cost):
                             cost_dict[next_tuple] = next_cost
-                            q.append((next_cost, next_tuple))
+                            heapq.heappush(h, (next_cost, next_tuple))
                     else:
                         cost_dict[next_tuple] = next_cost
-                        q.append((next_cost, next_tuple))
+                        heapq.heappush(h, (next_cost, next_tuple))
 
             # Right
             heat_loss = 0
@@ -644,10 +644,10 @@ def process_inputs_part1_2(in_file):
 
                         if (prev_cost > next_cost):
                             cost_dict[next_tuple] = next_cost
-                            q.append((next_cost, next_tuple))
+                            heapq.heappush(h, (next_cost, next_tuple))
                     else:
                         cost_dict[next_tuple] = next_cost
-                        q.append((next_cost, next_tuple))
+                        heapq.heappush(h, (next_cost, next_tuple))
         # End of Dijkstra's
 
     #cost1 = 100000 
