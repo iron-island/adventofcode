@@ -80,8 +80,6 @@ def dfs(eq, num_tuple, result):
     return 0
 
 def process_inputs2(in_file):
-    output = 0
-
     eq_list = []
     with open(in_file) as file:
         line = file.readline()
@@ -97,39 +95,26 @@ def process_inputs2(in_file):
 
     # Part 1:
     part1 = 0
-    skip_eq_set = set()
+    part2 = 0
     for eq in eq_list:
         result, num_tuple = eq
 
         # Brute-force via DFS with no memoization
         test_result = dfs_part1(num_tuple[0], num_tuple[1:], result)
 
-        # Evaluate
+        # Evaluate Part 1
         if (result == test_result):
             part1 += test_result
-            skip_eq_set.add(eq)
+        else:
+            test_result = dfs(num_tuple[0], num_tuple[1:], result)
 
-    # Part 2:
-    true_result = part1
-    #eq_count = 1
-    #MAX_EQ_COUNT = len(eq_list)
-    for eq in eq_list:
-        #print(f'{eq_count} of {MAX_EQ_COUNT}')
-        #eq_count += 1
-        result, num_tuple = eq
+            if (result == test_result):
+                part2 += test_result
 
-        # If equation was already true in Part 1, skip it
-        if (eq in skip_eq_set):
-            continue
+    # Since Part 1 equations were skipped in Part 2, increment Part 2 answer with Part 1 answer
+    part2 += part1
 
-        # Brute-force via DFS with no memoization
-        test_result = dfs(num_tuple[0], num_tuple[1:], result)
-
-        # Evaluate
-        if (result == test_result):
-            true_result += test_result
-
-    return part1, true_result
+    return part1, part2
 
 #part1_example = process_inputs(example_file)
 #part1 = process_inputs(input_file)
