@@ -35,9 +35,19 @@ def process_inputs2(in_file, t):
         for i in range(0, t):
             # Compute secret in-line to remove function call overheads
             #new_secret = evolve(new_secret)
-            new_secret = (new_secret^(new_secret <<  6)) & 16777215
-            new_secret = (new_secret^(new_secret >>  5)) & 16777215
-            new_secret = (new_secret^(new_secret << 11)) & 16777215
+
+            # Original bitwise operations
+            #new_secret = (new_secret^(new_secret <<  6)) & 16777215
+            #new_secret = (new_secret^(new_secret >>  5)) & 16777215
+            #new_secret = (new_secret^(new_secret << 11)) & 16777215
+
+            # Optimize bitwise operations such that there is no single operation result that has more than 24 bits:
+            #   1. Bit mask by (24-6) = 18 bits first before left shifting and XORing
+            #   2. No need to bit mask since right shifting ensures that it is always 24 bits
+            #   3. Bit mask by (24-11) = 13 bits first before left shifting and XORing
+            new_secret = new_secret^((new_secret & 262143) << 6)
+            new_secret = (new_secret^(new_secret >>  5))
+            new_secret = new_secret^((new_secret & 8191) << 11)
 
             # TODO: Numbers repeat so we can skip some iterations?
             #if (new_secret in init_set):
