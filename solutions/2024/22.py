@@ -4,16 +4,8 @@
 input_file = "../../inputs/2024/input22.txt"
 
 def process_inputs2(in_file):
-    init_list = []
     with open(in_file) as file:
-        line = file.readline()
-    
-        while line:
-            line = line.strip()
-
-            init_list.append(int(line))
-
-            line = file.readline()
+        init_list = [int(x) for x in file.read().split()]
 
     part1 = 0
 
