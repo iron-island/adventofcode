@@ -1,5 +1,5 @@
 #from collections import defaultdict
-from array import array
+#from array import array
 
 input_file = "../../inputs/2024/input22.txt"
 
@@ -18,16 +18,18 @@ def process_inputs2(in_file):
     part1 = 0
 
     # Idea of using arrays which would be faster than the dictionary
-    #   is from Reddit user u/notrom11
+    #   is from Reddit user u/notrom11, though in Python 3.11, 3.12, 3.13
+    #   lists are faster so reverted them to lists
     # Comment: https://www.reddit.com/r/adventofcode/comments/1hjroap/comment/m3cdba8/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
     # Repo: https://github.com/APMorto/aoc2024/blob/master/day_22_monkey_market/monkey_market.py
-    ARRAY_SIZE = 18*(19**3 + 19**2 + 19 + 1)
-    banana_array = array('H', [0]*ARRAY_SIZE)
-    seq_array = array('H', [0]*ARRAY_SIZE)
+    ARRAY_SIZE = 130320 #18*(19**3 + 19**2 + 19 + 1)
+    #banana_array = array('H', [0]*ARRAY_SIZE)
+    #seq_array = array('H', [0]*ARRAY_SIZE)
+    banana_array = [0]*ARRAY_SIZE
+    seq_array = [0]*ARRAY_SIZE
     for idx_s, secret_num in enumerate(init_list):
         next_idx_s = idx_s+1
         new_secret = secret_num
-        prev_idx_array = 0
         for i in range(0, 2000):
             # Compute secret in-line to remove function call overheads
             #new_secret = evolve(new_secret)
@@ -41,9 +43,9 @@ def process_inputs2(in_file):
             #   1. Bit mask by (24-6) = 18 bits first before left shifting and XORing
             #   2. No need to bit mask since right shifting ensures that it is always 24 bits
             #   3. Bit mask by (24-11) = 13 bits first before left shifting and XORing
-            new_secret = new_secret^((new_secret & 262143) << 6)
+            new_secret = new_secret^((new_secret & 0b111111111111111111) << 6)
             new_secret = (new_secret^(new_secret >>  5))
-            new_secret = new_secret^((new_secret & 8191) << 11)
+            new_secret = new_secret^((new_secret & 0b1111111111111) << 11)
 
             # TODO: Numbers repeat so we can skip some iterations?
             #if (new_secret in init_set):
@@ -70,15 +72,17 @@ def process_inputs2(in_file):
             else:
                 # Instead of saving change, directly compute the index
                 #change = (d - prev_d) + 9
-                idx_array = ((d - prev_d)+9)*(19**3) + (prev_idx_array//19)
+                # 19**3 = 6859
+                idx_array = ((d - prev_d)+9)*(6859) + (prev_idx_array//19)
             prev_d = d
             prev_idx_array = idx_array
 
             # If there have been a sequence of 4 changes, and the sequence hasn't been seen
-            if (i >= 4) and (seq_array[idx_array] <= idx_s):
-                seq_array[idx_array] = next_idx_s
+            if (i >= 4):
+                if (seq_array[idx_array] <= idx_s):
+                    seq_array[idx_array] = next_idx_s
 
-                banana_array[idx_array] += d
+                    banana_array[idx_array] += d
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
