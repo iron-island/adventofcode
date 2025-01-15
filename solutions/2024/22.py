@@ -39,13 +39,19 @@ def process_inputs2(in_file):
             #new_secret = (new_secret^(new_secret >>  5)) & 16777215
             #new_secret = (new_secret^(new_secret << 11)) & 16777215
 
-            # Optimize bitwise operations such that there is no single operation result that has more than 24 bits:
+            # Optimize bitwise operations such that there is no single operation result that has more than 24 bits,
+            #   and implement shifts as multiplication/integer division:
             #   1. Bit mask by (24-6) = 18 bits first before left shifting and XORing
+            #      Bit mask as bitwise operation seems to be marginally faster than modulo for this value
             #   2. No need to bit mask since right shifting ensures that it is always 24 bits
             #   3. Bit mask by (24-11) = 13 bits first before left shifting and XORing
-            new_secret = new_secret^((new_secret & 0b111111111111111111) << 6)
-            new_secret = (new_secret^(new_secret >>  5))
-            new_secret = new_secret^((new_secret & 0b1111111111111) << 11)
+            #      Bit mask implemented as modulo seems to be marginally faster for this value
+            #new_secret = new_secret^((new_secret & 0b111111111111111111) << 6)
+            #new_secret = (new_secret^(new_secret >> 5))
+            #new_secret = new_secret^((new_secret & 0b1111111111111) << 11)
+            new_secret = new_secret^((new_secret & 0b111111111111111111) * 64)
+            new_secret = (new_secret^(new_secret // 32))
+            new_secret = new_secret^((new_secret % 8192) * 2048)
 
             # TODO: Numbers repeat so we can skip some iterations?
             #if (new_secret in init_set):
@@ -82,7 +88,7 @@ def process_inputs2(in_file):
                 if (seq_array[idx_array] <= idx_s):
                     seq_array[idx_array] = next_idx_s
 
-                    banana_array[idx_array] += d
+                    banana_array[idx_array] = banana_array[idx_array] + d
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
