@@ -11,7 +11,7 @@ def part1_part2(in_file):
     # Reading the file in one line is marginally faster,
     #   but otherwise runtime savings weren't significant
     with open(in_file) as file:
-        init_list = [int(x) for x in file.read().split()]
+        init_secret_list = [int(x) for x in file.read().split()]
 
     # Idea of using arrays with base-19 index which would be
     #   faster than the dictionary is from Reddit user u/notrom11,
@@ -19,16 +19,20 @@ def part1_part2(in_file):
     #   so reverted them to lists
     # Comment: https://www.reddit.com/r/adventofcode/comments/1hjroap/comment/m3cdba8/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
     # Repo: https://github.com/APMorto/aoc2024/blob/master/day_22_monkey_market/monkey_market.py
-    ARRAY_SIZE = 130320 #18*(19**3 + 19**2 + 19 + 1)
     #banana_array = array('H', [0]*ARRAY_SIZE)
     #seq_array = array('H', [0]*ARRAY_SIZE)
-    banana_array = [0]*ARRAY_SIZE
-    seq_array = [0]*ARRAY_SIZE
+
+    # List length = 18*(19**3 + 19**2 + 19 + 1)
+    #               18 comes from the number of possible changes
+    #               from -9 to +9
+    LIST_LENGTH = 130320
+    banana_list = [0]*LIST_LENGTH
+    idx_change_seq_list = [0]*LIST_LENGTH
 
     part1 = 0
-    for idx_s, secret_num in enumerate(init_list):
+    for idx_s, init_secret in enumerate(init_secret_list):
         next_idx_s = idx_s+1
-        new_secret = secret_num
+        new_secret = init_secret
         for i in range(0, 2000):
             # Original bitwise operations
             #new_secret = (new_secret^(new_secret <<  6)) & 16777215
@@ -67,30 +71,30 @@ def part1_part2(in_file):
             d = (new_secret % 10)
             if (i == 0):
                 # change = 0
-                idx_array = 0
+                idx_change_seq = 0
             else:
                 # Offset by 9 since change is -9 to +9, still works
                 #   without offsets due to negative indices but is slower
                 # change = (d - prev_d) + 9
                 # Scale by 19**3 = 6859
-                idx_array = ((d - prev_d)+9)*(6859) + (prev_idx_array//19)
+                idx_change_seq = ((d - prev_d)+9)*(6859) + (prev_idx_change_seq//19)
             prev_d = d
-            prev_idx_array = idx_array
+            prev_idx_change_seq = idx_change_seq
 
             # If there have been a sequence of 4 changes, and the sequence hasn't been seen
             # Instead of marking the sequence as seen or not and clearing them for each new
             #   secret_num, set it to the index+1 whenever its seen to prevent need for clearing
             if (i >= 4):
-                if (seq_array[idx_array] <= idx_s):
-                    seq_array[idx_array] = next_idx_s
+                if (idx_change_seq_list[idx_change_seq] <= idx_s):
+                    idx_change_seq_list[idx_change_seq] = next_idx_s
 
                     # Originally += but was marginally slower for some reason
-                    banana_array[idx_array] = banana_array[idx_array] + d
+                    banana_list[idx_change_seq] = banana_list[idx_change_seq] + d
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
 
-    part2 = max(banana_array)
+    part2 = max(banana_list)
 
     return part1, part2
 
