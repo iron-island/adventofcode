@@ -45,36 +45,38 @@ def part1_part2(in_file):
             new_secret = new_secret^((new_secret & 0b111111111111111111) * 64)
             new_secret = new_secret^(new_secret // 32)
             new_secret = new_secret^((new_secret % 8192) * 2048)
-            d = (new_secret % 10)
 
-            # If there have been a sequence of 4 changes, we compute the index encoded
-            #   by the sequence changes
-            if (i >= 4):
-                # Instead of shifting the sequence of changes which we end up just using
-                #   as an index, we instead compute the index straight away, and shifting
-                #   is done by simply dividing the previous index by 19, and then adding
-                #   the new change scaled by 19**3
-                # This is equivalent to the following, but without needing to track changes:
-                #   changes_list[0:4] = changes_list[1:4] + [change]
-                #   idx_change_seq = changes_list[3]*(19**3) + \
-                #                    changes_list[2]*(19**2) + \
-                #                    changes_list[1]*19 + \
-                #                    changes_list[0]
+            # Instead of shifting the sequence of changes which we end up just using
+            #   as an index, we instead compute the index straight away, and shifting
+            #   is done by simply dividing the previous index by 19, and then adding
+            #   the new change scaled by 19**3
+            # This is equivalent to the following, but without needing to track changes:
+            #   changes_list[0:4] = changes_list[1:4] + [change]
+            #   idx_change_seq = changes_list[3]*(19**3) + \
+            #                    changes_list[2]*(19**2) + \
+            #                    changes_list[1]*19 + \
+            #                    changes_list[0]
+            d = (new_secret % 10)
+            if (i == 0):
+                # change = 0, so set index to 0
+                idx_change_seq = 0
+            else:
                 # Offset by 9 since change is -9 to +9, still works
                 #   without offsets due to negative indices but is slower
                 # change = (d - prev_d) + 9 then scale by 19**3 = 6859
-                idx_change_seq = ((d - prev_d)+9)*(6859) + (idx_change_seq//19)
+                idx_change_seq = ((d - prev_d)+9)*(6859) + (prev_idx_change_seq//19)
+            prev_d = d
+            prev_idx_change_seq = idx_change_seq
 
-                # Instead of marking the sequence as seen or not and clearing them for each new
-                #   secret_num, set it to the index+1 whenever its seen to prevent need for clearing
+            # If there have been a sequence of 4 changes, and the sequence hasn't been seen
+            # Instead of marking the sequence as seen or not and clearing them for each new
+            #   secret_num, set it to the index+1 whenever its seen to prevent need for clearing
+            if (i >= 4):
                 if (idx_change_seq_list[idx_change_seq] <= idx_s):
                     idx_change_seq_list[idx_change_seq] = next_idx_s
 
                     # Originally += but was marginally slower for some reason
                     banana_list[idx_change_seq] = banana_list[idx_change_seq] + d
-            elif (i == 0):
-                idx_change_seq = 0
-            prev_d = d
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
