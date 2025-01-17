@@ -6,17 +6,10 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input02.txt"
-example_file = "example02.txt"
 
-part1_example = 0
-part2_example = 0
-part1 = 0
-part2 = 0
-def process_inputs(in_file):
-    output = 0
-
-    safe_reports = []
-    num = 0
+def part1_part2(in_file):
+    part1 = 0
+    part2 = 0
     with open(in_file) as file:
         line = file.readline()
     
@@ -25,138 +18,89 @@ def process_inputs(in_file):
 
             report = line.split()
 
-            orig_rep = [r for r in report]
+            orig_rep = [int(r) for r in report]
 
+            # Early check for the trend of the levels
             safe = True
-            if (int(orig_rep[0]) == int(orig_rep[1])):
+            if (orig_rep[0] == orig_rep[1]):
                 safe = False
-            elif (int(orig_rep[0]) > int(orig_rep[1])):
+            elif (orig_rep[0] > orig_rep[1]):
                 higher = False
             else:
                 higher = True
 
+            # Check if unmodified levels are safe
             if (safe):
-                for idx, r in enumerate(orig_rep):
-                    if (idx):
-                        if (higher) and (int(r) > (int(orig_rep[idx-1]))):
-                            diff = abs(int(r) - int(orig_rep[idx-1]))
-                        elif (not higher) and (int(r) < (int(orig_rep[idx-1]))):
-                            diff = abs(int(r) - int(orig_rep[idx-1]))
-                        else:
-                            safe = False
-                            break
+                for idx in range(1, len(orig_rep)):
+                    r  = orig_rep[idx]
+                    r2 = orig_rep[idx-1]
+                    if (higher) and (r > r2):
+                        diff = abs(r - r2)
+                    elif (not higher) and (r < r2):
+                        diff = abs(r - r2)
+                    else:
+                        safe = False
+                        break
 
-                        if (diff >= 1) and (diff <= 3):
-                            safe = True
-                            continue
-                        else:
-                            safe = False
-                            break
+                    if (diff >= 1) and (diff <= 3):
+                        safe = True
+                        continue
+                    else:
+                        safe = False
+                        break
 
+            # Part 1: Count number of safe levels
+            # Part 2: Count number of unsafe levels that can be turned safe
             if (safe):
-                num += 1
-
-            line = file.readline()
-
-    output = len(safe_reports)
-    output = num
-    return output
-
-def process_inputs2(in_file):
-    output = 0
-
-    safe_reports = []
-    num = 0
-    with open(in_file) as file:
-        line = file.readline()
-    
-        while line:
-            line = line.strip()
-
-            report = line.split()
-
-            orig_rep = [r for r in report]
-
-            safe = True
-            if (int(orig_rep[0]) == int(orig_rep[1])):
-                safe = False
-            elif (int(orig_rep[0]) > int(orig_rep[1])):
-                higher = False
-            else:
-                higher = True
-
-            if (safe):
-                for idx, r in enumerate(orig_rep):
-                    if (idx):
-                        if (higher) and (int(r) > (int(orig_rep[idx-1]))):
-                            diff = abs(int(r) - int(orig_rep[idx-1]))
-                        elif (not higher) and (int(r) < (int(orig_rep[idx-1]))):
-                            diff = abs(int(r) - int(orig_rep[idx-1]))
-                        else:
-                            safe = False
-                            break
-
-                        if (diff >= 1) and (diff <= 3):
-                            safe = True
-                            continue
-                        else:
-                            safe = False
-                            break
-
-            if (safe):
-                num += 1
+                part1 += 1
             else:
                 for idx2, level in enumerate(report):
-                    orig_rep = [r for r in report]    
+                    orig_rep = [int(r) for r in report]    
                     orig_rep.pop(idx2)
 
                     safe = True
-                    if (int(orig_rep[0]) == int(orig_rep[1])):
+                    if (orig_rep[0] == orig_rep[1]):
                         safe = False
-                    elif (int(orig_rep[0]) > int(orig_rep[1])):
+                    elif (orig_rep[0] > orig_rep[1]):
                         higher = False
                     else:
                         higher = True
 
                     if (safe):
-                        for idx, r in enumerate(orig_rep):
-                            if (idx):
-                                if (higher) and (int(r) > (int(orig_rep[idx-1]))):
-                                    diff = abs(int(r) - int(orig_rep[idx-1]))
-                                elif (not higher) and (int(r) < (int(orig_rep[idx-1]))):
-                                    diff = abs(int(r) - int(orig_rep[idx-1]))
-                                else:
-                                    safe = False
-                                    break
+                        for idx in range(1, len(orig_rep)):
+                            r  = orig_rep[idx]
+                            r2 = orig_rep[idx-1]
+                            if (higher) and (r > r2):
+                                diff = abs(r - r2)
+                            elif (not higher) and (r < r2):
+                                diff = abs(r - r2)
+                            else:
+                                safe = False
+                                break
 
-                                if (diff >= 1) and (diff <= 3):
-                                    safe = True
-                                    continue
-                                else:
-                                    safe = False
-                                    break
+                            if (diff >= 1) and (diff <= 3):
+                                safe = True
+                                continue
+                            else:
+                                safe = False
+                                break
 
                     if (safe):
-                        num += 1
+                        part2 += 1
                         break
 
             line = file.readline()
 
-    output = len(safe_reports)
-    output = num
-    return output
+    # Add the originally safe levels to the safe levels after modification
+    part2 += part1
 
-#part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
+    return part1, part2
 
-#part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+part1, part2 = part1_part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 2: Red-Nosed Reports ---")
-#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
 
 # End timers
