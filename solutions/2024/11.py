@@ -1,4 +1,10 @@
-#import copy
+from time import perf_counter, process_time
+
+# Get start time using both perf_counter() for wall clock time
+#   and process_time() for the time of only this process
+t_s_perf = perf_counter()
+t_s_proc = process_time()
+
 from collections import defaultdict
 
 input_file = "../../inputs/2024/input11.txt"
@@ -216,3 +222,12 @@ print("--- Advent of Code 2024 Day 11: Plutonian Pebbles ---")
 print(f'Part 1: {part1}')
 #print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
+
+# End timers
+t_e_perf = perf_counter()
+t_e_proc = process_time()
+
+print("")
+print(f'perf_counter (seconds): {t_e_perf - t_s_perf}')
+print(f'process_time (seconds): {t_e_proc - t_s_proc}')
+print("")

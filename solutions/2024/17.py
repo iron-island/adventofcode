@@ -1,3 +1,10 @@
+from time import perf_counter, process_time
+
+# Get start time using both perf_counter() for wall clock time
+#   and process_time() for the time of only this process
+t_s_perf = perf_counter()
+t_s_proc = process_time()
+
 input_file = "../../inputs/2024/input17.txt"
 example_file = "example17.txt"
 example2_file = "example17_2.txt"
@@ -498,3 +505,12 @@ print(f'Part 1: {part1}')
 #print(f'Part 2 example3: {part2_example3}')
 #print(f'Part 2 example7: {part2_example7}')
 print(f'Part 2: {part2}')
+
+# End timers
+t_e_perf = perf_counter()
+t_e_proc = process_time()
+
+print("")
+print(f'perf_counter (seconds): {t_e_perf - t_s_perf}')
+print(f'process_time (seconds): {t_e_proc - t_s_proc}')
+print("")
