@@ -2,8 +2,8 @@ from time import perf_counter, process_time
 
 # Get start time using both perf_counter() for wall clock time
 #   and process_time() for the time of only this process
-time_start = perf_counter()
-time_start_process = process_time()
+t_s_perf = perf_counter()
+t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input22.txt"
 
@@ -45,23 +45,23 @@ def part1_part2(in_file):
             new_secret = new_secret^((new_secret & 0b111111111111111111) * 64)
             new_secret = new_secret^(new_secret // 32)
             new_secret = new_secret^((new_secret % 8192) * 2048)
-
-            # Instead of shifting the sequence of changes which we end up just using
-            #   as an index, we instead compute the index straight away, and shifting
-            #   is done by simply dividing the previous index by 19, and then adding
-            #   the new change scaled by 19**3
-            # This is equivalent to the following, but without needing to track changes:
-            #   changes_list[0:4] = changes_list[1:4] + [change]
-            #   idx_change_seq = changes_list[3]*(19**3) + \
-            #                    changes_list[2]*(19**2) + \
-            #                    changes_list[1]*19 + \
-            #                    changes_list[0]
             d = (new_secret % 10)
+
 
             # If there have been a sequence of 4 changes, and the sequence hasn't been seen
             # Instead of marking the sequence as seen or not and clearing them for each new
             #   secret_num, set it to the index+1 whenever its seen to prevent need for clearing
             if (i >= 4):
+                # Instead of shifting the sequence of changes which we end up just using
+                #   as an index, we instead compute the index straight away, and shifting
+                #   is done by simply dividing the previous index by 19, and then adding
+                #   the new change scaled by 19**3
+                # This is equivalent to the following, but without needing to track changes:
+                #   changes_list[0:4] = changes_list[1:4] + [change]
+                #   idx_change_seq = changes_list[3]*(19**3) + \
+                #                    changes_list[2]*(19**2) + \
+                #                    changes_list[1]*19 + \
+                #                    changes_list[0]
                 idx_change_seq = ((d - prev_d)+9)*(6859) + (idx_change_seq//19)
                 if (idx_change_seq_list[idx_change_seq] <= idx_s):
                     idx_change_seq_list[idx_change_seq] = next_idx_s
@@ -69,7 +69,7 @@ def part1_part2(in_file):
                     # Originally += but was marginally slower for some reason
                     banana_list[idx_change_seq] = banana_list[idx_change_seq] + d
             # Faster, hardcoded expressions for accumulating index for the first 3
-            #   changes, to avoid integer divisions
+            #   changes, to avoid integer divisions (avoids a total of 6060 integer divisions)
             # These are all according to the general form idx_change_seq + (change)*(19**i)
             elif (i == 3):
                 idx_change_seq = idx_change_seq + ((d - prev_d)+9)*6859
@@ -95,10 +95,10 @@ print("--- Advent of Code 2024 Day 22: Monkey Market ---")
 print(f'Part 1: {part1}')
 print(f'Part 2: {part2}')
 
-time_end = perf_counter()
-time_end_process = process_time()
+t_e_perf = perf_counter()
+t_e_proc = process_time()
 
 print("")
-print(f'perf_counter (seconds): {time_end - time_start}')
-print(f'process_time (seconds): {time_end_process - time_start_process}')
+print(f'perf_counter (seconds): {t_e_perf - t_s_perf}')
+print(f'process_time (seconds): {t_e_proc - t_s_proc}')
 print("")
