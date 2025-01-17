@@ -5,7 +5,7 @@ from time import perf_counter, process_time
 t_s_perf = perf_counter()
 t_s_proc = process_time()
 
-from collections import defaultdict, deque
+from collections import defaultdict
 
 input_file = "../../inputs/2024/input20.txt"
 
@@ -129,20 +129,20 @@ def part1_part2(in_file):
     for idx, rc in enumerate(best_path):
         idx_dict[rc] = idx
 
+    # Precompute the row offset, column offset, and distance
+    offset_list = [(r, c, abs(r)+abs(c)) for r in range(-20, 21) for c in range(abs(r)-20, (20-abs(r))+1)]
+
     # Loop through best_path to connect cheat0 and cheat2, excluding E for cheat0
-    saved_dict = defaultdict(int)
-    offset_list = [(r, c) for r in range(-20, 21) for c in range(abs(r)-20, (20-abs(r))+1)]
     part1 = 0
     part2 = 0
     for idx, cheat0 in enumerate(best_path[:-1]):
         start_row, start_col = cheat0
         for offset in offset_list:
-            row_offset, col_offset = offset
-            dist = abs(row_offset) + abs(col_offset)
+            row_offset, col_offset, dist = offset
+
             cheat2 = (start_row+row_offset, start_col+col_offset)
-            if (cheat2 in idx_dict) and (idx_dict[cheat2] > idx):
+            if (idx_dict[cheat2] > idx):
                 saved = idx_dict[cheat2] - idx - dist
-                #saved_dict[saved] += 1
 
                 if (saved >= 100):
                     # Part 1 is a subset of Part 2 when cheat lasts at most 2 picoseconds
