@@ -57,26 +57,29 @@ def part1_part2(in_file):
             #                    changes_list[1]*19 + \
             #                    changes_list[0]
             d = (new_secret % 10)
-            if (i == 0):
-                # change = 0, so set index to 0
-                idx_change_seq = 0
-            else:
-                # Offset by 9 since change is -9 to +9, still works
-                #   without offsets due to negative indices but is slower
-                # change = (d - prev_d) + 9 then scale by 19**3 = 6859
-                idx_change_seq = ((d - prev_d)+9)*(6859) + (prev_idx_change_seq//19)
-            prev_d = d
-            prev_idx_change_seq = idx_change_seq
 
             # If there have been a sequence of 4 changes, and the sequence hasn't been seen
             # Instead of marking the sequence as seen or not and clearing them for each new
             #   secret_num, set it to the index+1 whenever its seen to prevent need for clearing
             if (i >= 4):
+                idx_change_seq = ((d - prev_d)+9)*(6859) + (idx_change_seq//19)
                 if (idx_change_seq_list[idx_change_seq] <= idx_s):
                     idx_change_seq_list[idx_change_seq] = next_idx_s
 
                     # Originally += but was marginally slower for some reason
                     banana_list[idx_change_seq] = banana_list[idx_change_seq] + d
+            # Faster, hardcoded expressions for accumulating index for the first 3
+            #   changes, to avoid integer divisions
+            # These are all according to the general form idx_change_seq + (change)*(19**i)
+            elif (i == 3):
+                idx_change_seq = idx_change_seq + ((d - prev_d)+9)*6859
+            elif (i == 2):
+                idx_change_seq = idx_change_seq + ((d - prev_d)+9)*361
+            elif (i == 1):
+                idx_change_seq = idx_change_seq + ((d - prev_d)+9)*19
+            else:
+                idx_change_seq = 0
+            prev_d = d
 
         # Part 1 is a subset of Part 2 so immediately compute Part 1 here
         part1 += new_secret
