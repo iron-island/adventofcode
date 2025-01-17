@@ -5,79 +5,49 @@ from time import perf_counter, process_time
 t_s_perf = perf_counter()
 t_s_proc = process_time()
 
+from collections import defaultdict
+
 input_file = "../../inputs/2024/input01.txt"
-example_file = "example01.txt"
 
-part1_example = 0
-part2_example = 0
-part1 = 0
-part2 = 0
-def process_inputs(in_file):
+def part1_part2(in_file):
     left_list = []
     right_list = []
+
+    right_count_dict = defaultdict(int)
     with open(in_file) as file:
         line = file.readline()
     
         while line:
             line = line.strip()
 
-            left, right = line.split()
+            left_str, right_str = line.split()
+            right = int(right_str)
 
-            left_list.append(int(left))
-            right_list.append(int(right))
+            left_list.append(int(left_str))
+            right_list.append(right)
 
-            line = file.readline()
-
-    left_list.sort()
-    right_list.sort()
-
-    #assert(len(left_list) == len(right_list))
-    output = 0
-    for idx, left in enumerate(left_list):
-        diff = abs(left - right_list[idx])
-        #print(idx)
-        output = output + diff
-
-    return output
-
-def process_inputs2(in_file):
-    left_list = []
-    right_list = []
-    with open(in_file) as file:
-        line = file.readline()
-    
-        while line:
-            line = line.strip()
-
-            left, right = line.split()
-
-            left_list.append(int(left))
-            right_list.append(int(right))
+            # Populate dictionary with the occurrences of numbers so far for Part 2
+            right_count_dict[right] += 1
 
             line = file.readline()
 
     left_list.sort()
     right_list.sort()
 
-    #assert(len(left_list) == len(right_list))
-    output = 0
+    # Parts 1 and 2 in the same loop
+    part1 = 0
+    part2 = 0
     for idx, left in enumerate(left_list):
-        count = right_list.count(left)
-        output = output + left*count
+        part1 += abs(left - right_list[idx])
+        part2 += left*right_count_dict[left]
 
-    return output
+    return part1, part2
 
-#part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+part1, part2 = part1_part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 1: Historian Hysteria ---")
-#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
 
 # End timers
