@@ -6,12 +6,6 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input07.txt"
-#example_file = "example07.txt"
-
-#part1_example = 0
-#part2_example = 0
-#part1 = 0
-#part2 = 0
 
 # Note: Adding a cache slows down the DFS, since this is already fast
 def dfs_part1(eq, num_tuple, result):
@@ -86,7 +80,7 @@ def dfs(eq, num_tuple, result):
     # If did not become equal to result, return 0 so it fails test equality
     return 0
 
-def process_inputs2(in_file):
+def part1_part2(in_file):
     eq_list = []
     with open(in_file) as file:
         line = file.readline()
@@ -123,17 +117,11 @@ def process_inputs2(in_file):
 
     return part1, part2
 
-#part1_example = process_inputs(example_file)
-#part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-part1, part2 = process_inputs2(input_file)
+part1, part2 = part1_part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 7: Bridge Repair ---")
-#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
 
 # End timers

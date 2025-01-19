@@ -6,16 +6,9 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input08.txt"
-example_file = "example08.txt"
-#example_file = "example8_2.txt"
-#example_file = "example8_3.txt"
 
-part1_example = 0
-part2_example = 0
-part1 = 0
-part2 = 0
-def process_inputs(in_file):
-    output = 0
+def part1(in_file):
+    part1 = 0
 
     grid = []
     with open(in_file) as file:
@@ -87,14 +80,6 @@ def process_inputs(in_file):
                     tuple1 = (antinode_row1, antinode_col1)
                     tuple2 = (antinode_row2, antinode_col2)
 
-                    # Debugging
-                    #if (tuple1 == (2,4)) or (tuple2 == (2,4)):
-                    #    print("Debugging")
-                    #    print(row1)
-                    #    print(col1)
-                    #    print(row2)
-                    #    print(col2)
-
                     if (antinode_row1 <= MAX_ROW) and (antinode_row1 >= 0) and (antinode_col1 <= MAX_COL) and (antinode_col1 >= 0):
                         antinode_dict[ant].append((antinode_row1, antinode_col1))
                         antinode_loc_list.append((antinode_row1, antinode_col1))
@@ -102,31 +87,13 @@ def process_inputs(in_file):
                         antinode_dict[ant].append((antinode_row2, antinode_col2))
                         antinode_loc_list.append((antinode_row2, antinode_col2))
 
-    # Debug
-    #for row, rowline in enumerate(grid):
-    #    for col, colchar in enumerate(rowline):
-    #        antinode_tuple = (row, col)
-    #        if (colchar == '.') and (antinode_tuple in antinode_loc_list):
-    #            print('#',end="")
-    #        else:
-    #            print(colchar,end="")
-
-    #    # newline
-    #    print()
-
     # Evaluate
-    output = len(set(antinode_loc_list))
-    #for ant in antinode_dict:
-    #    loc_list = antinode_dict[ant]
+    part1 = len(set(antinode_loc_list))
 
-    #    loc_set = set(loc_list)
-    #    print(len(loc_set))
-    #    output += len(loc_set)
+    return part1
 
-    return output
-
-def process_inputs2(in_file):
-    output = 0
+def part2(in_file):
+    part2 = 0
 
     grid = []
     with open(in_file) as file:
@@ -195,14 +162,6 @@ def process_inputs2(in_file):
                         antinode_rowdiff1 = + absdiff_row
                         antinode_coldiff1 = + absdiff_col
 
-                    # Debugging
-                    #if (tuple1 == (2,4)) or (tuple2 == (2,4)):
-                    #    print("Debugging")
-                    #    print(row1)
-                    #    print(col1)
-                    #    print(row2)
-                    #    print(col2)
-
                     init_row = row1
                     init_col = col1
                     while (True):
@@ -232,18 +191,6 @@ def process_inputs2(in_file):
                         else:
                             break
 
-    # Debug
-    #for row, rowline in enumerate(grid):
-    #    for col, colchar in enumerate(rowline):
-    #        antinode_tuple = (row, col)
-    #        if (colchar == '.') and (antinode_tuple in antinode_loc_list):
-    #            print('#',end="")
-    #        else:
-    #            print(colchar,end="")
-
-    #    # newline
-    #    print()
-
     # Evaluate
     antinode_loc_set = set(antinode_loc_list)
     for ant in ant_dict:
@@ -253,21 +200,16 @@ def process_inputs2(in_file):
             row, col = loc
             loc_tuple = (row, col)
             antinode_loc_set.add(loc_tuple)
-    output = len(antinode_loc_set)
+    part2 = len(antinode_loc_set)
 
-    return output
+    return part2
 
-#part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+part1 = part1(input_file)
+part2 = part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 8: Resonant Collinearity ---")
-#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
 
 # End timers

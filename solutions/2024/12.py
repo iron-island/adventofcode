@@ -8,20 +8,9 @@ t_s_proc = process_time()
 from collections import defaultdict, deque
 
 input_file = "../../inputs/2024/input12.txt"
-example_file = "example12.txt"
-example2_file = "example12_2.txt"
-example3_file = "example12_3.txt"
 
-part1_example = 0
-part1_example2 = 0
-part1_example3 = 0
-part2_example = 0
-part2_example2 = 0
-part2_example3 = 0
-part1 = 0
-part2 = 0
-def process_inputs(in_file):
-    output = 0
+def part1(in_file):
+    part1 = 0
 
     grid = []
     types_dict = defaultdict(list)
@@ -119,9 +108,9 @@ def process_inputs(in_file):
             area = len(region_dict[init_coord])
             perimeter = perimeter_dict[init_coord]
             #print(area, perimeter)
-            output += area*perimeter
+            part1 += area*perimeter
 
-    return output
+    return part1
 
 def vertical_scan(fences_list):
     MIN_ROW = 1000000
@@ -185,8 +174,8 @@ def horizontal_scan(fences_list):
 
     return sides
 
-def process_inputs2(in_file):
-    output = 0
+def part2(in_file):
+    part2 = 0
 
     grid = []
     types_dict = defaultdict(list)
@@ -312,29 +301,16 @@ def process_inputs2(in_file):
             sides = upsides + downsides + leftsides + rightsides
             sides_tuple = (upsides, downsides, leftsides, rightsides)
             #print(area, sides, sides_tuple)
-            output += area*sides
+            part2 += area*sides
 
-    return output
+    return part2
 
-#part1_example = process_inputs(example_file)
-#part1_example2 = process_inputs(example2_file)
-#part1_example3 = process_inputs(example3_file)
-part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-#part2_example2 = process_inputs2(example2_file)
-#part2_example3 = process_inputs2(example3_file)
-part2 = process_inputs2(input_file)
+part1 = part1(input_file)
+part2 = part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 12: Garden Groups ---")
-#print(f'Part 1 example: {part1_example}')
-#print(f'Part 1 example2: {part1_example2}')
-#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}') # should be 80
-#print(f'Part 2 example2: {part2_example2}') # should be 436
-#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')
 
 # End timers

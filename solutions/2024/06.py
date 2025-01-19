@@ -8,12 +8,7 @@ t_s_proc = process_time()
 from collections import deque
 
 input_file = "../../inputs/2024/input06.txt"
-example_file = "example06.txt"
 
-part1_example = 0
-part2_example = 0
-part1 = 0
-part2 = 0
 MAX_ROW = 0
 MAX_COL = 0
 
@@ -228,7 +223,7 @@ def bfs_path_part2(INIT_GUARD, rowcol_list, colrow_list):
 
     return repeated
 
-def process_inputs2(in_file):
+def part1_part2(in_file):
     global MAX_ROW
     global MAX_COL
 
@@ -263,7 +258,6 @@ def process_inputs2(in_file):
             line = file.readline()
         MAX_ROW = row-1
 
-    #print(MAX_ROW, MAX_COL)
     path_set = bfs_path_part1(INIT_GUARD, rowcol_list, colrow_list)
     part1 = len(path_set)
 
@@ -288,14 +282,11 @@ def process_inputs2(in_file):
 
     return part1, part2
 
-#part1_example, part2_example = process_inputs2(example_file)
-part1, part2 = process_inputs2(input_file)
+part1, part2 = part1_part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 6: Guard Gallivant ---")
-#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
 
 # End timers

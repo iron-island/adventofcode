@@ -6,20 +6,9 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input14.txt"
-example_file = "example14.txt"
-example2_file = "example14_2.txt"
-example3_file = "example14_3.txt"
 
-part1_example = 0
-part1_example2 = 0
-part1_example3 = 0
-part2_example = 0
-part2_example2 = 0
-part2_example3 = 0
-part1 = 0
-part2 = 0
 def process_inputs(in_file, MAX_ROW, MAX_COL):
-    output = 0
+    part1 = 0
 
     grid = []
     robots_list = []
@@ -58,9 +47,6 @@ def process_inputs(in_file, MAX_ROW, MAX_COL):
 
         final_pos_list.append((n_x, n_y))
 
-        #if (idx == 10):
-        #    print(n_x, n_y)
-
     # Check quadrants
     q1 = 0
     q2 = 0
@@ -70,8 +56,6 @@ def process_inputs(in_file, MAX_ROW, MAX_COL):
     Y_MID = MAX_ROW/2
     for pos in final_pos_list:
         x, y = pos
-        #if (x != (MAX_COL)/2) and (y != (MAX_ROW)/2):
-        #    output += 1
 
         if (x < X_MID) and (y < Y_MID):
             q1 += 1
@@ -82,14 +66,12 @@ def process_inputs(in_file, MAX_ROW, MAX_COL):
         elif (x > X_MID) and (y > Y_MID):
             q4 += 1
 
-    #print(final_pos_list)
-    #print(q1, q2, q3, q4)
-    output = q1*q2*q3*q4
+    part1 = q1*q2*q3*q4
 
-    return output
+    return part1
 
 def process_inputs2(in_file, MAX_ROW, MAX_COL):
-    output = 0
+    part2 = 0
 
     grid = []
     robots_list = []
@@ -136,57 +118,16 @@ def process_inputs2(in_file, MAX_ROW, MAX_COL):
 
             final_pos_list.append((n_x, n_y))
 
-        #print(NUM)
         if (not invalid):
-            output = NUM
-            return output
+            part2 = NUM
+            return part2
 
-    # Check quadrants
-    q1 = 0
-    q2 = 0
-    q3 = 0
-    q4 = 0
-    X_MID = MAX_COL/2
-    Y_MID = MAX_ROW/2
-    for pos in final_pos_list:
-        x, y = pos
-        #if (x != (MAX_COL)/2) and (y != (MAX_ROW)/2):
-        #    output += 1
-
-        if (x < X_MID) and (y < Y_MID):
-            q1 += 1
-        elif (x > X_MID) and (y < Y_MID):
-            q2 += 1
-        elif (x < X_MID) and (y > Y_MID):
-            q3 += 1
-        elif (x > X_MID) and (y > Y_MID):
-            q4 += 1
-
-    #print(final_pos_list)
-    #print(q1, q2, q3, q4)
-    output = q1*q2*q3*q4
-
-    return output
-
-#part1_example = process_inputs(example_file, 6, 10)
 part1 = process_inputs(input_file, 102, 100)
-#part1_example2 = process_inputs(example2_file)
-#part1_example3 = process_inputs(example3_file)
-
-#part2_example = process_inputs2(example_file, 6, 10)
 part2 = process_inputs2(input_file, 102, 100)
-#part2_example2 = process_inputs2(example2_file)
-#part2_example3 = process_inputs2(example3_file)
 
 print("")
 print("--- Advent of Code 2024 Day 14: Restroom Redoubt ---")
-#print(f'Part 1 example: {part1_example}')
-#print(f'Part 1 example2: {part1_example2}')
-#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
-#print(f'Part 2 example2: {part2_example2}')
-#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')
 
 # End timers

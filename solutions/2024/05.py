@@ -6,14 +6,9 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input05.txt"
-example_file = "example05.txt"
 
-part1_example = 0
-part2_example = 0
-part1 = 0
-part2 = 0
-def process_inputs(in_file):
-    output = 0
+def part1(in_file):
+    part1 = 0
 
     rules_list = []
     inv_rules_list = []
@@ -45,10 +40,6 @@ def process_inputs(in_file):
             y_find = update.find(y)
             x_find = update.find(x)
 
-            #if (x == "97") and (y == "75") and (update == "75,97,47,61,53"):
-            #    print(x_find) # 3
-            #    print(y_find) # 0
-
             if (y_find >= 0) and (x_find >= 0):
                 if (y_find > x_find):
                     # valid
@@ -62,14 +53,12 @@ def process_inputs(in_file):
             valid_updates_list.append(update)
 
     for valid_updates in valid_updates_list:
-        #print(valid_updates)
         pages = valid_updates.split(",")
         length = len(pages)
         middle_page = int(pages[int(length/2)])
-        #print(middle_page)
-        output += middle_page
+        part1 += middle_page
 
-    return output
+    return part1
 
 def test_validity(rules_list, update):
     valid = True
@@ -89,8 +78,8 @@ def test_validity(rules_list, update):
 
     return (valid, x, y)
 
-def process_inputs2(in_file):
-    output = 0
+def part2(in_file):
+    part2 = 0
 
     rules_list = []
     inv_rules_list = []
@@ -150,65 +139,24 @@ def process_inputs2(in_file):
                 invalid_update = invalid_update.replace("yy", y)
 
                 valid, x, y = test_validity(rules_list, invalid_update)
-                #print(invalid_update)
-                #print(valid)
-                #print(x)
-                #print(y)
 
             corrected_updates_list.append(invalid_update)
 
-    # Correct (permutations)
-    #for idx, invalid_update in enumerate(invalid_updates_list):
-    #    print(f'idx {idx} of {len(invalid_updates_list)}')
-    #    invalid_list = invalid_update.split(",")
-    #    perms = itertools.permutations(invalid_list)
-    #    print(f'Go through {len(list(perms))} permutations')
-    #    for perm in perms:
-    #        mylist = list(perm)
-    #        mystring = ','.join(mylist)
-
-    #        # Test for validity
-    #        valid = True
-    #        for rules in rules_list:
-    #            x, y = rules
-
-    #            y_find = mystring.find(y)
-    #            x_find = mystring.find(x)
-
-    #            if (y_find >= 0) and (x_find >= 0):
-    #                if (y_find > x_find):
-    #                    # valid
-    #                    valid = True
-    #                else:
-    #                    valid = False
-    #                    break
-
-    #        if (valid):
-    #            corrected_updates_list.append(mystring)
-    #            break
-
     # Compute
     for corrected_updates in corrected_updates_list:
-        #print(corrected_updates)
         pages = corrected_updates.split(",")
         length = len(pages)
         middle_page = int(pages[int(length/2)])
-        #print(middle_page)
-        output += middle_page
+        part2 += middle_page
 
-    return output
+    return part2
 
-#part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-part2 = process_inputs2(input_file)
+part1 = part1(input_file)
+part2 = part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 5: Print Queue ---")
-#print(f'Part 1 example: {part1_example}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
 print(f'Part 2: {part2}')
 
 # End timers

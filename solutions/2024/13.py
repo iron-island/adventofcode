@@ -6,22 +6,9 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input13.txt"
-example_file = "example13.txt"
-example2_file = "example13_2.txt"
-example3_file = "example13_3.txt"
 
-part1_example = 0
-part1_example2 = 0
-part1_example3 = 0
-
-part2_example = 0
-part2_example2 = 0
-part2_example3 = 0
-
-part1 = 0
-part2 = 0
-def process_inputs(in_file):
-    output = 0
+def part1(in_file):
+    part1 = 0
 
     machines = []
     with open(in_file) as file:
@@ -95,12 +82,12 @@ def process_inputs(in_file):
                     break
 
         if (candidate_tok < INIT_TOK):
-            output += candidate_tok
+            part1 += candidate_tok
 
-    return output
+    return part1
 
-def process_inputs2(in_file):
-    output = 0
+def part2(in_file):
+    part2 = 0
 
     machines = []
     with open(in_file) as file:
@@ -168,53 +155,16 @@ def process_inputs2(in_file):
         int_a_press = int(a_press)
 
         if (int_b_press == b_press) and (int_a_press == a_press):
-            output += 3*a_press + b_press
+            part2 += 3*a_press + b_press
 
-        #print(a_press, b_press)
+    return int(part2)
 
-        #INIT_TOK = A_COST*101 + B_COST*101
-        #candidate_tok = INIT_TOK
-        #b_limit = 100
-        #for a_press in range(0, 101):
-        #    for b_press in range(0, b_limit+1):
-        #        curr_x = ax*a_press + bx*b_press
-        #        curr_y = ay*a_press + by*b_press
-
-        #        if (curr_x > px):
-        #            b_limit = b_press 
-        #            break
-        #        elif (curr_y > py):
-        #            b_limit = b_press
-        #            break
-        #        elif ((curr_x, curr_y) == p_tuple):
-        #            candidate_tok = min(candidate_tok, A_COST*a_press + B_COST*b_press)
-        #            b_limit = b_press
-        #            break
-
-        #if (candidate_tok < INIT_TOK):
-        #    output += candidate_tok
-
-    return int(output)
-
-#part1_example = process_inputs(example_file)
-#part1_example2 = process_inputs(example2_file)
-#part1_example3 = process_inputs(example3_file)
-part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-#part2_example2 = process_inputs2(example2_file)
-#part2_example3 = process_inputs2(example3_file)
-part2 = process_inputs2(input_file)
+part1 = part1(input_file)
+part2 = part2(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 13: Claw Contraption ---")
-#print(f'Part 1 example: {part1_example}')
-#print(f'Part 1 example2: {part1_example2}')
-#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
-#print(f'Part 2 example2: {part2_example2}')
-#print(f'Part 2 example3: {part2_example3}')
 print(f'Part 2: {part2}')
 
 # End timers
