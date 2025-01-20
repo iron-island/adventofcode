@@ -32,80 +32,16 @@ def part1_part2(in_file):
 
             line = file.readline()
 
-    # Part 1
-    # Simulate
-    NUM = 100
-    final_pos_list = []
-    for idx, robot in enumerate(robots_list):
-        x, y = robot[0]
-        vx, vy = robot[1]
-
-        x = x + NUM*vx
-        y = y + NUM*vy
-
-        n_x = x % (MAX_COL+1)
-        n_y = y % (MAX_ROW+1)
-
-        final_pos_list.append((n_x, n_y))
-
-    # Check quadrants
-    q1 = 0
-    q2 = 0
-    q3 = 0
-    q4 = 0
-    X_MID = MAX_COL/2
-    Y_MID = MAX_ROW/2
-    for pos in final_pos_list:
-        x, y = pos
-
-        if (x < X_MID) and (y < Y_MID):
-            q1 += 1
-        elif (x > X_MID) and (y < Y_MID):
-            q2 += 1
-        elif (x < X_MID) and (y > Y_MID):
-            q3 += 1
-        elif (x > X_MID) and (y > Y_MID):
-            q4 += 1
-
-    part1 = q1*q2*q3*q4
-
-    # Part 2
-    #NUM = 0
-    #final_pos_list = []
-    #while (True):
-    #    NUM += 1
-    #    final_pos_list = []
-    #    invalid = False
-    #    for idx, robot in enumerate(robots_list):
-    #        x, y = robot[0]
-    #        vx, vy = robot[1]
-
-    #        x = x + NUM*vx
-    #        y = y + NUM*vy
-
-    #        n_x = x % (MAX_COL+1)
-    #        n_y = y % (MAX_ROW+1)
-
-    #        if ((n_x, n_y) in final_pos_list):
-    #            invalid = True
-    #            break
-
-    #        final_pos_list.append((n_x, n_y))
-
-    #    if (not invalid):
-    #        part2 = NUM
-    #        break
-
-    # Part 2
-    # Optimized by finding the minimum steps needed for minimum variance
-    #   across x and y axes (corresponds to repeated horizontal and
-    #   vertical patterns, compute steps where both patterns appear
-    #   (can be mathematically modelled as 2 congruencies)
-    # I didn't think of this at all, this is from Reddit:
-    #   https://www.reddit.com/r/adventofcode/comments/1hts3v2/comment/m5ht5o2/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
-    # Congruencies can be solved with the Chinese Remainder Theorem or
-    #   alternatively with a closed-form expression based on Reddit:
-    #   https://www.reddit.com/r/adventofcode/comments/1hts3v2/comment/m5i7uan/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+    # Part 1: Computed during Part 2 at step = 100
+    # Part 2: Optimized by finding the minimum steps needed for minimum variance
+    #           across x and y axes (corresponds to repeated horizontal and
+    #           vertical patterns, compute steps where both patterns appear
+    #           (can be mathematically modelled as 2 congruencies)
+    #         I didn't think of this at all, this is from Reddit:
+    #           https://www.reddit.com/r/adventofcode/comments/1hts3v2/comment/m5ht5o2/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+    #         Congruencies can be solved with the Chinese Remainder Theorem or
+    #           alternatively with a closed-form expression based on Reddit:
+    #           https://www.reddit.com/r/adventofcode/comments/1hts3v2/comment/m5i7uan/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
 
     # Simulate max(LEN_X, LEN_Y) times, computing the variance for each iteration
     #   across x and y axes:
@@ -116,6 +52,15 @@ def part1_part2(in_file):
     step = 0
     min_var_x = 100000000
     min_var_y = 100000000
+
+    # Initializations for part 1
+    q1 = 0
+    q2 = 0
+    q3 = 0
+    q4 = 0
+    X_MID = MAX_COL/2
+    Y_MID = MAX_ROW/2
+
     while (step < MAX_STEPS):
         # Simulate
         sum_x = 0
@@ -137,6 +82,9 @@ def part1_part2(in_file):
             # Update values
             robots_list[idx][0] = (n_x, n_y)
 
+        # Update steps since robots already moved
+        step += 1
+
         # Compute variances (without division)
         mean_x = sum_x/NUM_ROBOTS
         mean_y = sum_y/NUM_ROBOTS
@@ -148,9 +96,6 @@ def part1_part2(in_file):
             var_x += (x - mean_x)**2
             var_y += (y - mean_y)**2
 
-        # Update steps since robots already moved
-        step += 1
-
         # Check minimum variances (without division)
         if (var_x < min_var_x):
             min_x = step
@@ -159,6 +104,24 @@ def part1_part2(in_file):
         if (var_y < min_var_y):
             min_y = step
             min_var_y = var_y
+
+        # Part 1: Check quadrants at step 100
+        if (step == 100):
+            for robot in robots_list:
+                x, y = robot[0]
+
+                if (x > X_MID):
+                    if (y > Y_MID):
+                        q1 += 1
+                    elif (y < Y_MID):
+                        q4 += 1
+                elif (x < X_MID):
+                    if (y > Y_MID):
+                        q2 += 1
+                    elif (y < Y_MID):
+                        q3 += 1
+
+            part1 = q1*q2*q3*q4
 
     # Mod to try to cover other available puzzle inputs,
     #   since steps were simulated at max(LEN_X, LEN_Y)
