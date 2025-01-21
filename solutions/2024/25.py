@@ -6,22 +6,8 @@ t_s_perf = perf_counter()
 t_s_proc = process_time()
 
 input_file = "../../inputs/2024/input25.txt"
-example_file = "example25.txt"
-example2_file = "example_2.txt"
-example3_file = "example_3.txt"
 
-part1_example = 0
-part1_example2 = 0
-part1_example3 = 0
-part2_example = 0
-part2_example2 = 0
-part2_example3 = 0
-part1 = 0
-part2 = 0
-
-def process_inputs(in_file):
-    output = 0
-
+def part1(in_file):
     lock_list = []
     key_list = []
     with open(in_file) as file:
@@ -55,45 +41,38 @@ def process_inputs(in_file):
                         key_list.append(curr_heights)
 
             line = file.readline()
-    #print(lock_list)
-    #print(key_list)
 
     # Count lock/key pairs
-    output = 0
+    part1 = 0
     for lock_heights in lock_list:
         l0, l1, l2, l3, l4 = lock_heights
         for key_heights in key_list:
             k0, k1, k2, k3, k4 = key_heights
 
-            h0 = k0 + l0
-            h1 = k1 + l1
-            h2 = k2 + l2
-            h3 = k3 + l3
-            h4 = k4 + l4
+            # Progressively check whether total heights exceed 5
+            #   to save operations, and if none of them are,
+            #   it is a valid lock/key pair
+            if ((k0 + l0) > 5):
+                continue
+            if ((k1 + l1) > 5):
+                continue
+            if ((k2 + l2) > 5):
+                continue
+            if ((k3 + l3) > 5):
+                continue
+            if ((k4 + l4) > 5):
+                continue
 
-            if (h0 <= 5) and (h1 <= 5) and (h2 <= 5) and (h3 <= 5) and (h4 <= 5):
-                output += 1
+            part1 += 1
             
-    return output
+    return part1
 
-#part1_example = process_inputs(example_file)
-part1 = process_inputs(input_file)
-
-#part2_example = process_inputs2(example_file)
-#part2_example2 = process_inputs2(example2_file)
-#part2_example3 = process_inputs2(example3_file)
-#part2 = process_inputs2(input_file)
+part1 = part1(input_file)
 
 print("")
 print("--- Advent of Code 2024 Day 25: Code Chronicle ---")
-#print(f'Part 1 example: {part1_example}')
-#print(f'Part 1 example2: {part1_example2}')
-#print(f'Part 1 example3: {part1_example3}')
 print(f'Part 1: {part1}')
-#print(f'Part 2 example: {part2_example}')
-#print(f'Part 2 example2: {part2_example2}')
-#print(f'Part 2 example3: {part2_example3}')
-print(f'Part 2: :)')
+print(f'Part 2: ⭐')
 
 # End timers
 t_e_perf = perf_counter()
